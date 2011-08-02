@@ -1149,7 +1149,7 @@ def sudo(command, shell=True, pty=True, combine_stderr=None, user=None,
     )
 
 
-def local(command, capture=False, shell=None):
+def local(command, capture=False, shell=None, pty=True):
     """
     Run a command on the local system.
 
@@ -1208,6 +1208,14 @@ def local(command, capture=False, shell=None):
     # Tie in to global output controls as best we can; our capture argument
     # takes precedence over the output settings.
     dev_null = None
+
+    if pty:
+        in_stream = None
+        preexec = None
+    else:
+        in_stream = subprocess.PIPE
+        preexec = os.setsid
+
     if capture:
         out_stream = subprocess.PIPE
         err_stream = subprocess.PIPE
@@ -1218,9 +1226,9 @@ def local(command, capture=False, shell=None):
         err_stream = None if output.stderr else dev_null
     try:
         cmd_arg = wrapped_command if win32 else [wrapped_command]
-        p = subprocess.Popen(cmd_arg, shell=True, stdout=out_stream,
-                             stderr=err_stream, executable=shell,
-                             close_fds=(not win32))
+        p = subprocess.Popen(cmd_arg, shell=True,
+                             stdin=in_stream, stdout=out_stream, stderr=err_stream,
+                             preexec_fn=preexec, executable=shell, close_fds=(not win32))
         (stdout, stderr) = p.communicate()
     finally:
         if dev_null is not None:
