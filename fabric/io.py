@@ -1,16 +1,15 @@
-from __future__ import with_statement
-
 import sys
 import time
 import re
 import socket
+import six
+from collections import deque
 from select import select
 
 from fabric.state import env, output, win32
 from fabric.auth import get_password, set_password
 import fabric.network
 from fabric.network import ssh, normalize
-from fabric.utils import RingBuffer
 from fabric.exceptions import CommandTimeout
 
 
@@ -19,7 +18,7 @@ if win32:
 
 
 def _endswith(char_list, substring):
-    tail = char_list[-1 * len(substring):]
+    tail = list(char_list)[-1 * len(substring):]
     substring = list(substring)
     return tail == substring
 
@@ -47,7 +46,7 @@ class OutputLooper(object):
         self.linewise = (env.linewise or env.parallel)
         self.reprompt = False
         self.read_size = 4096
-        self.write_buffer = RingBuffer([], maxlen=len(self.prefix))
+        self.write_buffer = deque(maxlen=len(self.prefix))
 
     def _flush(self, text):
         self.stream.write(text)
@@ -71,6 +70,7 @@ class OutputLooper(object):
         initial_prefix_printed = False
         seen_cr = False
         line = []
+        py3_buffer = b''
 
         # Allow prefix to be turned off.
         if not env.output_prefix:
@@ -86,6 +86,24 @@ class OutputLooper(object):
                 if self.timeout is not None and elapsed > self.timeout:
                     raise CommandTimeout(timeout=self.timeout)
                 continue
+
+            if six.PY3 is True and isinstance(bytelist, six.binary_type):
+                # Note that we have to decode this right away, even if an error
+                # is thrown only later in the code, because e.g. '' != b'' (see
+                # first if below).
+                py3_buffer += bytelist
+                try:
+                    bytelist = py3_buffer.decode('utf-8')
+                except UnicodeDecodeError:
+                    # Go back and grab more bytes so we hopefully get a
+                    # complete and valid Python string.
+                    # Might hang here if remote server sends garbage but unsure
+                    # if it's worth switching to processing byte by byte ...
+                    continue
+                else:
+                    # Reset the buffer as we succeeded
+                    py3_buffer = b''
+
             # Empty byte == EOS
             if bytelist == '':
                 # If linewise, ensure we flush any leftovers in the buffer.
@@ -93,6 +111,7 @@ class OutputLooper(object):
                     self._flush(self.prefix)
                     self._flush("".join(line))
                 break
+
             # A None capture variable implies that we're in open_shell()
             if self.capture is None:
                 # Just print directly -- no prefixes, no capturing, nada
@@ -149,7 +168,7 @@ class OutputLooper(object):
                     # Handle prompts
                     expected, response = self._get_prompt_response()
                     if expected:
-                        del self.capture[-1 * len(expected):]
+                        del list(self.capture)[-1 * len(expected):]
                         self.chan.sendall(str(response) + '\n')
                     else:
                         prompt = _endswith(self.capture, env.sudo_prompt)
@@ -172,7 +191,13 @@ class OutputLooper(object):
         # backwards compatible with Fabric 0.9.x behavior; the user
         # will still see the prompt on their screen (no way to avoid
         # this) but at least it won't clutter up the captured text.
-        del self.capture[-1 * len(env.sudo_prompt):]
+
+        # NOTE: Yes, the original RingBuffer from Fabric can do this more elegantly.
+        #       This removes the last N elements from the list.
+        _pop_count = min(len(self.capture), len(env.sudo_prompt))
+        for i in range(0, _pop_count):
+            self.capture.pop()
+
         # If the password we just tried was bad, prompt the user again.
         if (not password) or self.reprompt:
             # Print the prompt and/or the "try again" notice if
@@ -204,7 +229,7 @@ class OutputLooper(object):
 
     def try_again(self):
         # Remove text from capture buffer
-        self.capture = self.capture[:len(env.again_prompt)]
+        self.capture = list(self.capture)[:len(env.again_prompt)]
         # Set state so we re-prompt the user at the next prompt.
         self.reprompt = True
 
@@ -213,7 +238,7 @@ class OutputLooper(object):
         Iterate through the request prompts dict and return the response and
         original request if we find a match
         """
-        for tup in env.prompts.iteritems():
+        for tup in six.iteritems(env.prompts):
             if _endswith(self.capture, tup[0]):
                 return tup
         return None, None

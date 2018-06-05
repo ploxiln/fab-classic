@@ -5,9 +5,11 @@ May use ``multiprocessing.Process`` or ``threading.Thread`` objects as queue
 items, though within Fabric itself only ``Process`` objects are used/supported.
 """
 
-from __future__ import with_statement
 import time
-import Queue
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
 from multiprocessing import Process
 
 from fabric.network import ssh
@@ -17,7 +19,7 @@ from fabric.context_managers import settings
 class JobQueue(object):
     """
     The goal of this class is to make a queue of processes to run, and go
-    through them running X number at any given time. 
+    through them running X number at any given time.
 
     So if the bubble is 5 start with 5 running and move the bubble of running
     procs along the queue looking something like this:
@@ -30,7 +32,7 @@ class JobQueue(object):
         __________________[~~~~~]..
         ____________________[~~~~~]
         ___________________________
-                                End 
+                                End
     """
     def __init__(self, max_running, comms_queue):
         """

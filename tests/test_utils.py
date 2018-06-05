@@ -8,13 +8,13 @@ from fudge.patcher import with_patched_object
 from nose.tools import eq_, raises
 
 from fabric.state import output
-from fabric.utils import warn, indent, abort, puts, fastprint, error, RingBuffer
+from fabric.utils import warn, indent, abort, puts, fastprint, error
 from fabric import utils  # For patching
 from fabric.api import local, quiet
 from fabric.context_managers import settings, hide
 from fabric.colors import magenta, red
-from utils import mock_streams, aborts, FabricTest, assert_contains, \
-    assert_not_contains
+from mock_streams import mock_streams
+from utils import aborts, FabricTest, assert_contains, assert_not_contains
 
 
 @mock_streams('stderr')
@@ -139,7 +139,7 @@ def test_puts_with_encoding_type_none_output():
     """
     s = u"string!"
     output.user = True
-    sys.stdout.encoding = None
+    #sys.stdout.encoding = None
     puts(s, show_prefix=False)
     eq_(sys.stdout.getvalue(), s + "\n")
 
@@ -293,59 +293,3 @@ class TestErrorHandling(FabricTest):
             error("oh god", func=utils.abort, stderr="oops")
         # can't use assert_contains as ANSI codes contain regex specialchars
         eq_(red("\Error: oh god\n\n"), sys.stderr.getvalue())
-
-
-class TestRingBuffer(TestCase):
-    def setUp(self):
-        self.b = RingBuffer([], maxlen=5)
-
-    def test_append_empty(self):
-        self.b.append('x')
-        eq_(self.b, ['x'])
-
-    def test_append_full(self):
-        self.b.extend("abcde")
-        self.b.append('f')
-        eq_(self.b, ['b', 'c', 'd', 'e', 'f'])
-
-    def test_extend_empty(self):
-        self.b.extend("abc")
-        eq_(self.b, ['a', 'b', 'c'])
-
-    def test_extend_overrun(self):
-        self.b.extend("abc")
-        self.b.extend("defg")
-        eq_(self.b, ['c', 'd', 'e', 'f', 'g'])
-
-    def test_extend_full(self):
-        self.b.extend("abcde")
-        self.b.extend("fgh")
-        eq_(self.b, ['d', 'e', 'f', 'g', 'h'])
-
-    def test_plus_equals(self):
-        self.b += "abcdefgh"
-        eq_(self.b, ['d', 'e', 'f', 'g', 'h'])
-
-    def test_oversized_extend(self):
-        self.b.extend("abcdefghijklmn")
-        eq_(self.b, ['j', 'k', 'l', 'm', 'n'])
-
-    def test_zero_maxlen_append(self):
-        b = RingBuffer([], maxlen=0)
-        b.append('a')
-        eq_(b, [])
-
-    def test_zero_maxlen_extend(self):
-        b = RingBuffer([], maxlen=0)
-        b.extend('abcdefghijklmnop')
-        eq_(b, [])
-
-    def test_None_maxlen_append(self):
-        b = RingBuffer([], maxlen=None)
-        b.append('a')
-        eq_(b, ['a'])
-
-    def test_None_maxlen_extend(self):
-        b = RingBuffer([], maxlen=None)
-        b.extend('abcdefghijklmnop')
-        eq_(''.join(b), 'abcdefghijklmnop')

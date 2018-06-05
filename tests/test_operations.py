@@ -3,10 +3,8 @@ from __future__ import with_statement
 import os
 import re
 import shutil
+import six
 import sys
-
-from contextlib import nested
-from StringIO import StringIO
 
 from nose.tools import ok_, raises
 from fudge import patched_context, with_fakes, Fake
@@ -14,14 +12,14 @@ from fudge.inspector import arg as fudge_arg
 from mock_streams import mock_streams
 from paramiko.sftp_client import SFTPClient  # for patching
 
-from fabric.state import env, output
+from fabric.state import env
+from fabric.context_managers import nested, settings
 from fabric.operations import require, prompt, _sudo_prefix, _shell_wrap, \
     _shell_escape
 from fabric.api import get, put, hide, show, cd, lcd, local, run, sudo, quiet
-from fabric.context_managers import settings
 from fabric.exceptions import CommandTimeout
-
 from fabric.sftp import SFTP
+
 from fabric.decorators import with_settings
 from utils import (eq_, aborts, assert_contains, eq_contents,
                    with_patched_input, FabricTest)
@@ -317,8 +315,8 @@ class TestCombineStderr(FabricTest):
         """
         combine_stderr: no kwarg => uses global value (True)
         """
-        output.everything = False
-        r = run("both_streams")
+        with show('everything'):
+            r = run("both_streams")
         # Note: the exact way the streams are jumbled here is an implementation
         # detail of our fake SSH server and may change in the future.
         eq_("ssttddoeurtr", r.stdout)
@@ -329,9 +327,9 @@ class TestCombineStderr(FabricTest):
         """
         combine_stderr: no kwarg => uses global value (False)
         """
-        output.everything = False
-        env.combine_stderr = False
-        r = run("both_streams")
+        with show('everything'):
+            env.combine_stderr = False
+            r = run("both_streams")
         eq_("stdout", r.stdout)
         eq_("stderr", r.stderr)
 
@@ -340,9 +338,9 @@ class TestCombineStderr(FabricTest):
         """
         combine_stderr: True kwarg => overrides global False value
         """
-        output.everything = False
-        env.combine_stderr = False
-        r = run("both_streams", combine_stderr=True)
+        with show('everything'):
+            env.combine_stderr = False
+            r = run("both_streams", combine_stderr=True)
         eq_("ssttddoeurtr", r.stdout)
         eq_(r.stderr, "")
 
@@ -351,9 +349,9 @@ class TestCombineStderr(FabricTest):
         """
         combine_stderr: False kwarg => overrides global True value
         """
-        output.everything = False
-        env.combine_stderr = True
-        r = run("both_streams", combine_stderr=False)
+        with show('everything'):
+            env.combine_stderr = True
+            r = run("both_streams", combine_stderr=False)
         eq_("stdout", r.stdout)
         eq_("stderr", r.stderr)
 
@@ -455,7 +453,7 @@ class TestFileTransfers(FabricTest):
         local = self.path(remote)
         with hide('everything'):
             get(remote, local)
-        eq_contents(local, FILES[remote])
+        eq_contents(local, str(FILES[remote]))
 
     @server(files={'/base/dir with spaces/file': 'stuff!'})
     def test_get_file_from_relative_path_with_spaces(self):
@@ -476,7 +474,7 @@ class TestFileTransfers(FabricTest):
         with hide('everything'):
             get('file*.txt', self.tmpdir)
         for remote in remotes:
-            eq_contents(self.path(remote), FILES[remote])
+            eq_contents(self.path(remote), str(FILES[remote]))
 
     @server()
     def test_get_single_file_in_folder(self):
@@ -486,7 +484,7 @@ class TestFileTransfers(FabricTest):
         remote = 'folder/file3.txt'
         with hide('everything'):
             get('folder', self.tmpdir)
-        eq_contents(self.path(remote), FILES[remote])
+        eq_contents(self.path(remote), str(FILES[remote]))
 
     @server()
     def test_get_tree(self):
@@ -497,7 +495,7 @@ class TestFileTransfers(FabricTest):
             get('tree', self.tmpdir)
         leaves = filter(lambda x: x[0].startswith('/tree'), FILES.items())
         for path, contents in leaves:
-            eq_contents(self.path(path[1:]), contents)
+            eq_contents(self.path(path[1:]), str(contents))
 
     @server()
     def test_get_tree_with_implicit_local_path(self):
@@ -511,7 +509,7 @@ class TestFileTransfers(FabricTest):
             leaves = filter(lambda x: x[0].startswith('/tree'), FILES.items())
             for path, contents in leaves:
                 path = os.path.join(dirname, path[1:])
-                eq_contents(path, contents)
+                eq_contents(path, str(contents))
                 os.remove(path)
         # Cleanup
         finally:
@@ -545,7 +543,7 @@ class TestFileTransfers(FabricTest):
     @mock_streams('stderr')
     def _invalid_file_obj_situations(self, remote_path):
         with settings(hide('running'), warn_only=True):
-            get(remote_path, StringIO())
+            get(remote_path, six.StringIO())
         assert_contains('is a glob or directory', sys.stderr.getvalue())
 
     def test_glob_and_file_object_invalid(self):
@@ -585,7 +583,7 @@ class TestFileTransfers(FabricTest):
         target = '/etc/apache2/apache2.conf'
         with hide('everything'):
             get(target, self.tmpdir)
-        eq_contents(self.path(os.path.basename(target)), FILES[target])
+        eq_contents(self.path(os.path.basename(target)), str(FILES[target]))
 
     @server()
     def test_get_file_with_nonexistent_target(self):
@@ -596,7 +594,7 @@ class TestFileTransfers(FabricTest):
         target = 'file.txt'
         with hide('everything'):
             get(target, local)
-        eq_contents(local, FILES[target])
+        eq_contents(local, str(FILES[target]))
 
     @server()
     @mock_streams('stderr')
@@ -611,7 +609,7 @@ class TestFileTransfers(FabricTest):
         with hide('stdout', 'running'):
             get(target, local)
         assert "%s already exists" % local in sys.stderr.getvalue()
-        eq_contents(local, FILES[target])
+        eq_contents(local, str(FILES[target]))
 
     @server()
     def test_get_file_to_directory(self):
@@ -624,7 +622,7 @@ class TestFileTransfers(FabricTest):
         target = 'file.txt'
         with hide('everything'):
             get(target, self.tmpdir)
-        eq_contents(self.path(target), FILES[target])
+        eq_contents(self.path(target), str(FILES[target]))
 
     @server(port=2200)
     @server(port=2201)
@@ -695,11 +693,11 @@ class TestFileTransfers(FabricTest):
         """
         get()'s local_path arg should take file-like objects too
         """
-        fake_file = StringIO()
+        fake_file = six.BytesIO()
         target = '/file.txt'
         with hide('everything'):
             get(target, fake_file)
-        eq_(fake_file.getvalue(), FILES[target])
+        eq_(fake_file.getvalue().decode('utf-8'), str(FILES[target]))
 
     @server()
     def test_get_interpolation_without_host(self):
@@ -726,7 +724,8 @@ class TestFileTransfers(FabricTest):
         with hide('everything'):
             retval = get('tree', d)
         files = ['file1.txt', 'file2.txt', 'subfolder/file3.txt']
-        eq_(map(lambda x: os.path.join(d, 'tree', x), files), retval)
+        got = sorted(map(lambda x: os.path.join(d, 'tree', x), files))
+        eq_(list(got), sorted(retval))
 
     @server()
     def test_get_returns_none_for_stringio(self):
@@ -734,7 +733,7 @@ class TestFileTransfers(FabricTest):
         get() should return None if local_path is a StringIO
         """
         with hide('everything'):
-            eq_([], get('/file.txt', StringIO()))
+            eq_([], get('/file.txt', six.BytesIO()))
 
     @server()
     def test_get_return_value_failed_attribute(self):
@@ -872,7 +871,7 @@ class TestFileTransfers(FabricTest):
         put()'s local_path arg should take file-like objects too
         """
         local = self.path('whatever')
-        fake_file = StringIO()
+        fake_file = six.StringIO()
         fake_file.write("testing file-like objects in put()")
         pointer = fake_file.tell()
         target = '/new_file.txt'
@@ -911,7 +910,7 @@ class TestFileTransfers(FabricTest):
         """
         f = 'uploaded.txt'
         with hide('everything'):
-            eq_(put(StringIO('contents'), f), [f])
+            eq_(put(six.StringIO('contents'), f), [f])
 
     @server()
     def test_put_return_value_failed_attribute(self):
@@ -919,7 +918,7 @@ class TestFileTransfers(FabricTest):
         put()'s return value should indicate any paths which failed to upload.
         """
         with settings(hide('everything'), warn_only=True):
-            f = StringIO('contents')
+            f = six.StringIO('contents')
             retval = put(f, '/nonexistent/directory/structure')
         eq_(["<StringIO>"], retval.failed)
         assert not retval.succeeded
@@ -1072,7 +1071,7 @@ class TestFileTransfers(FabricTest):
     @server()
     @mock_streams('stdout')
     def test_stringio_without_name(self):
-        file_obj = StringIO(u'test data')
+        file_obj = six.StringIO(u'test data')
         put(file_obj, '/')
         assert re.search('<file obj>', sys.stdout.getvalue())
 
@@ -1080,7 +1079,7 @@ class TestFileTransfers(FabricTest):
     @mock_streams('stdout')
     def test_stringio_with_name(self):
         """If a file object (StringIO) has a name attribute, use that in output"""
-        file_obj = StringIO(u'test data')
+        file_obj = six.StringIO(u'test data')
         file_obj.name = 'Test StringIO Object'
         put(file_obj, '/')
         assert re.search(file_obj.name, sys.stdout.getvalue())

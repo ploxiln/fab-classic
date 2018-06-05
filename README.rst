@@ -1,9 +1,9 @@
-fab-classic is a Python (2.7) library and command-line tool for
+fab-classic is a Python (2.7 or 3.4+) library and command-line tool for
 streamlining the use of SSH for application deployment or systems
 administration tasks.
 
 This is forked from Fabric-1.14 from https://github.com/fabric/fabric/tree/1.14
-and is intended to add only bug fixes and compatibility fixes, for projects
+and is intended to add only bug fixes and compatibility patches, for projects
 already using Fabric-1.x in some way.
 
 You probably should not use this for new projects, in that case you should
@@ -20,7 +20,7 @@ fab-classic provides a basic suite of operations for executing local or remote s
 commands (normally or via ``sudo``) and uploading/downloading files, as well as
 auxiliary functionality such as prompting the running user for input, or
 aborting execution.
- 
+
 Typical use involves creating a Python module containing one or more functions,
 then executing them via the ``fab`` command-line tool. Below is a small but
 complete "fabfile" containing a single task:
@@ -46,7 +46,17 @@ servers, like so::
     Disconnecting from localhost... done.
     Disconnecting from linuxbox... done.
 
-In addition to use via the ``fab`` tool, Fabric's components may be imported
+In addition to use via the ``fab`` tool, Fabric3's components may be imported
 into other Python code, providing a Pythonic interface to the SSH protocol
 suite at a higher level than that provided by e.g. the ``Paramiko`` library
 (which Fabric itself uses).
+
+Differences with Fabric
+=======================
+
+* ``fabric.utils.RingBuffer`` is removed, use ``collections.deque`` from the
+  standard library instead.
+* In Python3, Fabric3 implements its own version of ``contextlib.nested`` based
+  on ``contextlib.ExitStack``, since it's no longer available in Python3. Please
+  note that it was removed with good reason, we do not encourage you use it.
+* Other minor fixes

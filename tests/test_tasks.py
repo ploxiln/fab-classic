@@ -12,7 +12,8 @@ from fabric.main import display_command
 from fabric.api import run, env, settings, hosts, roles, hide, parallel, task, runs_once, serial
 from fabric.exceptions import NetworkError
 
-from utils import eq_, FabricTest, aborts, mock_streams, support
+from mock_streams import mock_streams
+from utils import eq_, FabricTest, aborts, support
 from server import server
 
 

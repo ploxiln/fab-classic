@@ -9,6 +9,7 @@ from fudge import (Fake, patch_object, with_patched_object, patched_context,
 from fabric.context_managers import settings, hide, show
 from fabric.network import (HostConnectionCache, join_host_strings, normalize,
                             denormalize, key_filenames, ssh, NetworkError, connect)
+import fabric.network  # So I can call patch_object correctly. Sigh.
 from fabric.state import env, output, _get_system_username
 from fabric.operations import run, sudo, prompt
 from fabric.tasks import execute
@@ -346,8 +347,7 @@ class TestNetwork(FabricTest):
         """
         env.password = None
         env.no_agent = env.no_keys = True
-        output.everything = False
-        with password_response(PASSWORDS[env.user], silent=False):
+        with show('everything'), password_response(PASSWORDS[env.user], silent=False):
             run("ls /simple")
         regex = r'^\[%s\] Login password for \'%s\': ' % (env.host_string, env.user)
         assert_contains(regex, sys.stderr.getvalue())
@@ -361,8 +361,7 @@ class TestNetwork(FabricTest):
         env.password = None
         env.no_agent = env.no_keys = True
         env.key_filename = CLIENT_PRIVKEY
-        output.everything = False
-        with password_response(CLIENT_PRIVKEY_PASSPHRASE, silent=False):
+        with hide('everything'), password_response(CLIENT_PRIVKEY_PASSPHRASE, silent=False):
             run("ls /simple")
         regex = r'^\[%s\] Login password for \'%s\': ' % (env.host_string, env.user)
         assert_contains(regex, sys.stderr.getvalue())
@@ -395,19 +394,16 @@ class TestNetwork(FabricTest):
         if display_output:
             expected = """
 [%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': 
-[%(prefix)s] out: sudo password:
+[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: sudo password:
 [%(prefix)s] out: Sorry, try again.
-[%(prefix)s] out: sudo password: 
-[%(prefix)s] out: result
+[%(prefix)s] out: sudo password: \n[%(prefix)s] out: result
 """ % {'prefix': env.host_string, 'user': env.user}
         else:
             # Note lack of first sudo prompt (as it's autoresponded to) and of
             # course the actual result output.
             expected = """
 [%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': 
-[%(prefix)s] out: Sorry, try again.
+[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: Sorry, try again.
 [%(prefix)s] out: sudo password: """ % {
     'prefix': env.host_string,
     'user': env.user
@@ -434,11 +430,9 @@ class TestNetwork(FabricTest):
             sudo('twoliner')
         expected = """
 [%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': 
-[%(prefix)s] out: sudo password:
+[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: sudo password:
 [%(prefix)s] out: Sorry, try again.
-[%(prefix)s] out: sudo password: 
-[%(prefix)s] out: result
+[%(prefix)s] out: sudo password: \n[%(prefix)s] out: result
 [%(prefix)s] sudo: twoliner
 [%(prefix)s] out: sudo password:
 [%(prefix)s] out: result1
@@ -470,8 +464,7 @@ class TestNetwork(FabricTest):
                 run('silent')
         expected = """
 [%(prefix)s] run: normal
-[%(prefix)s] Login password for '%(user)s': 
-[%(prefix)s] out: foo
+[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: foo
 [%(prefix)s] run: silent
 [%(prefix)s] run: normal
 [%(prefix)s] out: foo
@@ -498,8 +491,7 @@ class TestNetwork(FabricTest):
             run('twoliner')
         expected = """
 [%(prefix)s] run: oneliner
-[%(prefix)s] Login password for '%(user)s': 
-[%(prefix)s] out: result
+[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: result
 [%(prefix)s] run: twoliner
 [%(prefix)s] out: result1
 [%(prefix)s] out: result2
@@ -527,8 +519,7 @@ class TestNetwork(FabricTest):
                 run('twoliner')
         expected = """
 [%(prefix)s] run: oneliner
-[%(prefix)s] Login password for '%(user)s': 
-result
+[%(prefix)s] Login password for '%(user)s': \nresult
 [%(prefix)s] run: twoliner
 result1
 result2

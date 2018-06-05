@@ -3,7 +3,7 @@
 nose<2.0
 # Rudolf adds color to the output of 'fab test'. This is a custom fork
 # addressing Python 2.7 and Nose's 'skip' plugin compatibility issues.
--e git+https://github.com/bitprophet/rudolf#egg=rudolf
+-e git+https://github.com/iknite/rudolf#egg=rudolf
 # Mocking library
 Fudge<1.0
 # Documentation generation
@@ -12,6 +12,7 @@ releases>=1.2.0,<2
 invoke>=0.12,<0.13
 invocations>=0.12,<0.13
 alabaster>=0.6.1
-semantic_version==2.4
+semantic_version==2.4.2
+six==1.11.0
 wheel==0.24
 twine==1.11.0

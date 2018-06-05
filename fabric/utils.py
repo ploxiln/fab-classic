@@ -3,13 +3,14 @@ Internal subroutines for e.g. aborting execution with an error message,
 or performing indenting on multiline output.
 """
 import os
+import six
 import sys
 import textwrap
 from traceback import format_exc
 
 
 def _encode(msg, stream):
-    if isinstance(msg, unicode) and hasattr(stream, 'encoding') and not stream.encoding is None:
+    if six.PY2 and isinstance(msg, unicode) and hasattr(stream, 'encoding') and not stream.encoding is None:
         return msg.encode(stream.encoding)
     else:
         return str(msg)
@@ -44,7 +45,7 @@ def abort(msg):
     if not env.colorize_errors:
         red  = lambda x: x
     else:
-        from colors import red
+        from fabric.colors import red
 
     if output.aborts:
         sys.stderr.write(red("\nFatal error: %s\n" % _encode(msg, sys.stderr)))
@@ -76,7 +77,7 @@ def warn(msg):
     if not env.colorize_errors:
         magenta = lambda x: x
     else:
-        from colors import magenta
+        from fabric.colors import magenta
 
     if output.warnings:
         msg = _encode(msg, sys.stderr)
@@ -360,53 +361,12 @@ def error(message, func=None, exception=None, stdout=None, stderr=None):
 
 def _format_error_output(header, body):
     term_width = _pty_size()[1]
-    header_side_length = (term_width - (len(header) + 2)) / 2
+    header_side_length = int((term_width - (len(header) + 2)) / 2)
     mark = "="
     side = mark * header_side_length
     return "\n\n%s %s %s\n\n%s\n\n%s" % (
         side, header, side, body, mark * term_width
     )
-
-
-# TODO: replace with collections.deque(maxlen=xxx) in Python 2.6
-class RingBuffer(list):
-    def __init__(self, value, maxlen):
-        # Because it's annoying typing this multiple times.
-        self._super = super(RingBuffer, self)
-        # Python 2.6 deque compatible option name!
-        self._maxlen = maxlen
-        return self._super.__init__(value)
-
-    def _trim(self):
-        if self._maxlen is None:
-            return
-        overage = max(len(self) - self._maxlen, 0)
-        del self[0:overage]
-
-    def append(self, value):
-        self._super.append(value)
-        self._trim()
-
-    def extend(self, values):
-        self._super.extend(values)
-        self._trim()
-
-    def __iadd__(self, other):
-        self.extend(other)
-        return self
-
-    # Paranoia from here on out.
-    def insert(self, index, value):
-        raise ValueError("Can't insert into the middle of a ring buffer!")
-
-    def __setslice__(self, i, j, sequence):
-        raise ValueError("Can't set a slice of a ring buffer!")
-
-    def __setitem__(self, key, value):
-        if isinstance(key, slice):
-            raise ValueError("Can't set a slice of a ring buffer!")
-        else:
-            return self._super.__setitem__(key, value)
 
 
 def apply_lcwd(path, env):

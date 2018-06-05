@@ -1,14 +1,12 @@
-from __future__ import with_statement
-
 from contextlib import contextmanager
 from fudge.patcher import with_patched_object
 from functools import partial
-from types import StringTypes
 import copy
 import getpass
 import os
 import re
 import shutil
+import six
 import sys
 import tempfile
 
@@ -97,7 +95,7 @@ def password_response(password, times_called=None, silent=True):
     """
     fake = Fake('getpass', callable=True)
     # Assume stringtype or iterable, turn into mutable iterable
-    if isinstance(password, StringTypes):
+    if isinstance(password, six.string_types):
         passwords = [password]
     else:
         passwords = list(password)
@@ -191,6 +189,9 @@ def aborts(func):
 
 
 def _patched_input(func, fake):
-    return func(sys.modules['__builtin__'], 'raw_input', fake)
+    if six.PY3 is True:
+        return func(sys.modules['builtins'], 'input', fake)
+    else:
+        return func(sys.modules['__builtin__'], 'raw_input', fake)
 patched_input = partial(_patched_input, patched_context)
 with_patched_input = partial(_patched_input, with_patched_object)

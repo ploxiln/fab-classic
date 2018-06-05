@@ -1,8 +1,6 @@
-from __future__ import with_statement
-
 import os
+import six
 import sys
-from StringIO import StringIO
 
 from nose.tools import eq_, ok_
 
@@ -10,7 +8,8 @@ from fabric.state import env, output
 from fabric.context_managers import (cd, settings, lcd, hide, shell_env, quiet,
     warn_only, prefix, path)
 from fabric.operations import run, local, _prefix_commands
-from utils import mock_streams, FabricTest
+from mock_streams import mock_streams
+from utils import FabricTest
 from server import server
 
 
@@ -255,14 +254,14 @@ class TestQuietAndWarnOnly(FabricTest):
         run("ls /simple")
         ok_(sys.stdout.getvalue())
         # Reset
-        sys.stdout = StringIO()
+        sys.stdout = six.StringIO()
         # Real test
         with quiet():
             run("ls /simple")
         # Empty output
         ok_(not sys.stdout.getvalue())
         # Reset
-        sys.stdout = StringIO()
+        sys.stdout = six.StringIO()
         # Kwarg test
         run("ls /simple", quiet=True)
         ok_(not sys.stdout.getvalue())

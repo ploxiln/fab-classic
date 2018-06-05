@@ -4,24 +4,15 @@ from setuptools import setup, find_packages
 from fabric.version import get_version
 
 
-with open('README.rst') as f:
-    readme = f.read()
-
 long_description = """
-To find out what's new in this version of Fabric, please see `the changelog
-<http://fabfile.org/changelog-v1.html>`_.
+fab-classic is a fork of `Fabric <http://fabfile.org>`_ 1.x intended to
+only add bug fixes and compatibility fixes. Notably, it includes python3
+compatibility fixes from `Fabric3 <https://github.com/mathiasertl/fabric/>`.
 
-You can also install the `development version via ``pip install -e
-git+https://github.com/ploxiln/fab-classic/#egg=fab-classic``.
+To find out what's new, please see `the changelog <http://fabfile.org/changelog-v1.html>`_.
 
-----
-
-%s
-
-----
-
-For more information, please see the Fabric website or execute ``fab --help``.
-""" % (readme)
+For more information, please see the fab-classic website or execute ``fab --help``.
+"""
 
 
 setup(
@@ -29,13 +20,15 @@ setup(
     version=get_version('short'),
     description='fab-classic is a simple, Pythonic tool for remote execution and deployment.',
     long_description=long_description,
-    author='Pierce Lopez',
-    author_email='pierce.lopez@gmail.com',
+    author='Jeff Forcier',
+    author_email='jeff@bitprophet.org',
+    maintainer='Pierce Lopez',
+    maintainer_email='pierce.lopez@gmail.com',
     url='https://github.com/ploxiln/fab-classic',
     packages=find_packages(),
     test_suite='nose.collector',
     tests_require=['nose<2.0', 'fudge<1.0', 'jinja2<3.0'],
-    install_requires=['paramiko>=1.10,<3.0'],
+    install_requires=['paramiko>=2.0,<3.0', 'six>=1.10.0'],
     entry_points={
         'console_scripts': [
             'fab = fabric.main:main',
@@ -51,8 +44,12 @@ setup(
           'Operating System :: Unix',
           'Operating System :: POSIX',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2 :: Only',
+          'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
           'Topic :: Software Development',
           'Topic :: Software Development :: Build Tools',
           'Topic :: Software Development :: Libraries',

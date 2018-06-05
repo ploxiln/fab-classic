@@ -2,11 +2,10 @@
 Module providing easy API for working with remote files and folders.
 """
 
-from __future__ import with_statement
-
 import hashlib
 import os
-from StringIO import StringIO
+import six
+
 from functools import partial
 
 from fabric.api import run, sudo, hide, settings, env, put, abort
@@ -163,9 +162,12 @@ def upload_template(filename, destination, context=None, use_jinja=False,
     if backup and exists(destination):
         func("cp %s{,.bak}" % _expand_path(destination))
 
+    if six.PY3 is True and isinstance(text, bytes):
+        text = text.decode('utf-8')
+
     # Upload the file.
     return put(
-        local_path=StringIO(text),
+        local_path=six.StringIO(text),
         remote_path=destination,
         use_sudo=use_sudo,
         mirror_local_mode=mirror_local_mode,
@@ -419,7 +421,7 @@ def append(filename, text, use_sudo=False, partial=False, escape=True,
     """
     func = use_sudo and sudo or run
     # Normalize non-list input to be a list
-    if isinstance(text, basestring):
+    if isinstance(text, six.string_types):
         text = [text]
     for line in text:
         regex = '^' + _escape_for_regex(line)  + ('' if partial else '$')

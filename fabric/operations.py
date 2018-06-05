@@ -10,10 +10,12 @@ import os
 import os.path
 import posixpath
 import re
+import six
 import subprocess
 import sys
 import time
 from glob import glob
+from collections import deque
 from contextlib import closing, contextmanager
 
 from fabric.context_managers import (settings, char_buffered, hide,
@@ -25,7 +27,6 @@ from fabric.state import env, connections, output, win32, default_channel
 from fabric.thread_handling import ThreadHandler
 from fabric.utils import (
     abort, error, handle_prompt_abort, indent, _pty_size, warn, apply_lcwd,
-    RingBuffer,
 )
 
 
@@ -94,6 +95,7 @@ def require(*keys, **kwargs):
     # If all keys exist and are non-empty, we're good, so keep going.
     missing_keys = filter(lambda x: x not in env or (x in env and
         isinstance(env[x], (dict, list, tuple, set)) and not env[x]), keys)
+    missing_keys = list(missing_keys)
     if not missing_keys:
         return
     # Pluralization
@@ -208,7 +210,10 @@ def prompt(text, key=None, default='', validate=None):
     value = None
     while value is None:
         # Get input
-        value = raw_input(prompt_str) or default
+        if six.PY3 is True:
+            value = input(prompt_str) or default
+        else:
+            value = raw_input(prompt_str) or default
         # Handle validation
         if validate:
             # Callable
@@ -217,7 +222,7 @@ def prompt(text, key=None, default='', validate=None):
                 # fails.
                 try:
                     value = validate(value)
-                except Exception, e:
+                except Exception as e:
                     # Reset value so we stay in the loop
                     value = None
                     print("Validation failed for the following reason:")
@@ -294,8 +299,8 @@ def put(local_path=None, remote_path=None, use_sudo=False,
     scripts). To do this, specify ``mirror_local_mode=True``.
 
     Alternately, you may use the ``mode`` kwarg to specify an exact mode, in
-    the same vein as ``os.chmod``, such as an exact octal number (``0755``) or
-    a string representing one (``"0755"``).
+    the same vein as ``os.chmod``, such as an exact octal number (``0o755``) or
+    a string representing one (``"0o755"``).
 
     `~fabric.operations.put` will honor `~fabric.context_managers.cd`, so
     relative values in ``remote_path`` will be prepended by the current remote
@@ -313,7 +318,7 @@ def put(local_path=None, remote_path=None, use_sudo=False,
 
         put('bin/project.zip', '/tmp/project.zip')
         put('*.py', 'cgi-bin/')
-        put('index.html', 'index.html', mode=0755)
+        put('index.html', 'index.html', mode=0o755)
 
     .. note::
         If a file-like object such as StringIO has a ``name`` attribute, that
@@ -398,7 +403,7 @@ def put(local_path=None, remote_path=None, use_sudo=False,
                     p = ftp.put(lpath, remote_path, use_sudo, mirror_local_mode,
                         mode, local_is_path, temp_dir)
                     remote_paths.append(p)
-            except Exception, e:
+            except Exception as e:
                 msg = "put() encountered an exception while uploading '%s'"
                 failure = lpath if local_is_path else "<StringIO>"
                 failed_local_paths.append(failure)
@@ -586,7 +591,7 @@ def get(remote_path, local_path=None, use_sudo=False, temp_dir=""):
                     if local_is_path:
                         local_files.append(result)
 
-        except Exception, e:
+        except Exception as e:
             failed_remote_files.append(remote_path)
             msg = "get() encountered an exception while downloading '%s'"
             error(message=msg % remote_path, exception=e)
@@ -709,7 +714,7 @@ def _prefix_env_vars(command, local=False):
 
         exports = ' '.join(
             '%s%s="%s"' % (set_cmd, k, v if k == 'PATH' else _shell_escape(v))
-            for k, v in env_vars.iteritems()
+            for k, v in six.iteritems(env_vars)
         )
         shell_env_str = '%s%s && ' % (exp_cmd, exports)
     else:
@@ -786,8 +791,8 @@ def _execute(channel, command, pty=True, combine_stderr=None,
 
         # Init stdout, stderr capturing. Must use lists instead of strings as
         # strings are immutable and we're using these as pass-by-reference
-        stdout_buf = RingBuffer(value=[], maxlen=capture_buffer_size)
-        stderr_buf = RingBuffer(value=[], maxlen=capture_buffer_size)
+        stdout_buf = deque(maxlen=capture_buffer_size)
+        stderr_buf = deque(maxlen=capture_buffer_size)
         if invoke_shell:
             stdout_buf = stderr_buf = None
 
@@ -1234,8 +1239,12 @@ def local(command, capture=False, shell=None, pty=True):
         if dev_null is not None:
             dev_null.close()
     # Handle error condition (deal with stdout being None, too)
-    out = _AttributeString(stdout.strip() if stdout else "")
-    err = _AttributeString(stderr.strip() if stderr else "")
+    if six.PY3:
+        out = _AttributeString(stdout.decode('utf-8').strip() if stdout else "")
+        err = _AttributeString(stderr.decode('utf-8').strip() if stderr else "")
+    else:
+        out = _AttributeString(stdout.strip() if stdout else "")
+        err = _AttributeString(stderr.strip() if stderr else "")
     out.command = given_command
     out.real_command = wrapped_command
     out.failed = False

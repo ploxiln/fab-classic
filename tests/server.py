@@ -2,15 +2,16 @@ from __future__ import with_statement
 
 import os
 import re
+import six
 import socket
 import threading
 import time
-import types
 from functools import wraps
 from Python26SocketServer import BaseRequestHandler, ThreadingMixIn, TCPServer
 
 from fabric.operations import _sudo_prefix
-from fabric.api import env, hide
+from fabric.context_managers import hide
+from fabric.state import env
 from fabric.thread_handling import ThreadHandler
 from fabric.network import disconnect_all, ssh
 
@@ -85,7 +86,7 @@ def _equalize(lists, fillval=None):
     """
     Pad all given list items in ``lists`` to be the same length.
     """
-    lists = map(list, lists)
+    lists = list(map(list, lists))
     upper = max(len(x) for x in lists)
     for lst in lists:
         diff = upper - len(lst)
@@ -395,7 +396,11 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
 
         def split_sudo_prompt(self):
             prefix = re.escape(_sudo_prefix(None, None).rstrip()) + ' +'
-            result = re.findall(r'^(%s)?(.*)$' % prefix, self.command)[0]
+            command = self.command
+            if six.PY3 and isinstance(command, bytes):
+                command = command.decode('utf-8')
+
+            result = re.findall(r'^(%s)?(.*)$' % prefix, command)[0]
             self.sudo_prompt, self.command = result
 
         def response(self):
@@ -403,7 +408,7 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
             stderr = ""
             status = 0
             sleep = 0
-            if isinstance(result, types.StringTypes):
+            if isinstance(result, six.string_types):
                 stdout = result
             else:
                 size = len(result)
@@ -429,6 +434,8 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
                 # newline
                 self.channel.send('\n')
                 # Test password
+                if six.PY3 is True:
+                    password = password.decode('utf-8')
                 if password == passwords[self.ssh_server.username]:
                     passed = True
                     break
@@ -484,6 +491,6 @@ def server(
                 # Handle subthread exceptions
                 e = worker.exception
                 if e:
-                    raise e[0], e[1], e[2]
+                    six.reraise(e[0], e[1], e[2])
         return inner
     return run_server
