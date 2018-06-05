@@ -642,7 +642,7 @@ def main(fabfile_locations=None):
 
         # Handle version number option
         if options.show_version:
-            print("Fabric %s" % state.env.version)
+            print("fab-classic %s" % state.env.version)
             print("Paramiko %s" % ssh.__version__)
             sys.exit(0)
 

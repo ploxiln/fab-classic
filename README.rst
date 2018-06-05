@@ -1,8 +1,22 @@
-Fabric is a Python (2.5-2.7) library and command-line tool for
+fab-classic is a Python (2.7) library and command-line tool for
 streamlining the use of SSH for application deployment or systems
 administration tasks.
 
-It provides a basic suite of operations for executing local or remote shell
+This is forked from Fabric-1.14 from https://github.com/fabric/fabric/tree/1.14
+and is intended to add only bug fixes and compatibility fixes, for projects
+already using Fabric-1.x in some way.
+
+You probably should not use this for new projects, in that case you should
+consider Fabric-2.x from http://www.fabfile.org/ or maybe Ansible or something else.
+
+Current best documentation for this fork: http://docs.fabfile.org/en/1.14/
+
+There have been many contributors to Fabric, but the most significant by far
+is Jeff Forcier.
+
+------
+
+fab-classic provides a basic suite of operations for executing local or remote shell
 commands (normally or via ``sudo``) and uploading/downloading files, as well as
 auxiliary functionality such as prompting the running user for input, or
 aborting execution.
@@ -35,4 +49,4 @@ servers, like so::
 In addition to use via the ``fab`` tool, Fabric's components may be imported
 into other Python code, providing a Pythonic interface to the SSH protocol
 suite at a higher level than that provided by e.g. the ``Paramiko`` library
-(which Fabric itself uses.)
+(which Fabric itself uses).
