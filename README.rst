@@ -10,14 +10,18 @@ from `Fabric3 <https://github.com/mathiasertl/fabric/>`_.
 You probably should not use this for new projects, in that case you should
 consider Fabric-2.x from http://www.fabfile.org/ or maybe Ansible or something else.
 
+------
+
+fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_, so you can: `pip install fab-classic`
+
 .. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
     :target: https://travis-ci.org/ploxiln/fab-classic
 
-Changelog for fab-classic: https://github.com/ploxiln/fab-classic/releases
+Changelog: https://github.com/ploxiln/fab-classic/releases
 
-Documentation for Fabric 1.x applies to fab-classic: http://docs.fabfile.org/en/1.14/
+API Documentation: http://docs.fabfile.org/en/1.14/
 
-For quick command reference, run ``fab --help``.
+For a quick command reference, run ``fab --help``.
 
 ------
 
