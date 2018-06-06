@@ -15,7 +15,7 @@ What is Fabric?
 As the ``README`` says:
 
     .. include:: ../../README.rst
-        :end-before: It provides
+        :end-before: This is forked
 
 More specifically, Fabric is:
 
