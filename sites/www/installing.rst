@@ -116,9 +116,9 @@ packages:
 * `Sphinx <http://sphinx.pocoo.org/>`_
 
 For an up-to-date list of exact testing/development requirements, including
-version numbers, please see the ``requirements.txt`` file included with the
-source distribution. This file is intended to be used with ``pip``, e.g. ``pip
-install -r requirements.txt``.
+version numbers, please see the ``dev-requirements.txt`` file included with the
+source distribution. This file is intended to be used with ``pip``, e.g.
+``pip install -r dev-requirements.txt``.
 
 .. _Mercurial: http://mercurial.selenic.com/wiki/
 
