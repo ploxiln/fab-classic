@@ -1,32 +1,11 @@
-*~
+# python
 *.pyc
 *.pyo
-*.pyt
-*.pytc
-*.egg
-.DS_Store
+
+# pypi
+/dist/
+/build/
+
+# emacs, vim
+*~
 .*.swp
-Fabric3.egg-info
-.coverage
-docs/_build
-dist
-build/
-tags
-TAGS
-.tox
-tox.ini
-.idea/
-sites/*/_build
-/env/
-/env3/
-/include/
-/lib/
-/local/
-/bin/
-/man/
-/py3/
-/py2/
-/src/
-/Makefile
-/venvs/
-/.eggs/
