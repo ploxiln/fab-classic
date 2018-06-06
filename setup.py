@@ -4,15 +4,7 @@ from setuptools import setup, find_packages
 from fabric.version import get_version
 
 
-long_description = """
-fab-classic is a fork of `Fabric <http://fabfile.org>`_ 1.x intended to
-only add bug fixes and compatibility fixes. Notably, it includes python3
-compatibility fixes from `Fabric3 <https://github.com/mathiasertl/fabric/>`.
-
-To find out what's new, please see `the changelog <http://fabfile.org/changelog-v1.html>`_.
-
-For more information, please see the fab-classic website or execute ``fab --help``.
-"""
+long_description = open("README.rst").read()
 
 
 setup(

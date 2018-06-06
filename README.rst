@@ -2,17 +2,19 @@ fab-classic is a Python (2.7 or 3.4+) library and command-line tool for
 streamlining the use of SSH for application deployment or systems
 administration tasks.
 
-This is forked from Fabric-1.14 from https://github.com/fabric/fabric/tree/1.14
+fab-classic is forked from `Fabric-1.14 <https://github.com/fabric/fabric/tree/1.14>`_
 and is intended to add only bug fixes and compatibility patches, for projects
-already using Fabric-1.x in some way.
+already using Fabric-1.x in some way. It includes python3 compatibility patches
+from `Fabric3 <https://github.com/mathiasertl/fabric/>`_.
 
 You probably should not use this for new projects, in that case you should
 consider Fabric-2.x from http://www.fabfile.org/ or maybe Ansible or something else.
 
-Current best documentation for this fork: http://docs.fabfile.org/en/1.14/
+Changelog for fab-classic: https://github.com/ploxiln/fab-classic/releases
 
-There have been many contributors to Fabric, but the most significant by far
-is Jeff Forcier.
+Documentation for Fabric 1.x applies to fab-classic: http://docs.fabfile.org/en/1.14/
+
+For quick command reference, execute ``fab --help``.
 
 ------
 
@@ -46,17 +48,7 @@ servers, like so::
     Disconnecting from localhost... done.
     Disconnecting from linuxbox... done.
 
-In addition to use via the ``fab`` tool, Fabric3's components may be imported
+In addition to use via the ``fab`` tool, Fabric's components may be imported
 into other Python code, providing a Pythonic interface to the SSH protocol
 suite at a higher level than that provided by e.g. the ``Paramiko`` library
 (which Fabric itself uses).
-
-Differences with Fabric
-=======================
-
-* ``fabric.utils.RingBuffer`` is removed, use ``collections.deque`` from the
-  standard library instead.
-* In Python3, Fabric3 implements its own version of ``contextlib.nested`` based
-  on ``contextlib.ExitStack``, since it's no longer available in Python3. Please
-  note that it was removed with good reason, we do not encourage you use it.
-* Other minor fixes
