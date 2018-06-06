@@ -249,9 +249,15 @@ class TestNetwork(FabricTest):
 
         fake_ssh = Fake('ssh', allows_any_call=True)
         fake_ssh.provides('SSHClient').calls(generate_fake_client)
+
         # We need the real exceptions here to preserve the inheritence structure
+        # and for except clauses because python3 is picky about that
         fake_ssh.SSHException = ssh.SSHException
         fake_ssh.ChannelException = ssh.ChannelException
+        fake_ssh.BadHostKeyException = ssh.BadHostKeyException
+        fake_ssh.AuthenticationException = ssh.AuthenticationException
+        fake_ssh.PasswordRequiredException = ssh.PasswordRequiredException
+
         patched_connect = patch_object('fabric.network', 'ssh', fake_ssh)
         patched_password = patch_object('fabric.network', 'prompt_for_password', Fake('prompt_for_password', callable = True).times_called(0))
         try:
