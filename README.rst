@@ -1,5 +1,5 @@
-fab-classic is a Python (2.7 or 3.4+) library and command-line tool for
-streamlining the use of SSH for application deployment or systems
+**fab-classic** is a Python (2.7 or 3.4+) library and command-line tool
+for streamlining the use of SSH for application deployment or systems
 administration tasks.
 
 fab-classic is forked from `Fabric-1.14 <https://github.com/fabric/fabric/tree/1.14>`_
@@ -10,11 +10,14 @@ from `Fabric3 <https://github.com/mathiasertl/fabric/>`_.
 You probably should not use this for new projects, in that case you should
 consider Fabric-2.x from http://www.fabfile.org/ or maybe Ansible or something else.
 
+.. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
+    :target: https://travis-ci.org/ploxiln/fab-classic
+
 Changelog for fab-classic: https://github.com/ploxiln/fab-classic/releases
 
 Documentation for Fabric 1.x applies to fab-classic: http://docs.fabfile.org/en/1.14/
 
-For quick command reference, execute ``fab --help``.
+For quick command reference, run ``fab --help``.
 
 ------
 
