@@ -1,6 +1,0 @@
-# These requirements are for DEVELOPMENT ONLY!
-# You do not need e.g. Sphinx or Fudge just to run the 'fab' tool.
-paramiko
-# Pull in actual "you already have local installed checkouts of Fabric +
-# Paramiko" dev deps.
--r dev-requirements.txt
