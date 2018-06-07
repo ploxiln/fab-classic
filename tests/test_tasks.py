@@ -416,8 +416,6 @@ class TestExecute(FabricTest):
         mytask = MyTask()
         execute(mytask)
 
-    @server(port=2200)
-    @server(port=2201)
     def test_nested_execution_with_explicit_ports(self):
         """
         nested executions should work with defined ports
