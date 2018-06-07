@@ -10,7 +10,8 @@ from traceback import format_exc
 
 
 def _encode(msg, stream):
-    if six.PY2 and isinstance(msg, unicode) and hasattr(stream, 'encoding') and not stream.encoding is None:
+    if six.PY2 and isinstance(msg, six.text_type) \
+            and hasattr(stream, 'encoding') and stream.encoding is not None:
         return msg.encode(stream.encoding)
     else:
         return str(msg)

@@ -766,14 +766,12 @@ Remember that -f can be used to specify fabfile path, and use -h for help.""")
         # If we got here, no errors occurred, so print a final note.
         if state.output.status:
             print("\nDone.")
-    except SystemExit:
-        # a number of internal functions might raise this one.
-        raise
+
     except KeyboardInterrupt:
         if state.output.status:
             sys.stderr.write("\nStopped.\n")
         sys.exit(1)
-    except:
+    except Exception:  # do not catch SystemExit
         sys.excepthook(*sys.exc_info())
         # we might leave stale threads if we don't explicitly exit()
         sys.exit(1)

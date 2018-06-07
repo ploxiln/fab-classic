@@ -1,7 +1,6 @@
 from __future__ import with_statement
 
 import sys
-from unittest import TestCase
 
 from fudge import Fake, patched_context, with_fakes
 from fudge.patcher import with_patched_object

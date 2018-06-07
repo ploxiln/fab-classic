@@ -10,7 +10,8 @@ from server import server, RESPONSES, USER, HOST, PORT
 
 # TODO: move this into test_tasks? meh.
 
-class OhNoesException(Exception): pass
+class OhNoesException(Exception):
+    pass
 
 
 class TestParallel(FabricTest):

@@ -556,7 +556,7 @@ def connect(user, host, port, cache, seek_gateway=True):
             # ssh raises PasswordRequiredException.
             text = None
             if e.__class__ is ssh.PasswordRequiredException \
-                or is_key_load_error(e):
+                    or is_key_load_error(e):
                 # NOTE: we can't easily say WHICH key's passphrase is needed,
                 # because ssh doesn't provide us with that info, and
                 # env.key_filename may be a list of keys, so we can't know
@@ -687,7 +687,7 @@ def needs_host(func):
             if six.PY3 is True:
                 host_string = input(prompt)
             else:
-                host_string = raw_input(prompt)
+                host_string = raw_input(prompt)  # noqa: F821
             env.update(to_dict(host_string))
         return func(*args, **kwargs)
     host_prompting_wrapper.undecorated = func

@@ -615,5 +615,5 @@ class TestTaskDetails(unittest.TestCase):
     
     Arguments: arg1
 
-"""
+"""  # noqa: W293
         )

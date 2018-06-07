@@ -81,5 +81,3 @@ def mock_streams(which):
                     del sys.stdall
         return inner_wrapper
     return mocked_streams_decorator
-
-
