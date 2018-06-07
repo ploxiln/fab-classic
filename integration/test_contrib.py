@@ -46,14 +46,14 @@ class TestTildeExpansion(FileCleaner):
             self.remote.append(target)
             run("touch %s" % escape(target))
             expect(target)
-     
+
     def test_sed(self):
         for target in ('~/sed_test', '~/sed test with space'):
             self.remote.append(target)
             run("echo 'before' > %s" % escape(target))
             files.sed(target, 'before', 'after')
             expect_contains(target, 'after')
-     
+
     def test_upload_template(self):
         for i, target in enumerate((
             '~/upload_template_test',

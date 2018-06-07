@@ -54,7 +54,7 @@ def test_argument_parsing():
         # Exclude hosts
         ('abc:hosts=foo;bar,exclude_hosts=foo', ('abc', [], {}, ['foo', 'bar'], [], ['foo'])),
         ('abc:hosts=foo;bar,exclude_hosts=foo;bar', ('abc', [], {}, ['foo', 'bar'], [], ['foo','bar'])),
-       # Empty string args
+        # Empty string args
         ("task:x=y,z=", ('task', [], {'x': 'y', 'z': ''}, [], [], [])),
         ("task:foo,,x=y", ('task', ['foo', ''], {'x': 'y'}, [], [], [])),
     ]:

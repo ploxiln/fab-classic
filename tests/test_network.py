@@ -9,7 +9,7 @@ from fudge import (Fake, patch_object, with_patched_object, patched_context,
 from fabric.context_managers import settings, hide, show
 from fabric.network import (HostConnectionCache, join_host_strings, normalize,
                             denormalize, key_filenames, ssh, NetworkError, connect)
-import fabric.network  # So I can call patch_object correctly. Sigh.
+import fabric.network  # noqa: F401  # So I can call patch_object correctly
 from fabric.state import env, output, _get_system_username
 from fabric.operations import run, sudo, prompt
 from fabric.tasks import execute
@@ -259,7 +259,8 @@ class TestNetwork(FabricTest):
         fake_ssh.PasswordRequiredException = ssh.PasswordRequiredException
 
         patched_connect = patch_object('fabric.network', 'ssh', fake_ssh)
-        patched_password = patch_object('fabric.network', 'prompt_for_password', Fake('prompt_for_password', callable = True).times_called(0))
+        patched_password = patch_object('fabric.network', 'prompt_for_password',
+                                        Fake('prompt_for_password', callable=True).times_called(0))
         try:
             connect('user', 'localhost', 22, HostConnectionCache())
         finally:

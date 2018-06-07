@@ -3,7 +3,6 @@ from __future__ import with_statement
 import os
 import six
 
-from fabric.api import hide, get
 from fabric.contrib.files import upload_template, contains
 from fabric.context_managers import hide, lcd
 from fabric.operations import get
@@ -72,7 +71,7 @@ class TestContrib(FabricTest):
         """
         with hide('everything'):
             result = contains('/file.txt', 'text', use_sudo=True)
-            assert result == False
+            assert result is False
 
     @server(responses={
         r'egrep "Include other\\.conf" /etc/apache2/apache2.conf': "Include other.conf"
@@ -84,7 +83,7 @@ class TestContrib(FabricTest):
         with hide('everything'):
             result = contains('/etc/apache2/apache2.conf', 'Include other.conf',
                               use_sudo=True)
-            assert result == True
+            assert result is True
 
     @server(responses={
         r'egrep -i "include Other\\.CONF" /etc/apache2/apache2.conf': "Include other.conf"
@@ -98,7 +97,7 @@ class TestContrib(FabricTest):
                               'include Other.CONF',
                               use_sudo=True,
                               case_sensitive=False)
-            assert result == True
+            assert result is True
 
     @server()
     def test_upload_template_handles_jinja_template(self):

@@ -21,6 +21,7 @@ before_script:
   - eval $(ssh-agent)
   - ssh-add
 script:
+  - flake8
   # Normal tests
   - fab test
   # Integration tests

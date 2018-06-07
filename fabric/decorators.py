@@ -171,7 +171,7 @@ def parallel(pool_size=None):
 
     .. versionadded:: 1.3
     """
-    called_without_args = type(pool_size) == types.FunctionType
+    called_without_args = isinstance(pool_size, types.FunctionType)
 
     def real_decorator(func):
         @wraps(func)

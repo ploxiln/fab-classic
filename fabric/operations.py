@@ -210,10 +210,12 @@ def prompt(text, key=None, default='', validate=None):
     value = None
     while value is None:
         # Get input
+        # WARNING: do not use six.moves.input, because test cases to not
+        # overwrite that method with a faked method from Fudge
         if six.PY3 is True:
-            value = input(prompt_str) or default
+            value = input(prompt_str) or default  # noqa: F821
         else:
-            value = raw_input(prompt_str) or default
+            value = raw_input(prompt_str) or default  # noqa: F821
         # Handle validation
         if validate:
             # Callable

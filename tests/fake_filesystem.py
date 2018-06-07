@@ -40,7 +40,7 @@ class FakeFile(six.StringIO):
 
     def __cmp__(self, other):
         me = str(self) if isinstance(other, six.string_types) else self
-        return cmp(me, other)
+        return cmp(me, other)  # noqa: F821
 
 
 class FakeFilesystem(dict):

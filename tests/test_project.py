@@ -174,4 +174,3 @@ class UploadProjectTestCase(unittest.TestCase):
 
         # Exercise
         project.upload_project(local_dir=local_dir, remote_dir=remote_path)
-
