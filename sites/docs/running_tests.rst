@@ -21,7 +21,7 @@ First-time Setup
 * ``cd fabric``
 * ``virtualenv env``
 * ``. env/bin/activate``
-* ``pip install -r requirements.txt``
+* ``pip install -r dev_requirements.txt``
 * ``python setup.py develop``
 
 .. _`repository`: https://github.com/fabric/fabric
