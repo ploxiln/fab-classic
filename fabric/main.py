@@ -650,6 +650,7 @@ def main(fabfile_locations=None):
         if options.show_version:
             print("fab-classic %s" % state.env.version)
             print("Paramiko %s" % ssh.__version__)
+            print("Python %d.%d.%d" % sys.version_info[:3])
             sys.exit(0)
 
         # Load settings from user settings file, into shared env dict.
