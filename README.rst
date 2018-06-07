@@ -12,7 +12,7 @@ consider Fabric-2.x from http://www.fabfile.org/ or maybe Ansible or something e
 
 ------
 
-fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_, so you can: `pip install fab-classic`
+fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_, so you can ``pip install fab-classic``
 
 .. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
     :target: https://travis-ci.org/ploxiln/fab-classic
@@ -21,7 +21,7 @@ Changelog: https://github.com/ploxiln/fab-classic/releases
 
 API Documentation: http://docs.fabfile.org/en/1.14/
 
-For a quick command reference, run ``fab --help``.
+For a quick command reference, run ``fab --help``
 
 ------
 
