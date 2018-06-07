@@ -25,7 +25,7 @@ script:
   # Normal tests
   - fab test
   # Integration tests
-  - fab -H localhost test:"--tests\=integration"
+  - fab -H localhost test:integration
   # Build docs; www first without warnings so its intersphinx objects file
   # generates. Then docs (with warnings->errors), then www again (also w/
   # warnings on.) FUN TIMES WITH CIRCULAR DEPENDENCIES.
