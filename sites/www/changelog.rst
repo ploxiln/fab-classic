@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* :bug:`1227` Remove a bash/zsh-ism from
+  `~fabric.contrib.files.upload_template` when backing up the target file,
+  preventing issues on simpler remote shells. Patch courtesy of Paul
+  Chakravarti.
 * :support:`- backported` Update packaging metadata so wheel archives include
   the ``LICENSE`` file.
 * :release:`1.14.0 <2017-08-25>`

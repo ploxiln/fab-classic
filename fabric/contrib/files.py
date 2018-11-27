@@ -160,7 +160,8 @@ def upload_template(filename, destination, context=None, use_jinja=False,
 
     # Back up original file
     if backup and exists(destination):
-        func("cp %s{,.bak}" % destination.replace(' ', r'\ '))
+        target = destination.replace(' ', r'\ ')
+        func("cp %s %s.bak" % (target, target))
 
     if six.PY3 is True and isinstance(text, bytes):
         text = text.decode('utf-8')
