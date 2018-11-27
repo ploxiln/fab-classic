@@ -1,13 +1,10 @@
-dist: trusty
-sudo: required
+dist: xenial
 language: python
 python:
   - "2.7"
   - "3.4"
   - "3.6"
-branches:
-  only:
-  - master
+  - "3.7"
 install:
   # Build/test dependencies
   - pip install -r dev-requirements.txt
@@ -26,5 +23,8 @@ script:
   - fab test
   # Integration tests
   - fab -H localhost test:integration
+branches:
+  only:
+  - master
 notifications:
   email: false
