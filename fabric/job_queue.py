@@ -194,7 +194,7 @@ class JobQueue(object):
                 break
 
 
-#### Sample
+# Sample
 
 def try_using(parallel_type):
     """

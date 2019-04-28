@@ -138,7 +138,7 @@ def test_puts_with_encoding_type_none_output():
     """
     s = u"string!"
     output.user = True
-    #sys.stdout.encoding = None
+    # sys.stdout.encoding = None
     puts(s, show_prefix=False)
     eq_(sys.stdout.getvalue(), s + "\n")
 

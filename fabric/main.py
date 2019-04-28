@@ -250,8 +250,8 @@ def is_task_module(a):
     """
     Determine if the provided value is a task module
     """
-    #return (type(a) is types.ModuleType and
-    #        any(map(is_task_object, vars(a).values())))
+    # return (type(a) is types.ModuleType and
+    #         any(map(is_task_object, vars(a).values())))
     if isinstance(a, types.ModuleType) and a not in _seen:
         # Flag module as seen
         _seen.add(a)
