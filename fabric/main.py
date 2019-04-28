@@ -195,7 +195,7 @@ def load_tasks_from_module(imported):
     # Obey the use of <module>.__all__ if it is present
     imported_vars = vars(imported)
     if "__all__" in imported_vars:
-        imported_vars = [(name, imported_vars[name]) for name in \
+        imported_vars = [(name, imported_vars[name]) for name in
                          imported_vars if name in imported_vars["__all__"]]
     else:
         imported_vars = list(imported_vars.items())
@@ -726,8 +726,7 @@ Remember that -f can be used to specify fabfile path, and use -h for help.""")
 
         # Abort if any unknown commands were specified
         if unknown_commands and not state.env.get('skip_unknown_tasks', False):
-            warn("Command(s) not found:\n%s" \
-                % indent(unknown_commands))
+            warn("Command(s) not found:\n%s" % indent(unknown_commands))
             show_commands(None, options.list_format, 1)
 
         # Generate remainder command and insert into commands, commands_to_run

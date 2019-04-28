@@ -501,9 +501,8 @@ def connect(user, host, port, cache, seek_gateway=True):
             #
             # If we are using a gateway, we will get a ChannelException if
             # connection to the downstream host fails. We should retry.
-            if (e.__class__ is ssh.SSHException \
-                and msg == 'Error reading SSH protocol banner') \
-                or e.__class__ is ssh.ChannelException:
+            if (e.__class__ is ssh.SSHException and msg == 'Error reading SSH protocol banner') \
+               or e.__class__ is ssh.ChannelException:
                 if _tried_enough(tries):
                     raise NetworkError(msg, e)
                 continue
