@@ -42,7 +42,7 @@ def _shell_escape(string):
         '\\\\"'
     """
     for char in ('"', '$', '`'):
-        string = string.replace(char, '\%s' % char)
+        string = string.replace(char, r'\%s' % char)
     return string
 
 
@@ -93,9 +93,10 @@ def require(*keys, **kwargs):
         Allow iterable ``provided_by`` values instead of just single values.
     """
     # If all keys exist and are non-empty, we're good, so keep going.
-    missing_keys = filter(lambda x: x not in env or (x in env and
-        isinstance(env[x], (dict, list, tuple, set)) and not env[x]), keys)
-    missing_keys = list(missing_keys)
+    missing_keys = [
+        k for k in keys
+        if k not in env or (isinstance(env[k], (dict, list, tuple, set)) and not env[k])
+    ]
     if not missing_keys:
         return
     # Pluralization
@@ -135,7 +136,7 @@ def require(*keys, **kwargs):
 
 
 def prompt(text, key=None, default='', validate=None):
-    """
+    r"""
     Prompt user with ``text`` and return the input (like ``raw_input``).
 
     A single space character will be appended for convenience, but nothing

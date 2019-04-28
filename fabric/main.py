@@ -504,7 +504,7 @@ def display_command(name):
 
 
 def _escape_split(sep, argstr):
-    """
+    r"""
     Allows for escaping of the separator: e.g. task:arg='foo\, bar'
 
     It should be noted that the way bash et. al. do command line parsing, those

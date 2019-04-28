@@ -291,4 +291,4 @@ class TestErrorHandling(FabricTest):
         with settings(colorize_errors=True):
             error("oh god", func=utils.abort, stderr="oops")
         # can't use assert_contains as ANSI codes contain regex specialchars
-        eq_(red("\Error: oh god\n\n"), sys.stderr.getvalue())
+        eq_(red("\\Error: oh god\n\n"), sys.stderr.getvalue())

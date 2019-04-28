@@ -419,7 +419,7 @@ def test_load_fabfile_should_not_remove_real_path_elements():
         ('subdir/fabfile.py', ['subdir', 'not_subdir']),
         ('fabfile.py', ['', 'some_dir', 'some_other_dir']),
     ):
-            yield run_load_fabfile, fabfile_path, sys_dot_path
+        yield run_load_fabfile, fabfile_path, sys_dot_path
 
 
 #

@@ -58,7 +58,8 @@ def _rc_path():
     rc_file = '.fabricrc'
     rc_path = '~/' + rc_file
     expanded_rc_path = os.path.expanduser(rc_path)
-    if expanded_rc_path == rc_path and win32:
+    if expanded_rc_path == rc_path:
+        if win32:
             from win32com.shell.shell import SHGetSpecialFolderPath
             from win32com.shell.shellcon import CSIDL_PROFILE
             expanded_rc_path = "%s/%s" % (
