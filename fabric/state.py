@@ -65,7 +65,7 @@ def _rc_path():
             expanded_rc_path = "%s/%s" % (
                 SHGetSpecialFolderPath(0, CSIDL_PROFILE),
                 rc_file
-                )
+            )
     return expanded_rc_path
 
 

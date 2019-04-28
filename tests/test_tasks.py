@@ -547,7 +547,7 @@ class TestTaskDetails(unittest.TestCase):
         expected = "\n".join([
             "Docstring",
             "Arguments: arg1",
-            ])
+        ])
 
         @task
         def decorated_task(arg1):

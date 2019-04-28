@@ -18,36 +18,17 @@ class UploadProjectTestCase(unittest.TestCase):
         # We need to mock out run, local, and put
 
         self.fake_run = fudge.Fake('project.run', callable=True)
-        self.patched_run = fudge.patch_object(
-                               project,
-                               'run',
-                               self.fake_run
-                           )
+        self.patched_run = fudge.patch_object(project, 'run', self.fake_run)
 
         self.fake_local = fudge.Fake('local', callable=True)
-        self.patched_local = fudge.patch_object(
-                                 project,
-                                 'local',
-                                 self.fake_local
-                             )
+        self.patched_local = fudge.patch_object(project, 'local', self.fake_local)
 
         self.fake_put = fudge.Fake('put', callable=True)
-        self.patched_put = fudge.patch_object(
-                               project,
-                               'put',
-                               self.fake_put
-                           )
+        self.patched_put = fudge.patch_object(project, 'put', self.fake_put)
 
         # We don't want to create temp folders
-        self.fake_mkdtemp = fudge.Fake(
-                                'mkdtemp',
-                                expect_call=True
-                            ).returns(self.fake_tmp)
-        self.patched_mkdtemp = fudge.patch_object(
-                                   project,
-                                   'mkdtemp',
-                                   self.fake_mkdtemp
-                               )
+        self.fake_mkdtemp = fudge.Fake('mkdtemp', expect_call=True).returns(self.fake_tmp)
+        self.patched_mkdtemp = fudge.patch_object(project, 'mkdtemp', self.fake_mkdtemp)
 
     def tearDown(self):
         self.patched_run.restore()

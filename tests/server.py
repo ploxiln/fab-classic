@@ -455,14 +455,8 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
     return SSHServer((HOST, port), SSHHandler)
 
 
-def server(
-        responses=RESPONSES,
-        files=FILES,
-        passwords=PASSWORDS,
-        home=HOME,
-        pubkeys=False,
-        port=PORT
-    ):
+def server(responses=RESPONSES, files=FILES,
+           passwords=PASSWORDS, home=HOME, pubkeys=False, port=PORT):
     """
     Returns a decorator that runs an SSH server during function execution.
 

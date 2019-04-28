@@ -407,9 +407,9 @@ class TestNetwork(FabricTest):
 [%(prefix)s] sudo: oneliner
 [%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: Sorry, try again.
 [%(prefix)s] out: sudo password: """ % {
-    'prefix': env.host_string,
-    'user': env.user
-}
+                'prefix': env.host_string,
+                'user': env.user
+            }
         eq_(expected[1:], sys.stdall.getvalue())
 
     @mock_streams('both')
