@@ -247,15 +247,13 @@ def _execute(task, host, my_env, args, kwargs, jobs, queue, multiprocessing):
                 # clear what host encountered the exception that will
                 # print.
                 if e.__class__ is not SystemExit:
-                    if not (isinstance(e, NetworkError) and
-                            _is_network_error_ignored()):
+                    if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
                         sys.stderr.write("!!! Parallel execution exception under host %r:\n" % name)
                     submit(e)
                 # Here, anything -- unexpected exceptions, or abort()
                 # driven SystemExits -- will bubble up and terminate the
                 # child process.
-                if not (isinstance(e, NetworkError) and
-                        _is_network_error_ignored()):
+                if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
                     raise
 
         # Stuff into Process wrapper

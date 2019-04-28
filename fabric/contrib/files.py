@@ -179,7 +179,7 @@ def upload_template(filename, destination, context=None, use_jinja=False,
 
 def sed(filename, before, after, limit='', use_sudo=False, backup='.bak',
     flags='', shell=False):
-    """
+    r"""
     Run a search-and-replace on ``filename`` with given regex patterns.
 
     Equivalent to ``sed -i<backup> -r -e "/<limit>/ s/<before>/<after>/<flags>g"

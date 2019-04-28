@@ -298,7 +298,7 @@ def test_shell_escape_escapes_dollar_signs():
     _shell_escape() escapes dollar signs
     """
     cmd = "cd $HOME"
-    eq_(_shell_escape(cmd), 'cd \$HOME')
+    eq_(_shell_escape(cmd), r'cd \$HOME')
 
 
 def test_shell_escape_escapes_backticks():
@@ -306,7 +306,7 @@ def test_shell_escape_escapes_backticks():
     _shell_escape() escapes backticks
     """
     cmd = "touch test.pid && kill `cat test.pid`"
-    eq_(_shell_escape(cmd), "touch test.pid && kill \`cat test.pid\`")
+    eq_(_shell_escape(cmd), r"touch test.pid && kill \`cat test.pid\`")
 
 
 class TestCombineStderr(FabricTest):
