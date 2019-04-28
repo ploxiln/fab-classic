@@ -77,7 +77,6 @@ class TestParallel(FabricTest):
             eq_(result[host1], None)
             assert isinstance(result[host2], OhNoesException)
 
-
     @server(port=2200)
     @server(port=2201)
     def test_parallel_implies_linewise(self):

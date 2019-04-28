@@ -194,7 +194,6 @@ class TestNetwork(FabricTest):
                 # Test
                 ok_(host_string not in hcc)
 
-
     #
     # Connection loop flow
     #
@@ -211,7 +210,6 @@ class TestNetwork(FabricTest):
             cache = HostConnectionCache()
             cache[env.host_string]
 
-
     @aborts
     def test_aborts_on_prompt_with_abort_on_prompt(self):
         """
@@ -219,7 +217,6 @@ class TestNetwork(FabricTest):
         """
         env.abort_on_prompts = True
         prompt("This will abort")
-
 
     @server()
     @aborts
@@ -268,7 +265,6 @@ class TestNetwork(FabricTest):
             patched_connect.restore()
             patched_password.restore()
 
-
     @mock_streams('stdout')
     @server()
     def test_does_not_abort_with_password_and_host_with_abort_on_prompt(self):
@@ -279,7 +275,6 @@ class TestNetwork(FabricTest):
         env.password = PASSWORDS[env.user]
         # env.host_string is automatically filled in when using server()
         run("ls /simple")
-
 
     @mock_streams('stdout')
     @server()

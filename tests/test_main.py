@@ -85,7 +85,6 @@ def test_escaped_task_kwarg_split():
     )
 
 
-
 #
 # Host/role decorators
 #
@@ -102,7 +101,9 @@ def eq_effective_roles(command, expected_effective_roles, cli_roles=None, env=No
     eq_(func(get_hosts_and_effective_roles(command, [], cli_roles or [], [], env)[1]),
         func(expected_effective_roles))
 
+
 true_eq_hosts = partial(eq_hosts, func=lambda x: x)
+
 
 def test_hosts_decorator_by_itself():
     """
@@ -326,7 +327,6 @@ def test_get_hosts_excludes_cli_exclude_hosts_from_decorator_hosts():
 def test_get_hosts_excludes_global_exclude_hosts_from_global_hosts():
     fake_env = {'hosts': ['foo', 'bar'], 'exclude_hosts': ['foo']}
     eq_hosts(dummy, ['bar'], env=fake_env)
-
 
 
 #

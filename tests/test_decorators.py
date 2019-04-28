@@ -33,8 +33,6 @@ def fake_function(*args, **kwargs):
     return Fake(*args, **kwargs).has_attr(__name__='fake')
 
 
-
-#
 # @task
 #
 
@@ -113,7 +111,6 @@ def test_original_non_invoked_style_task():
     eq_(r, foo())
 
 
-
 #
 # @runs_once
 #
@@ -150,7 +147,6 @@ def test_runs_once():
     assert_equal(None, single_run())
 
 
-
 #
 # @serial / @parallel
 #
@@ -178,6 +174,7 @@ def parallel():
 def parallel2():
     pass
 
+
 fake_tasks = {
     'serial': serial,
     'serial2': serial2,
@@ -185,6 +182,7 @@ fake_tasks = {
     'parallel': parallel,
     'parallel2': parallel2,
 }
+
 
 def parallel_task_helper(actual_tasks, expected):
     commands_to_run = map(lambda x: [x], actual_tasks)
@@ -241,7 +239,6 @@ def test_roles():
     assert_equal(use_roles.roles, ['test'])
 
 
-
 #
 # @hosts
 #
@@ -253,7 +250,6 @@ def use_hosts():
 def test_hosts():
     assert_true(hasattr(use_hosts, 'hosts'))
     assert_equal(use_hosts.hosts, ['test'])
-
 
 
 #

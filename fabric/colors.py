@@ -44,6 +44,7 @@ def _wrap_with(code):
         return "\033[%sm%s\033[0m" % (c, text)
     return inner
 
+
 red = _wrap_with('31')
 green = _wrap_with('32')
 yellow = _wrap_with('33')

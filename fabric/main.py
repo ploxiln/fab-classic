@@ -59,6 +59,7 @@ class _ModuleCache(object):
     def clear(self):
         return self.cache.clear()
 
+
 _seen = _ModuleCache()
 
 
@@ -446,6 +447,7 @@ def _nested_list(mapping, level=1):
         # Recurse
         result.extend(_nested_list(module, level + 1))
     return result
+
 
 COMMANDS_HEADER = "Available commands"
 NESTED_REMINDER = " (remember to call as module.[...].task)"

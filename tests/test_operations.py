@@ -990,7 +990,6 @@ class TestFileTransfers(FabricTest):
                     # check that the downloaded file has the same name as the one requested
                     assert retval[0].endswith('foobar.txt')
 
-
     #
     # Interactions with cd()
     #

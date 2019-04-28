@@ -157,7 +157,6 @@ def test_decorator_closure_hiding():
     eq_(["me@localhost"], foo.hosts)
 
 
-
 #
 # execute()
 #
