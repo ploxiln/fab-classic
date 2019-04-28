@@ -9,10 +9,8 @@ from `Fabric3 <https://github.com/mathiasertl/fabric/>`_.
 
 Upstream Fabric is now on version 2.x. Fabric-2.x is python3 compatible,
 and comes *after* Fabric3. Fabric-2.x has significant compatibility-breaking
-changes, in order to fix some long-standing limitations.
-
-You probably should not use this for new projects, in that case you should
-consider Fabric-2.x - see http://www.fabfile.org/
+changes, in order to fix some long-standing limitations. It makes some common
+"easy" use-cases more difficult, and porting to it can be a large task.
 
 ------
 
