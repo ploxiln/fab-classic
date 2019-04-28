@@ -487,7 +487,10 @@ def connect(user, host, port, cache, seek_gateway=True):
         # command line results in the big banner error about man-in-the-middle
         # attacks.
         except ssh.BadHostKeyException as e:
-            raise NetworkError("Host key for %s did not match pre-existing key! Server's key was changed recently, or possible man-in-the-middle attack." % host, e)
+            raise NetworkError(
+                ("Host key for %s did not match pre-existing key!"
+                 " Server's key was changed recently,"
+                 " or possible man-in-the-middle attack.") % host, e)
         # Prompt for new password to try on auth failure
         except (
             ssh.AuthenticationException,
