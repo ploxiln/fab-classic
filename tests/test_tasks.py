@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 from fudge import Fake, patched_context, with_fakes
 import unittest
 from nose.tools import raises, ok_
@@ -30,7 +28,9 @@ class TestWrappedCallableTask(unittest.TestCase):
     def test_passes_unused_args_to_parent(self):
         args = [i for i in range(random.randint(1, 10))]
 
-        def foo(): pass
+        def foo():
+            pass
+
         try:
             WrappedCallableTask(foo, *args)
         except TypeError:
@@ -41,7 +41,9 @@ class TestWrappedCallableTask(unittest.TestCase):
         random_range = range(random.randint(1, 10))
         kwargs = dict([("key_%s" % i, i) for i in random_range])
 
-        def foo(): pass
+        def foo():
+            pass
+
         try:
             WrappedCallableTask(foo, **kwargs)
         except TypeError:
@@ -50,44 +52,63 @@ class TestWrappedCallableTask(unittest.TestCase):
 
     def test_allows_any_number_of_args(self):
         args = [i for i in range(random.randint(0, 10))]
-        def foo(): pass
+
+        def foo():
+            pass
+
         WrappedCallableTask(foo, *args)
 
     def test_allows_any_number_of_kwargs(self):
         kwargs = dict([("key%d" % i, i) for i in range(random.randint(0, 10))])
-        def foo(): pass
+
+        def foo():
+            pass
+
         WrappedCallableTask(foo, **kwargs)
 
     def test_run_is_wrapped_callable(self):
-        def foo(): pass
+        def foo():
+            pass
+
         task = WrappedCallableTask(foo)
         eq_(task.wrapped, foo)
 
     def test_name_is_the_name_of_the_wrapped_callable(self):
-        def foo(): pass
+        def foo():
+            pass
+
         foo.__name__ = "random_name_%d" % random.randint(1000, 2000)
         task = WrappedCallableTask(foo)
         eq_(task.name, foo.__name__)
 
     def test_name_can_be_overridden(self):
-        def foo(): pass
+        def foo():
+            pass
+
         eq_(WrappedCallableTask(foo).name, 'foo')
         eq_(WrappedCallableTask(foo, name='notfoo').name, 'notfoo')
 
     def test_reads_double_under_doc_from_callable(self):
-        def foo(): pass
+        def foo():
+            pass
+
         foo.__doc__ = "Some random __doc__: %d" % random.randint(1000, 2000)
         task = WrappedCallableTask(foo)
         eq_(task.__doc__, foo.__doc__)
 
     def test_dispatches_to_wrapped_callable_on_run(self):
         random_value = "some random value %d" % random.randint(1000, 2000)
-        def foo(): return random_value
+
+        def foo():
+            return random_value
+
         task = WrappedCallableTask(foo)
         eq_(random_value, task())
 
     def test_passes_all_regular_args_to_run(self):
-        def foo(*args): return args
+        def foo(*args):
+            return args
+
         random_args = tuple(
             [random.randint(1000, 2000) for i in range(random.randint(1, 5))]
         )
@@ -95,7 +116,9 @@ class TestWrappedCallableTask(unittest.TestCase):
         eq_(random_args, task(*random_args))
 
     def test_passes_all_keyword_args_to_run(self):
-        def foo(**kwargs): return kwargs
+        def foo(**kwargs):
+            return kwargs
+
         random_kwargs = {}
         for i in range(random.randint(1, 5)):
             random_key = ("foo", "bar", "baz", "foobar", "barfoo")[i]
@@ -105,7 +128,10 @@ class TestWrappedCallableTask(unittest.TestCase):
 
     def test_calling_the_object_is_the_same_as_run(self):
         random_return = random.randint(1000, 2000)
-        def foo(): return random_return
+
+        def foo():
+            return random_return
+
         task = WrappedCallableTask(foo)
         eq_(task(), task.run())
 
@@ -138,9 +164,11 @@ class TestTask(unittest.TestCase):
 
 def test_decorator_incompatibility_on_task():
     from fabric.decorators import task, hosts, runs_once, roles
-    def foo(): return "foo"
-    foo = task(foo)
 
+    def foo():
+        return "foo"
+
+    foo = task(foo)
     # since we aren't setting foo to be the newly decorated thing, its cool
     hosts('me@localhost')(foo)
     runs_once(foo)
@@ -151,11 +179,12 @@ def test_decorator_closure_hiding():
     @task should not accidentally destroy decorated attributes from @hosts/etc
     """
     from fabric.decorators import task, hosts
+
     def foo():
         print(env.host_string)
+
     foo = task(hosts("me@localhost")(foo))
     eq_(["me@localhost"], foo.hosts)
-
 
 
 #
@@ -548,7 +577,7 @@ class TestTaskDetails(unittest.TestCase):
         expected = "\n".join([
             "Docstring",
             "Arguments: arg1",
-            ])
+        ])
 
         @task
         def decorated_task(arg1):

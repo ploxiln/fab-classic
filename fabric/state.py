@@ -65,11 +65,13 @@ def _rc_path():
             expanded_rc_path = "%s/%s" % (
                 SHGetSpecialFolderPath(0, CSIDL_PROFILE),
                 rc_file
-                )
+            )
     return expanded_rc_path
+
 
 default_port = '22'  # hurr durr
 default_ssh_config_path = os.path.join(os.path.expanduser('~'), '.ssh', 'config')
+
 
 # Options/settings which exist both as environment keys and which can be set on
 # the command line, are defined here. When used via `fab` they will be added to

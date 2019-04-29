@@ -146,8 +146,7 @@ class JobQueue(object):
                 for id, job in enumerate(self._running):
                     if not job.is_alive():
                         if self._debug:
-                            print("Job queue found finished proc: %s." %
-                                    job.name)
+                            print("Job queue found finished proc: %s." % job.name)
                         done = self._running.pop(id)
                         self._completed.append(done)
 
@@ -195,7 +194,7 @@ class JobQueue(object):
                 break
 
 
-#### Sample
+# Sample
 
 def try_using(parallel_type):
     """
@@ -226,7 +225,7 @@ def try_using(parallel_type):
             target=print_number,
             args=[x],
             kwargs={},
-            ))
+        ))
 
     # Close up the queue and then start it's execution
     jobs.close()

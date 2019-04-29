@@ -424,7 +424,7 @@ def append(filename, text, use_sudo=False, partial=False, escape=True,
     if isinstance(text, six.string_types):
         text = [text]
     for line in text:
-        regex = '^' + _escape_for_regex(line)  + ('' if partial else '$')
+        regex = '^' + _escape_for_regex(line) + ('' if partial else '$')
         if (exists(filename, use_sudo=use_sudo) and line
             and contains(filename, regex, use_sudo=use_sudo, escape=False,
                          shell=shell)):

@@ -98,6 +98,7 @@ def get_version(form='short'):
             return versions
         raise TypeError('"%s" is not a valid form specifier.' % form)
 
+
 __version__ = get_version('short')
 
 if __name__ == "__main__":

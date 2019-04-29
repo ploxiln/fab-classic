@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import os
 import re
 import shutil
@@ -989,7 +987,6 @@ class TestFileTransfers(FabricTest):
                     retval = put(local_path, "/", use_sudo=True, temp_dir='/tmp/')
                     # check that the downloaded file has the same name as the one requested
                     assert retval[0].endswith('foobar.txt')
-
 
     #
     # Interactions with cd()

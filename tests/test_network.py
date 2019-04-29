@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import sys
 
 from nose.tools import ok_, raises
@@ -194,7 +192,6 @@ class TestNetwork(FabricTest):
                 # Test
                 ok_(host_string not in hcc)
 
-
     #
     # Connection loop flow
     #
@@ -211,7 +208,6 @@ class TestNetwork(FabricTest):
             cache = HostConnectionCache()
             cache[env.host_string]
 
-
     @aborts
     def test_aborts_on_prompt_with_abort_on_prompt(self):
         """
@@ -219,7 +215,6 @@ class TestNetwork(FabricTest):
         """
         env.abort_on_prompts = True
         prompt("This will abort")
-
 
     @server()
     @aborts
@@ -268,7 +263,6 @@ class TestNetwork(FabricTest):
             patched_connect.restore()
             patched_password.restore()
 
-
     @mock_streams('stdout')
     @server()
     def test_does_not_abort_with_password_and_host_with_abort_on_prompt(self):
@@ -279,7 +273,6 @@ class TestNetwork(FabricTest):
         env.password = PASSWORDS[env.user]
         # env.host_string is automatically filled in when using server()
         run("ls /simple")
-
 
     @mock_streams('stdout')
     @server()
@@ -412,9 +405,9 @@ class TestNetwork(FabricTest):
 [%(prefix)s] sudo: oneliner
 [%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: Sorry, try again.
 [%(prefix)s] out: sudo password: """ % {
-    'prefix': env.host_string,
-    'user': env.user
-}
+                'prefix': env.host_string,
+                'user': env.user
+            }
         eq_(expected[1:], sys.stdall.getvalue())
 
     @mock_streams('both')

@@ -12,44 +12,23 @@ class UploadProjectTestCase(unittest.TestCase):
 
     fake_tmp = "testtempfolder"
 
-
     def setUp(self):
         fudge.clear_expectations()
 
         # We need to mock out run, local, and put
 
         self.fake_run = fudge.Fake('project.run', callable=True)
-        self.patched_run = fudge.patch_object(
-                               project,
-                               'run',
-                               self.fake_run
-                           )
+        self.patched_run = fudge.patch_object(project, 'run', self.fake_run)
 
         self.fake_local = fudge.Fake('local', callable=True)
-        self.patched_local = fudge.patch_object(
-                                 project,
-                                 'local',
-                                 self.fake_local
-                             )
+        self.patched_local = fudge.patch_object(project, 'local', self.fake_local)
 
         self.fake_put = fudge.Fake('put', callable=True)
-        self.patched_put = fudge.patch_object(
-                               project,
-                               'put',
-                               self.fake_put
-                           )
+        self.patched_put = fudge.patch_object(project, 'put', self.fake_put)
 
         # We don't want to create temp folders
-        self.fake_mkdtemp = fudge.Fake(
-                                'mkdtemp',
-                                expect_call=True
-                            ).returns(self.fake_tmp)
-        self.patched_mkdtemp = fudge.patch_object(
-                                   project,
-                                   'mkdtemp',
-                                   self.fake_mkdtemp
-                               )
-
+        self.fake_mkdtemp = fudge.Fake('mkdtemp', expect_call=True).returns(self.fake_tmp)
+        self.patched_mkdtemp = fudge.patch_object(project, 'mkdtemp', self.fake_mkdtemp)
 
     def tearDown(self):
         self.patched_run.restore()
@@ -58,14 +37,12 @@ class UploadProjectTestCase(unittest.TestCase):
 
         fudge.clear_expectations()
 
-
     @fudge.with_fakes
     def test_temp_folder_is_used(self):
         """A unique temp folder is used for creating the archive to upload."""
 
         # Exercise
         project.upload_project()
-
 
     @fudge.with_fakes
     def test_project_is_archived_locally(self):
@@ -77,7 +54,6 @@ class UploadProjectTestCase(unittest.TestCase):
 
         # Exercise
         project.upload_project()
-
 
     @fudge.with_fakes
     def test_current_directory_is_uploaded_by_default(self):
@@ -94,7 +70,6 @@ class UploadProjectTestCase(unittest.TestCase):
         # Exercise
         project.upload_project()
 
-
     @fudge.with_fakes
     def test_path_to_local_project_can_be_specified(self):
         """It should be possible to specify which local folder to upload."""
@@ -109,7 +84,6 @@ class UploadProjectTestCase(unittest.TestCase):
 
         # Exercise
         project.upload_project(local_dir=project_path)
-
 
     @fudge.with_fakes
     def test_path_to_local_project_no_separator(self):
@@ -126,7 +100,6 @@ class UploadProjectTestCase(unittest.TestCase):
         # Exercise
         project.upload_project(local_dir=project_path)
 
-
     @fudge.with_fakes
     def test_path_to_local_project_can_end_in_separator(self):
         """A local path ending in a separator should be handled correctly."""
@@ -142,7 +115,6 @@ class UploadProjectTestCase(unittest.TestCase):
 
         # Exercise
         project.upload_project(local_dir="%s/%s/" % (project_path, base))
-
 
     @fudge.with_fakes
     def test_default_remote_folder_is_home(self):

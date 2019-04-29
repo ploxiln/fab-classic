@@ -37,11 +37,11 @@ def test_argument_parsing():
         # Arg
         ('ab:c', ('ab', ['c'], {}, [], [], [])),
         # Kwarg
-        ('a:b=c', ('a', [], {'b':'c'}, [], [], [])),
+        ('a:b=c', ('a', [], {'b': 'c'}, [], [], [])),
         # Arg and kwarg
-        ('a:b=c,d', ('a', ['d'], {'b':'c'}, [], [], [])),
+        ('a:b=c,d', ('a', ['d'], {'b': 'c'}, [], [], [])),
         # Multiple kwargs
-        ('a:b=c,d=e', ('a', [], {'b':'c','d':'e'}, [], [], [])),
+        ('a:b=c,d=e', ('a', [], {'b': 'c', 'd': 'e'}, [], [], [])),
         # Host
         ('abc:host=foo', ('abc', [], {}, ['foo'], [], [])),
         # Hosts with single host
@@ -53,7 +53,7 @@ def test_argument_parsing():
 
         # Exclude hosts
         ('abc:hosts=foo;bar,exclude_hosts=foo', ('abc', [], {}, ['foo', 'bar'], [], ['foo'])),
-        ('abc:hosts=foo;bar,exclude_hosts=foo;bar', ('abc', [], {}, ['foo', 'bar'], [], ['foo','bar'])),
+        ('abc:hosts=foo;bar,exclude_hosts=foo;bar', ('abc', [], {}, ['foo', 'bar'], [], ['foo', 'bar'])),
         # Empty string args
         ("task:x=y,z=", ('task', [], {'x': 'y', 'z': ''}, [], [], [])),
         ("task:foo,,x=y", ('task', ['foo', ''], {'x': 'y'}, [], [], [])),
@@ -85,7 +85,6 @@ def test_escaped_task_kwarg_split():
     )
 
 
-
 #
 # Host/role decorators
 #
@@ -102,7 +101,9 @@ def eq_effective_roles(command, expected_effective_roles, cli_roles=None, env=No
     eq_(func(get_hosts_and_effective_roles(command, [], cli_roles or [], [], env)[1]),
         func(expected_effective_roles))
 
+
 true_eq_hosts = partial(eq_hosts, func=lambda x: x)
+
 
 def test_hosts_decorator_by_itself():
     """
@@ -312,7 +313,8 @@ def test_roles_decorator_expands_single_iterable():
 # Host exclusion
 #
 
-def dummy(): pass
+def dummy():
+    pass
 
 def test_get_hosts_excludes_cli_exclude_hosts_from_cli_hosts():
     eq_hosts(dummy, ['bar'], cli_hosts=['foo', 'bar'], excluded_hosts=['foo'])
@@ -326,7 +328,6 @@ def test_get_hosts_excludes_cli_exclude_hosts_from_decorator_hosts():
 def test_get_hosts_excludes_global_exclude_hosts_from_global_hosts():
     fake_env = {'hosts': ['foo', 'bar'], 'exclude_hosts': ['foo']}
     eq_hosts(dummy, ['bar'], env=fake_env)
-
 
 
 #
@@ -369,7 +370,7 @@ class TestFindFabfile(FabricTest):
         """Fabric should be capable of loading a normal package."""
         path = self.mkfile("__init__.py", "")
         name = os.path.dirname(path)
-        assert find_fabfile([name,]) is not None
+        assert find_fabfile([name]) is not None
 
     def test_find_fabfile_can_discovery_package_with_pyc_only(self):
         """
@@ -377,13 +378,13 @@ class TestFindFabfile(FabricTest):
         """
         path = self.mkfile("__init__.pyc", "")
         name = os.path.dirname(path)
-        assert find_fabfile([name,]) is not None
+        assert find_fabfile([name]) is not None
 
     def test_find_fabfile_should_refuse_fake_package(self):
         """Fabric should refuse to load a non-package directory."""
         path = self.mkfile("foo.py", "")
         name = os.path.dirname(path)
-        assert find_fabfile([name,]) is None
+        assert find_fabfile([name]) is None
 
 
 #

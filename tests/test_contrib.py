@@ -57,7 +57,6 @@ class TestContrib(FabricTest):
             get(remote, local)
         eq_contents(local, var)
 
-
     @server(responses={
         'egrep "text" "/file.txt"': (
             "sudo: unable to resolve host fabric",
@@ -129,7 +128,6 @@ class TestContrib(FabricTest):
                 upload_template(fname, '/configfile.txt', {}, use_jinja=True)
         finally:
             os.remove(fname)
-
 
     def test_upload_template_obeys_lcd(self):
         for jinja in (True, False):

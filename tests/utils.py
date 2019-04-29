@@ -127,6 +127,7 @@ def _assert_contains(needle, haystack, invert):
             haystack
         ))
 
+
 assert_contains = partial(_assert_contains, invert=False)
 assert_not_contains = partial(_assert_contains, invert=True)
 
@@ -173,6 +174,7 @@ def eq_contents(path, text):
 def support(path):
     return os.path.join(os.path.dirname(__file__), 'support', path)
 
+
 fabfile = support
 
 
@@ -193,5 +195,7 @@ def _patched_input(func, fake):
         return func(sys.modules['builtins'], 'input', fake)
     else:
         return func(sys.modules['__builtin__'], 'raw_input', fake)
+
+
 patched_input = partial(_patched_input, patched_context)
 with_patched_input = partial(_patched_input, with_patched_object)

@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import os
 import re
 import six
@@ -75,6 +73,7 @@ PASSWORDS = {
 
 def _local_file(filename):
     return os.path.join(os.path.dirname(__file__), filename)
+
 
 SERVER_PRIVKEY = _local_file('private.key')
 CLIENT_PUBKEY = _local_file('client.key.pub')
@@ -454,14 +453,8 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
     return SSHServer((HOST, port), SSHHandler)
 
 
-def server(
-        responses=RESPONSES,
-        files=FILES,
-        passwords=PASSWORDS,
-        home=HOME,
-        pubkeys=False,
-        port=PORT
-    ):
+def server(responses=RESPONSES, files=FILES,
+           passwords=PASSWORDS, home=HOME, pubkeys=False, port=PORT):
     """
     Returns a decorator that runs an SSH server during function execution.
 
