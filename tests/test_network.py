@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import sys
 
 from nose.tools import ok_, raises

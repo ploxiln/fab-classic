@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 from fudge import Fake, patched_context, with_fakes
 import unittest
 from nose.tools import raises, ok_

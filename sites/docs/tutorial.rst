@@ -243,7 +243,6 @@ handling to occur.
 Let's flip this setting on for our ``test`` function, and then inspect the
 result of the `~fabric.operations.local` call ourselves::
 
-    from __future__ import with_statement
     from fabric.api import local, settings, abort
     from fabric.contrib.console import confirm
 
@@ -257,7 +256,6 @@ result of the `~fabric.operations.local` call ourselves::
 
 In adding this new feature we've introduced a number of new things:
 
-* The ``__future__`` import required to use ``with:`` in Python 2.5;
 * Fabric's `contrib.console <fabric.contrib.console>` submodule, containing the
   `~fabric.contrib.console.confirm` function, used for simple yes/no prompts;
 * The `~fabric.context_managers.settings` context manager, used to apply
@@ -298,7 +296,6 @@ Here again, we introduce a handful of new concepts:
 
 We also need to make sure we import the new functions at the top of our file::
 
-    from __future__ import with_statement
     from fabric.api import local, settings, abort, run, cd
     from fabric.contrib.console import confirm
 
@@ -395,7 +392,6 @@ Fabric's settings, and can be written to with attributes as well (in fact,
 `~fabric.context_managers.settings`, seen above, is simply a wrapper for this.)
 Thus, we can modify it at module level near the top of our fabfile like so::
 
-    from __future__ import with_statement
     from fabric.api import *
     from fabric.contrib.console import confirm
 
@@ -421,7 +417,6 @@ Conclusion
 Our completed fabfile is still pretty short, as such things go. Here it is in
 its entirety::
 
-    from __future__ import with_statement
     from fabric.api import *
     from fabric.contrib.console import confirm
 
