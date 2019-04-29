@@ -15,7 +15,7 @@ What is Fabric?
 As the ``README`` says:
 
     .. include:: ../../README.rst
-        :end-before: This is forked
+        :end-before: fab-classic is forked from
 
 More specifically, Fabric is:
 

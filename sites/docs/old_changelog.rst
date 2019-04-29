@@ -1,6 +1,10 @@
-=========
-Changelog
-=========
+=============
+Old Changelog
+=============
+
+For newer changes see https://github.com/ploxiln/fab-classic/releases
+
+Following are changes pre-fork, up to roughly version 1.14.1
 
 * :bug:`1227` Remove a bash/zsh-ism from
   `~fabric.contrib.files.upload_template` when backing up the target file,
