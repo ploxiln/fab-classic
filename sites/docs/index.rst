@@ -2,9 +2,10 @@
 Welcome to Fabric's documentation!
 ==================================
 
-This site covers Fabric's usage & API documentation. For basic info on what
-Fabric is, including its public changelog & how the project is maintained,
-please see `the main project website <http://fabfile.org>`_.
+This site covers **fab-classic**'s usage & API documentation. fab-classic is still usually
+referred to as Fabric in the documentation, and it is still imported as ``fabric``.
+
+See also: the GitHub project page at https://github.com/ploxiln/fab-classic/
 
 
 Tutorial
@@ -34,6 +35,11 @@ documentation, which expands upon the concepts outlined in the
     :glob:
 
     usage/*
+
+.. toctree::
+    :maxdepth: 1
+
+    faq
 
 
 .. _api_docs:
@@ -84,6 +90,6 @@ Contributing & Running Tests
 For advanced users & developers looking to help fix bugs or add new features.
 
 .. toctree::
-    :hidden:
 
     running_tests
+    old_changelog

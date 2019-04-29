@@ -14,15 +14,17 @@ changes, in order to fix some long-standing limitations. It makes some common
 
 ------
 
-fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_,
-so you can ``pip install fab-classic``
-
 .. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
     :target: https://travis-ci.org/ploxiln/fab-classic
 
-Changelog: https://github.com/ploxiln/fab-classic/releases
+fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_,
+so you can ``pip install fab-classic``
 
-API Documentation: http://docs.fabfile.org/en/1.14/
+API Documentation: https://ploxiln.github.io/fab-classic/
+
+New Changelog: https://github.com/ploxiln/fab-classic/releases
+
+Old Changelog: https://ploxiln.github.io/fab-classic/old_changelog.html
 
 For a quick command reference, run ``fab --help``
 
