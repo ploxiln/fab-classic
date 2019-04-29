@@ -44,7 +44,9 @@ def test_task_returns_an_instance_of_wrappedfunctask_object():
 
 
 def test_task_will_invoke_provided_class():
-    def foo(): pass
+    def foo():
+        pass
+
     fake = Fake()
     fake.expects("__init__").with_args(foo)
     fudge.clear_calls()
@@ -57,7 +59,9 @@ def test_task_will_invoke_provided_class():
 
 def test_task_passes_args_to_the_task_class():
     random_vars = ("some text", random.randint(100, 200))
-    def foo(): pass
+
+    def foo():
+        pass
 
     fake = Fake()
     fake.expects("__init__").with_args(foo, *random_vars)
@@ -73,7 +77,9 @@ def test_passes_kwargs_to_the_task_class():
         "msg": "some text",
         "number": random.randint(100, 200),
     }
-    def foo(): pass
+
+    def foo():
+        pass
 
     fake = Fake()
     fake.expects("__init__").with_args(foo, **random_vars)

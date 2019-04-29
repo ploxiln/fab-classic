@@ -313,7 +313,8 @@ def test_roles_decorator_expands_single_iterable():
 # Host exclusion
 #
 
-def dummy(): pass
+def dummy():
+    pass
 
 def test_get_hosts_excludes_cli_exclude_hosts_from_cli_hosts():
     eq_hosts(dummy, ['bar'], cli_hosts=['foo', 'bar'], excluded_hosts=['foo'])
