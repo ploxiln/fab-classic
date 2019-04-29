@@ -1,0 +1,696 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Operations &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tasks" href="tasks.html" />
+    <link rel="prev" title="Network" href="network.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fabric.operations">
+<span id="operations"></span><h1>Operations<a class="headerlink" href="#module-fabric.operations" title="Permalink to this headline">¶</a></h1>
+<p>Functions to be used in fabfiles and other non-core code, such as run()/sudo().</p>
+<dl class="function">
+<dt id="fabric.operations.get">
+<code class="descclassname">fabric.operations.</code><code class="descname">get</code><span class="sig-paren">(</span><em>remote_path</em>, <em>local_path=None</em>, <em>use_sudo=False</em>, <em>temp_dir=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download one or more files from a remote host.</p>
+<p><a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a> returns an iterable containing the absolute paths
+to all local files downloaded, which will be empty if <code class="docutils literal notranslate"><span class="pre">local_path</span></code> was a
+StringIO object (see below for more on using StringIO). This object will
+also exhibit a <code class="docutils literal notranslate"><span class="pre">.failed</span></code> attribute containing any remote file paths which
+failed to download, and a <code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> attribute equivalent to <code class="docutils literal notranslate"><span class="pre">not</span>
+<span class="pre">.failed</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">remote_path</span></code> is the remote file or directory path to download, which may
+contain shell glob syntax, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;/var/log/apache2/*.log&quot;</span></code>, and will have
+tildes replaced by the remote home directory. Relative paths will be
+considered relative to the remote user’s home directory, or the current
+remote working directory as manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>.
+If the remote path points to a directory, that directory will be downloaded
+recursively.</p>
+<p><code class="docutils literal notranslate"><span class="pre">local_path</span></code> is the local file path where the downloaded file or files
+will be stored. If relative, it will honor the local current working
+directory as manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>. It may be
+interpolated, using standard Python dict-based interpolation, with the
+following variables:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">host</span></code>: The value of <code class="docutils literal notranslate"><span class="pre">env.host_string</span></code>, eg <code class="docutils literal notranslate"><span class="pre">myhostname</span></code> or
+<code class="docutils literal notranslate"><span class="pre">user&#64;myhostname-222</span></code> (the colon between hostname and port is turned
+into a dash to maximize filesystem compatibility)</li>
+<li><code class="docutils literal notranslate"><span class="pre">dirname</span></code>: The directory part of the remote file path, e.g. the
+<code class="docutils literal notranslate"><span class="pre">src/projectname</span></code> in <code class="docutils literal notranslate"><span class="pre">src/projectname/utils.py</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">basename</span></code>: The filename part of the remote file path, e.g. the
+<code class="docutils literal notranslate"><span class="pre">utils.py</span></code> in <code class="docutils literal notranslate"><span class="pre">src/projectname/utils.py</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: The full remote path, e.g. <code class="docutils literal notranslate"><span class="pre">src/projectname/utils.py</span></code>.</li>
+</ul>
+<p>While the SFTP protocol (which <a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a> uses) has no direct ability to download
+files from locations not owned by the connecting user, you may specify
+<code class="docutils literal notranslate"><span class="pre">use_sudo=True</span></code> to work around this. When set, this setting allows <a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>
+to copy (using sudo) the remote files to a temporary location on the remote end
+(defaults to remote user’s <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>; this may be overridden via <code class="docutils literal notranslate"><span class="pre">temp_dir</span></code>),
+and then download them to <code class="docutils literal notranslate"><span class="pre">local_path</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">remote_path</span></code> is an absolute directory path, only the inner
+directories will be recreated locally and passed into the above
+variables. So for example, <code class="docutils literal notranslate"><span class="pre">get('/var/log',</span> <span class="pre">'%(path)s')</span></code> would start
+writing out files like <code class="docutils literal notranslate"><span class="pre">apache2/access.log</span></code>,
+<code class="docutils literal notranslate"><span class="pre">postgresql/8.4/postgresql.log</span></code>, etc, in the local working directory.
+It would <strong>not</strong> write out e.g.  <code class="docutils literal notranslate"><span class="pre">var/log/apache2/access.log</span></code>.</p>
+<p>Additionally, when downloading a single file, <code class="docutils literal notranslate"><span class="pre">%(dirname)s</span></code> and
+<code class="docutils literal notranslate"><span class="pre">%(path)s</span></code> do not make as much sense and will be empty and equivalent
+to <code class="docutils literal notranslate"><span class="pre">%(basename)s</span></code>, respectively. Thus a call like
+<code class="docutils literal notranslate"><span class="pre">get('/var/log/apache2/access.log',</span> <span class="pre">'%(path)s')</span></code> will save a local
+file named <code class="docutils literal notranslate"><span class="pre">access.log</span></code>, not <code class="docutils literal notranslate"><span class="pre">var/log/apache2/access.log</span></code>.</p>
+<p class="last">This behavior is intended to be consistent with the command-line
+<code class="docutils literal notranslate"><span class="pre">scp</span></code> program.</p>
+</div>
+<p>If left blank, <code class="docutils literal notranslate"><span class="pre">local_path</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">&quot;%(host)s/%(path)s&quot;</span></code> in order
+to be safe for multi-host invocations.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If your <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument does not contain <code class="docutils literal notranslate"><span class="pre">%(host)s</span></code> and your
+<a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a> call runs against multiple hosts, your local
+files will be overwritten on each successive run!</p>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">local_path</span></code> does not make use of the above variables (i.e. if it is a
+simple, explicit file path) it will act similar to <code class="docutils literal notranslate"><span class="pre">scp</span></code> or <code class="docutils literal notranslate"><span class="pre">cp</span></code>,
+overwriting pre-existing files if necessary, downloading into a directory
+if given (e.g. <code class="docutils literal notranslate"><span class="pre">get('/path/to/remote_file.txt',</span> <span class="pre">'local_directory')</span></code> will
+create <code class="docutils literal notranslate"><span class="pre">local_directory/remote_file.txt</span></code>) and so forth.</p>
+<p><code class="docutils literal notranslate"><span class="pre">local_path</span></code> may alternately be a file-like object, such as the result of
+<code class="docutils literal notranslate"><span class="pre">open('path',</span> <span class="pre">'w')</span></code> or a <code class="docutils literal notranslate"><span class="pre">StringIO</span></code> instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Attempting to <a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a> a directory into a file-like object is not valid
+and will result in an error.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function will use <code class="docutils literal notranslate"><span class="pre">seek</span></code> and <code class="docutils literal notranslate"><span class="pre">tell</span></code> to overwrite the entire
+contents of the file-like object, in order to be consistent with the
+behavior of <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> (which also considers the entire
+file). However, unlike <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>, the file pointer will
+not be restored to its previous location, as that doesn’t make as much
+sense here and/or may not even be possible.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a file-like object such as StringIO has a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute, that
+will be used in Fabric’s printed output instead of the default
+<code class="docutils literal notranslate"><span class="pre">&lt;file</span> <span class="pre">obj&gt;</span></code></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the remote working directory as manipulated by
+<a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, and the local working directory as
+manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Now allows file-like objects in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span><code class="docutils literal notranslate"><span class="pre">local_path</span></code> may now contain interpolated path- and host-related
+variables.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Directories may be specified in the <code class="docutils literal notranslate"><span class="pre">remote_path</span></code> argument and will
+trigger recursive downloads.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Return value is now an iterable of downloaded local file paths, which
+also exhibits the <code class="docutils literal notranslate"><span class="pre">.failed</span></code> and <code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> attributes.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.5: </span>Allow a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute on file-like objects for log output</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.local">
+<code class="descclassname">fabric.operations.</code><code class="descname">local</code><span class="sig-paren">(</span><em>command</em>, <em>capture=False</em>, <em>shell=None</em>, <em>pty=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a command on the local system.</p>
+<p><a class="reference internal" href="#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> is simply a convenience wrapper around the use of the builtin
+Python <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module with <code class="docutils literal notranslate"><span class="pre">shell=True</span></code> activated. If you need to
+do anything special, consider using the <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module directly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">shell</span></code> is passed directly to <a class="reference external" href="http://docs.python.org/library/subprocess.html#subprocess.Popen">subprocess.Popen</a>’s
+<code class="docutils literal notranslate"><span class="pre">execute</span></code> argument (which determines the local shell to use.)  As per the
+linked documentation, on Unix the default behavior is to use <code class="docutils literal notranslate"><span class="pre">/bin/sh</span></code>,
+so this option is useful for setting that value to e.g.  <code class="docutils literal notranslate"><span class="pre">/bin/bash</span></code>.</p>
+<p><a class="reference internal" href="#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> is not currently capable of simultaneously printing and
+capturing output, as <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>/<a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>
+do. The <code class="docutils literal notranslate"><span class="pre">capture</span></code> kwarg allows you to switch between printing and
+capturing as necessary, and defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">capture=False</span></code>, the local subprocess’ stdout and stderr streams are
+hooked up directly to your terminal, though you may use the global
+<a class="reference internal" href="../../usage/output_controls.html"><span class="doc">output controls</span></a> <code class="docutils literal notranslate"><span class="pre">output.stdout</span></code> and
+<code class="docutils literal notranslate"><span class="pre">output.stderr</span></code> to hide one or both if desired. In this mode, the return
+value’s stdout/stderr values are always empty.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">capture=True</span></code>, you will not see any output from the subprocess in
+your terminal, but the return value will contain the captured
+stdout/stderr.</p>
+<p>In either case, as with <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> and
+<a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>, this return value exhibits the <code class="docutils literal notranslate"><span class="pre">return_code</span></code>,
+<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, <code class="docutils literal notranslate"><span class="pre">failed</span></code>, <code class="docutils literal notranslate"><span class="pre">succeeded</span></code>, <code class="docutils literal notranslate"><span class="pre">command</span></code> and <code class="docutils literal notranslate"><span class="pre">real_command</span></code>
+attributes. See <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> for details.</p>
+<p><a class="reference internal" href="#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> will honor the <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>
+context manager, allowing you to control its current working directory
+independently of the remote end (which honors
+<a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>).</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Added the <code class="docutils literal notranslate"><span class="pre">succeeded</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> attributes.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a> context manager.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Changed the default value of <code class="docutils literal notranslate"><span class="pre">capture</span></code> from <code class="docutils literal notranslate"><span class="pre">True</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.9: </span>The return value attributes <code class="docutils literal notranslate"><span class="pre">.command</span></code> and <code class="docutils literal notranslate"><span class="pre">.real_command</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.open_shell">
+<code class="descclassname">fabric.operations.</code><code class="descname">open_shell</code><span class="sig-paren">(</span><em>command=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.open_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoke a fully interactive shell on the remote end.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">command</span></code> is given, it will be sent down the pipe before handing
+control over to the invoking user.</p>
+<p>This function is most useful for when you need to interact with a heavily
+shell-based command or series of commands, such as when debugging or when
+fully interactive recovery is required upon remote program failure.</p>
+<p>It should be considered an easy way to work an interactive shell session
+into the middle of a Fabric script and is <em>not</em> a drop-in replacement for
+<a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, which is also capable of interacting with the
+remote end (albeit only while its given command is executing) and has much
+stronger programmatic abilities such as error handling and stdout/stderr
+capture.</p>
+<p>Specifically, <a class="reference internal" href="#fabric.operations.open_shell" title="fabric.operations.open_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_shell</span></code></a> provides a better interactive
+experience than <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, but use of a full remote shell
+prevents Fabric from determining whether programs run within the shell have
+failed, and pollutes the stdout/stderr stream with shell output such as
+login banners, prompts and echoed stdin.</p>
+<p>Thus, this function does not have a return value and will not trigger
+Fabric’s failure handling if any remote programs result in errors.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.prompt">
+<code class="descclassname">fabric.operations.</code><code class="descname">prompt</code><span class="sig-paren">(</span><em>text</em>, <em>key=None</em>, <em>default=''</em>, <em>validate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompt user with <code class="docutils literal notranslate"><span class="pre">text</span></code> and return the input (like <code class="docutils literal notranslate"><span class="pre">raw_input</span></code>).</p>
+<p>A single space character will be appended for convenience, but nothing
+else. Thus, you may want to end your prompt text with a question mark or a
+colon, e.g. <code class="docutils literal notranslate"><span class="pre">prompt(&quot;What</span> <span class="pre">hostname?&quot;)</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">key</span></code> is given, the user’s input will be stored as <code class="docutils literal notranslate"><span class="pre">env.&lt;key&gt;</span></code> in
+addition to being returned by <a class="reference internal" href="#fabric.operations.prompt" title="fabric.operations.prompt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prompt</span></code></a>. If the key already existed in
+<code class="docutils literal notranslate"><span class="pre">env</span></code>, its value will be overwritten and a warning printed to the user.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">default</span></code> is given, it is displayed in square brackets and used if the
+user enters nothing (i.e. presses Enter without entering any text).
+<code class="docutils literal notranslate"><span class="pre">default</span></code> defaults to the empty string. If non-empty, a space will be
+appended, so that a call such as <code class="docutils literal notranslate"><span class="pre">prompt(&quot;What</span> <span class="pre">hostname?&quot;,</span>
+<span class="pre">default=&quot;foo&quot;)</span></code> would result in a prompt of <code class="docutils literal notranslate"><span class="pre">What</span> <span class="pre">hostname?</span> <span class="pre">[foo]</span></code> (with
+a trailing space after the <code class="docutils literal notranslate"><span class="pre">[foo]</span></code>.)</p>
+<p>The optional keyword argument <code class="docutils literal notranslate"><span class="pre">validate</span></code> may be a callable or a string:</p>
+<ul class="simple">
+<li>If a callable, it is called with the user’s input, and should return the
+value to be stored on success. On failure, it should raise an exception
+with an exception message, which will be printed to the user.</li>
+<li>If a string, the value passed to <code class="docutils literal notranslate"><span class="pre">validate</span></code> is used as a regular
+expression. It is thus recommended to use raw strings in this case. Note
+that the regular expression, if it is not fully matching (bounded by
+<code class="docutils literal notranslate"><span class="pre">^</span></code> and <code class="docutils literal notranslate"><span class="pre">$</span></code>) it will be made so. In other words, the input must fully
+match the regex.</li>
+</ul>
+<p>Either way, <a class="reference internal" href="#fabric.operations.prompt" title="fabric.operations.prompt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prompt</span></code></a> will re-prompt until validation passes (or the user
+hits <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="#fabric.operations.prompt" title="fabric.operations.prompt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prompt</span></code></a> honors <a class="reference internal" href="../../usage/env.html#abort-on-prompts"><span class="std std-ref">env.abort_on_prompts</span></a> and will call <a class="reference internal" href="utils.html#fabric.utils.abort" title="fabric.utils.abort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abort</span></code></a> instead of
+prompting if that flag is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. If you want to block on user
+input regardless, try wrapping with
+<a class="reference internal" href="context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>.</p>
+</div>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simplest form:</span>
+<span class="n">environment</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="s1">&#39;Please specify target environment: &#39;</span><span class="p">)</span>
+
+<span class="c1"># With default, and storing as env.dish:</span>
+<span class="n">prompt</span><span class="p">(</span><span class="s1">&#39;Specify favorite dish: &#39;</span><span class="p">,</span> <span class="s1">&#39;dish&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;spam &amp; eggs&#39;</span><span class="p">)</span>
+
+<span class="c1"># With validation, i.e. requiring integer input:</span>
+<span class="n">prompt</span><span class="p">(</span><span class="s1">&#39;Please specify process nice level: &#39;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;nice&#39;</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># With validation against a regular expression:</span>
+<span class="n">release</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="s1">&#39;Please supply a release name&#39;</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;^\w+-\d+(\.\d+)?$&#39;</span><span class="p">)</span>
+
+<span class="c1"># Prompt regardless of the global abort-on-prompts setting:</span>
+<span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">abort_on_prompts</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">prompt</span><span class="p">(</span><span class="s1">&#39;I seriously need an answer on this! &#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.put">
+<code class="descclassname">fabric.operations.</code><code class="descname">put</code><span class="sig-paren">(</span><em>local_path=None</em>, <em>remote_path=None</em>, <em>use_sudo=False</em>, <em>mirror_local_mode=False</em>, <em>mode=None</em>, <em>use_glob=True</em>, <em>temp_dir=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload one or more files to a remote host.</p>
+<p>As with the OpenSSH <code class="docutils literal notranslate"><span class="pre">sftp</span></code> program, <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> will overwrite pre-existing
+remote files without requesting confirmation.</p>
+<p><a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> returns an iterable containing the absolute file
+paths of all remote files uploaded. This iterable also exhibits a
+<code class="docutils literal notranslate"><span class="pre">.failed</span></code> attribute containing any local file paths which failed to
+upload (and may thus be used as a boolean test.) You may also check
+<code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> which is equivalent to <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">.failed</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">local_path</span></code> may be a relative or absolute local file or directory path,
+and may contain shell-style wildcards, as understood by the Python <code class="docutils literal notranslate"><span class="pre">glob</span></code>
+module (give <code class="docutils literal notranslate"><span class="pre">use_glob=False</span></code> to disable this behavior).  Tilde expansion
+(as implemented by <code class="docutils literal notranslate"><span class="pre">os.path.expanduser</span></code>) is also performed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">local_path</span></code> may alternately be a file-like object, such as the result of
+<code class="docutils literal notranslate"><span class="pre">open('path')</span></code> or a <code class="docutils literal notranslate"><span class="pre">StringIO</span></code> instance.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In this case, <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> will attempt to read the entire
+contents of the file-like object by rewinding it using <code class="docutils literal notranslate"><span class="pre">seek</span></code> (and
+will use <code class="docutils literal notranslate"><span class="pre">tell</span></code> afterwards to preserve the previous file position).</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">remote_path</span></code> may also be a relative or absolute location, but applied to
+the remote host. Relative paths are relative to the remote user’s home
+directory, but tilde expansion (e.g. <code class="docutils literal notranslate"><span class="pre">~/.ssh/</span></code>) will also be performed if
+necessary.</p>
+<p>An empty string, in either path argument, will be replaced by the
+appropriate end’s current working directory.</p>
+<p>While the SFTP protocol (which <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> uses) has no direct ability to upload
+files to locations not owned by the connecting user, you may specify
+<code class="docutils literal notranslate"><span class="pre">use_sudo=True</span></code> to work around this. When set, this setting causes <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>
+to upload the local files to a temporary location on the remote end
+(defaults to remote user’s <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>; this may be overridden via
+<code class="docutils literal notranslate"><span class="pre">temp_dir</span></code>), and then use <a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a> to move them to <code class="docutils literal notranslate"><span class="pre">remote_path</span></code>.</p>
+<p>In some use cases, it is desirable to force a newly uploaded file to match
+the mode of its local counterpart (such as when uploading executable
+scripts). To do this, specify <code class="docutils literal notranslate"><span class="pre">mirror_local_mode=True</span></code>.</p>
+<p>Alternately, you may use the <code class="docutils literal notranslate"><span class="pre">mode</span></code> kwarg to specify an exact mode, in
+the same vein as <code class="docutils literal notranslate"><span class="pre">os.chmod</span></code>, such as an exact octal number (<code class="docutils literal notranslate"><span class="pre">0o755</span></code>) or
+a string representing one (<code class="docutils literal notranslate"><span class="pre">&quot;0o755&quot;</span></code>).</p>
+<p><a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> will honor <a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, so
+relative values in <code class="docutils literal notranslate"><span class="pre">remote_path</span></code> will be prepended by the current remote
+working directory, if applicable. Thus, for example, the below snippet
+would attempt to upload to <code class="docutils literal notranslate"><span class="pre">/tmp/files/test.txt</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">~/files/test.txt</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/tmp&#39;</span><span class="p">):</span>
+    <span class="n">put</span><span class="p">(</span><span class="s1">&#39;/path/to/local/test.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use of <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a> will affect <code class="docutils literal notranslate"><span class="pre">local_path</span></code> in the
+same manner.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;bin/project.zip&#39;</span><span class="p">,</span> <span class="s1">&#39;/tmp/project.zip&#39;</span><span class="p">)</span>
+<span class="n">put</span><span class="p">(</span><span class="s1">&#39;*.py&#39;</span><span class="p">,</span> <span class="s1">&#39;cgi-bin/&#39;</span><span class="p">)</span>
+<span class="n">put</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mo">0o755</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If a file-like object such as StringIO has a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute, that
+will be used in Fabric’s printed output instead of the default
+<code class="docutils literal notranslate"><span class="pre">&lt;file</span> <span class="pre">obj&gt;</span></code></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the remote working directory as manipulated by
+<a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, and the local working directory as
+manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Now allows file-like objects in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Directories may be specified in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument and will
+trigger recursive uploads.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Return value is now an iterable of uploaded remote file paths which
+also exhibits the <code class="docutils literal notranslate"><span class="pre">.failed</span></code> and <code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> attributes.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.5: </span>Allow a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute on file-like objects for log output</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.7: </span>Added <code class="docutils literal notranslate"><span class="pre">use_glob</span></code> option to allow disabling of globbing.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.reboot">
+<code class="descclassname">fabric.operations.</code><code class="descname">reboot</code><span class="sig-paren">(</span><em>wait=120</em>, <em>command='reboot'</em>, <em>use_sudo=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.reboot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reboot the remote system.</p>
+<p>Will temporarily tweak Fabric’s reconnection settings (<a class="reference internal" href="../../usage/env.html#timeout"><span class="std std-ref">timeout</span></a> and
+<a class="reference internal" href="../../usage/env.html#connection-attempts"><span class="std std-ref">connection_attempts</span></a>) to ensure that reconnection does not give up
+for at least <code class="docutils literal notranslate"><span class="pre">wait</span></code> seconds.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>As of Fabric 1.4, the ability to reconnect partway through a session no
+longer requires use of internal APIs.  While we are not officially
+deprecating this function, adding more features to it will not be a
+priority.</p>
+<p class="last">Users who want greater control
+are encouraged to check out this function’s (6 lines long, well
+commented) source code and write their own adaptation using different
+timeout/attempt values or additional logic.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.2.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.4: </span>Changed the <code class="docutils literal notranslate"><span class="pre">wait</span></code> kwarg to be optional, and refactored to leverage
+the new reconnection functionality; it may not actually have to wait
+for <code class="docutils literal notranslate"><span class="pre">wait</span></code> seconds before reconnecting.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.11: </span>Added <code class="docutils literal notranslate"><span class="pre">use_sudo</span></code> as a kwarg. Maintained old functionality by setting
+the default value to True.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.require">
+<code class="descclassname">fabric.operations.</code><code class="descname">require</code><span class="sig-paren">(</span><em>*keys</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.require" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for given keys in the shared environment dict and abort if not found.</p>
+<p>Positional arguments should be strings signifying what env vars should be
+checked for. If any of the given arguments do not exist, Fabric will abort
+execution and print the names of the missing keys.</p>
+<p>The optional keyword argument <code class="docutils literal notranslate"><span class="pre">used_for</span></code> may be a string, which will be
+printed in the error output to inform users why this requirement is in
+place. <code class="docutils literal notranslate"><span class="pre">used_for</span></code> is printed as part of a string similar to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Th(is|ese) variable(s) (are|is) used for </span><span class="si">%s</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>so format it appropriately.</p>
+<p>The optional keyword argument <code class="docutils literal notranslate"><span class="pre">provided_by</span></code> may be a list of functions or
+function names or a single function or function name which the user should
+be able to execute in order to set the key or keys; it will be included in
+the error output if requirements are not met.</p>
+<p>Note: it is assumed that the keyword arguments apply to all given keys as a
+group. If you feel the need to specify more than one <code class="docutils literal notranslate"><span class="pre">used_for</span></code>, for
+example, you should break your logic into multiple calls to <code class="docutils literal notranslate"><span class="pre">require()</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.1: </span>Allow iterable <code class="docutils literal notranslate"><span class="pre">provided_by</span></code> values instead of just single values.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.run">
+<code class="descclassname">fabric.operations.</code><code class="descname">run</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a shell command on a remote host.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">shell</span></code> is True (the default), <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> will execute the given command
+string via a shell interpreter, the value of which may be controlled by
+setting <code class="docutils literal notranslate"><span class="pre">env.shell</span></code> (defaulting to something similar to <code class="docutils literal notranslate"><span class="pre">/bin/bash</span> <span class="pre">-l</span> <span class="pre">-c</span>
+<span class="pre">&quot;&lt;command&gt;&quot;</span></code>.) Any double-quote (<code class="docutils literal notranslate"><span class="pre">&quot;</span></code>) or dollar-sign (<code class="docutils literal notranslate"><span class="pre">$</span></code>) characters
+in <code class="docutils literal notranslate"><span class="pre">command</span></code> will be automatically escaped when <code class="docutils literal notranslate"><span class="pre">shell</span></code> is True (unless
+disabled by setting <code class="docutils literal notranslate"><span class="pre">shell_escape=False</span></code>).</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">shell=False</span></code>, no shell wrapping or escaping will occur. (It’s
+possible to specify <code class="docutils literal notranslate"><span class="pre">shell=False,</span> <span class="pre">shell_escape=True</span></code> if desired, which
+will still trigger escaping of dollar signs, etc but will not wrap with a
+shell program invocation).</p>
+<p><a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> will return the result of the remote program’s stdout as a single
+(likely multiline) string. This string will exhibit <code class="docutils literal notranslate"><span class="pre">failed</span></code> and
+<code class="docutils literal notranslate"><span class="pre">succeeded</span></code> boolean attributes specifying whether the command failed or
+succeeded, and will also include the return code as the <code class="docutils literal notranslate"><span class="pre">return_code</span></code>
+attribute. Furthermore, it includes a copy of the requested &amp; actual
+command strings executed, as <code class="docutils literal notranslate"><span class="pre">.command</span></code> and <code class="docutils literal notranslate"><span class="pre">.real_command</span></code>,
+respectively.</p>
+<p>To lessen memory use when running extremely verbose programs (and,
+naturally, when having access to their full output afterwards is not
+necessary!) you may limit how much of the program’s stdout/err is stored by
+setting <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> to an integer value.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not set <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> to any value smaller than the length
+of <code class="docutils literal notranslate"><span class="pre">env.sudo_prompt</span></code> or you will likely break the functionality of
+<a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>! Ditto any user prompts stored in <code class="docutils literal notranslate"><span class="pre">env.prompts</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This value is used for each buffer independently, so e.g. <code class="docutils literal notranslate"><span class="pre">1024</span></code> may
+result in storing a total of <code class="docutils literal notranslate"><span class="pre">2048</span></code> bytes if there’s data in both
+streams.)</p>
+</div>
+<p>Any text entered in your local terminal will be forwarded to the remote
+program as it runs, thus allowing you to interact with password or other
+prompts naturally. For more on how this works, see
+<a class="reference internal" href="../../usage/interactivity.html"><span class="doc">Interaction with remote programs</span></a>.</p>
+<p>You may pass <code class="docutils literal notranslate"><span class="pre">pty=False</span></code> to forego creation of a pseudo-terminal on the
+remote end in case the presence of one causes problems for the command in
+question. However, this will force Fabric itself to echo any  and all input
+you type while the command is running, including sensitive passwords. (With
+<code class="docutils literal notranslate"><span class="pre">pty=True</span></code>, the remote pseudo-terminal will echo for you, and will
+intelligently handle password-style prompts.) See <a class="reference internal" href="../../usage/interactivity.html#pseudottys"><span class="std std-ref">Pseudo-terminals</span></a> for
+details.</p>
+<p>Similarly, if you need to programmatically examine the stderr stream of the
+remote program (exhibited as the <code class="docutils literal notranslate"><span class="pre">stderr</span></code> attribute on this function’s
+return value), you may set <code class="docutils literal notranslate"><span class="pre">combine_stderr=False</span></code>. Doing so has a high
+chance of causing garbled output to appear on your terminal (though the
+resulting strings returned by <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> will be properly
+separated). For more info, please read <a class="reference internal" href="../../usage/interactivity.html#combine-streams"><span class="std std-ref">Combining stdout and stderr</span></a>.</p>
+<p>To ignore non-zero return codes, specify <code class="docutils literal notranslate"><span class="pre">warn_only=True</span></code>. To both ignore
+non-zero return codes <em>and</em> force a command to run silently, specify
+<code class="docutils literal notranslate"><span class="pre">quiet=True</span></code>.</p>
+<p>To override which local streams are used to display remote stdout and/or
+stderr, specify <code class="docutils literal notranslate"><span class="pre">stdout</span></code> or <code class="docutils literal notranslate"><span class="pre">stderr</span></code>. (By default, the regular
+<code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> Python stream objects are used.)</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">run(&quot;command&quot;,</span> <span class="pre">stderr=sys.stdout)</span></code> would print the remote
+standard error to the local standard out, while preserving it as its own
+distinct attribute on the return value (as per above.) Alternately, you
+could even provide your own stream objects or loggers, e.g. <code class="docutils literal notranslate"><span class="pre">myout</span> <span class="pre">=</span>
+<span class="pre">StringIO();</span> <span class="pre">run(&quot;command&quot;,</span> <span class="pre">stdout=myout)</span></code>.</p>
+<p>If you want an exception raised when the remote program takes too long to
+run, specify <code class="docutils literal notranslate"><span class="pre">timeout=N</span></code> where <code class="docutils literal notranslate"><span class="pre">N</span></code> is an integer number of seconds,
+after which to time out. This will cause <code class="docutils literal notranslate"><span class="pre">run</span></code> to raise a
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">CommandTimeout</span></code> exception.</p>
+<p>If you want to disable Fabric’s automatic attempts at escaping quotes,
+dollar signs etc., specify <code class="docutils literal notranslate"><span class="pre">shell_escape=False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;ls /var/www/&quot;</span><span class="p">)</span>
+<span class="n">run</span><span class="p">(</span><span class="s2">&quot;ls /home/myuser&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /var/www/site1&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="p">(</span><span class="s2">&quot;take_a_long_time&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0: </span>The <code class="docutils literal notranslate"><span class="pre">succeeded</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> return value attributes, the
+<code class="docutils literal notranslate"><span class="pre">combine_stderr</span></code> kwarg, and interactive behavior.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>The default value of <code class="docutils literal notranslate"><span class="pre">pty</span></code> is now <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.2: </span>The default value of <code class="docutils literal notranslate"><span class="pre">combine_stderr</span></code> is now <code class="docutils literal notranslate"><span class="pre">None</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">True</span></code>. However, the default <em>behavior</em> is unchanged, as the global
+setting is still <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5: </span>The <code class="docutils literal notranslate"><span class="pre">quiet</span></code>, <code class="docutils literal notranslate"><span class="pre">warn_only</span></code>, <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> kwargs.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5: </span>The return value attributes <code class="docutils literal notranslate"><span class="pre">.command</span></code> and <code class="docutils literal notranslate"><span class="pre">.real_command</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6: </span>The <code class="docutils literal notranslate"><span class="pre">timeout</span></code> argument.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.7: </span>The <code class="docutils literal notranslate"><span class="pre">shell_escape</span></code> argument.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.11: </span>The <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> argument.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.operations.sudo">
+<code class="descclassname">fabric.operations.</code><code class="descname">sudo</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>user=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>group=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.sudo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a shell command on a remote host, with superuser privileges.</p>
+<p><a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a> is identical in every way to <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, except that it will always wrap
+the given <code class="docutils literal notranslate"><span class="pre">command</span></code> in a call to the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> program to provide
+superuser privileges.</p>
+<p><a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a> accepts additional <code class="docutils literal notranslate"><span class="pre">user</span></code> and <code class="docutils literal notranslate"><span class="pre">group</span></code> arguments, which are
+passed to <code class="docutils literal notranslate"><span class="pre">sudo</span></code> and allow you to run as some user and/or group other
+than root.  On most systems, the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> program can take a string
+username/group or an integer userid/groupid (uid/gid); <code class="docutils literal notranslate"><span class="pre">user</span></code> and
+<code class="docutils literal notranslate"><span class="pre">group</span></code> may likewise be strings or integers.</p>
+<p>You may set <a class="reference internal" href="../../usage/env.html#sudo-user"><span class="std std-ref">env.sudo_user</span></a> at module level or via
+<a class="reference internal" href="context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a> if you want multiple <code class="docutils literal notranslate"><span class="pre">sudo</span></code> calls to
+have the same <code class="docutils literal notranslate"><span class="pre">user</span></code> value. An explicit <code class="docutils literal notranslate"><span class="pre">user</span></code> argument will, of
+course, override this global setting.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;~/install_script.py&quot;</span><span class="p">)</span>
+<span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;mkdir /var/www/new_docroot&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;www-data&quot;</span><span class="p">)</span>
+<span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;ls /home/jdoe&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="mi">1001</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;ls /tmp/&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">sudo_user</span><span class="o">=</span><span class="s1">&#39;mysql&#39;</span><span class="p">):</span>
+    <span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;whoami&quot;</span><span class="p">)</span> <span class="c1"># prints &#39;mysql&#39;</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>See the changed and added notes for <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.5: </span>Now honors <a class="reference internal" href="../../usage/env.html#sudo-user"><span class="std std-ref">env.sudo_user</span></a>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5: </span>The <code class="docutils literal notranslate"><span class="pre">quiet</span></code>, <code class="docutils literal notranslate"><span class="pre">warn_only</span></code>, <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> kwargs.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5: </span>The return value attributes <code class="docutils literal notranslate"><span class="pre">.command</span></code> and <code class="docutils literal notranslate"><span class="pre">.real_command</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.7: </span>The <code class="docutils literal notranslate"><span class="pre">shell_escape</span></code> argument.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.11: </span>The <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> argument.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/execution.html">Execution model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fab.html"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/library.html">Library Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output_controls.html">Managing output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Color output functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context_managers.html">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/core/operations.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,311 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Managing output &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parallel execution" href="parallel.html" />
+    <link rel="prev" title="Library Use" href="library.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="managing-output">
+<h1>Managing output<a class="headerlink" href="#managing-output" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">fab</span></code> tool is very verbose by default and prints out almost everything it
+can, including the remote end’s stderr and stdout streams, the command strings
+being executed, and so forth. While this is necessary in many cases in order to
+know just what’s going on, any nontrivial Fabric task will quickly become
+difficult to follow as it runs.</p>
+<div class="section" id="output-levels">
+<h2>Output levels<a class="headerlink" href="#output-levels" title="Permalink to this headline">¶</a></h2>
+<p>To aid in organizing task output, Fabric output is grouped into a number of
+non-overlapping levels or groups, each of which may be turned on or off
+independently. This provides flexible control over what is displayed to the
+user.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">All levels, save for <code class="docutils literal notranslate"><span class="pre">debug</span></code> and <code class="docutils literal notranslate"><span class="pre">exceptions</span></code>, are on by default.</p>
+</div>
+<div class="section" id="standard-output-levels">
+<h3>Standard output levels<a class="headerlink" href="#standard-output-levels" title="Permalink to this headline">¶</a></h3>
+<p>The standard, atomic output levels/groups are as follows:</p>
+<ul class="simple">
+<li><strong>status</strong>: Status messages, i.e. noting when Fabric is done running, if
+the user used a keyboard interrupt, or when servers are disconnected from.
+These messages are almost always relevant and rarely verbose.</li>
+<li><strong>aborts</strong>: Abort messages. Like status messages, these should really only be
+turned off when using Fabric as a library, and possibly not even then. Note
+that even if this output group is turned off, aborts will still occur –
+there just won’t be any output about why Fabric aborted!</li>
+<li><strong>warnings</strong>: Warning messages. These are often turned off when one expects a
+given operation to fail, such as when using <code class="docutils literal notranslate"><span class="pre">grep</span></code> to test existence of
+text in a file. If paired with setting <code class="docutils literal notranslate"><span class="pre">env.warn_only</span></code> to True, this
+can result in fully silent warnings when remote programs fail. As with
+<code class="docutils literal notranslate"><span class="pre">aborts</span></code>, this setting does not control actual warning behavior, only
+whether warning messages are printed or hidden.</li>
+<li><strong>running</strong>: Printouts of commands being executed or files transferred, e.g.
+<code class="docutils literal notranslate"><span class="pre">[myserver]</span> <span class="pre">run:</span> <span class="pre">ls</span> <span class="pre">/var/www</span></code>. Also controls printing of tasks being run,
+e.g. <code class="docutils literal notranslate"><span class="pre">[myserver]</span> <span class="pre">Executing</span> <span class="pre">task</span> <span class="pre">'foo'</span></code>.</li>
+<li><strong>stdout</strong>: Local, or remote, stdout, i.e. non-error output from commands.</li>
+<li><strong>stderr</strong>: Local, or remote, stderr, i.e. error-related output from commands.</li>
+<li><strong>user</strong>: User-generated output, i.e. local output printed by fabfile code
+via use of the <a class="reference internal" href="../api/core/utils.html#fabric.utils.fastprint" title="fabric.utils.fastprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fastprint</span></code></a> or <a class="reference internal" href="../api/core/utils.html#fabric.utils.puts" title="fabric.utils.puts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">puts</span></code></a> functions.</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Added “Executing task” lines to the <code class="docutils literal notranslate"><span class="pre">running</span></code> output level.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Added the <code class="docutils literal notranslate"><span class="pre">user</span></code> output level.</p>
+</div>
+</div>
+<div class="section" id="debug-output">
+<h3>Debug output<a class="headerlink" href="#debug-output" title="Permalink to this headline">¶</a></h3>
+<p>There are two more atomic output levels for use when troubleshooting:
+<code class="docutils literal notranslate"><span class="pre">debug</span></code>, which behaves slightly differently from the rest, and
+<code class="docutils literal notranslate"><span class="pre">exceptions</span></code>, whose behavior is included in <code class="docutils literal notranslate"><span class="pre">debug</span></code> but may be enabled
+separately.</p>
+<ul>
+<li><p class="first"><strong>debug</strong>: Turn on debugging (which is off by default.) Currently, this is
+largely used to view the “full” commands being run; take for example this
+<a class="reference internal" href="../api/core/operations.html#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls &quot;/home/username/Folder Name With Spaces/&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Normally, the <code class="docutils literal notranslate"><span class="pre">running</span></code> line will show exactly what is passed into
+<a class="reference internal" href="../api/core/operations.html#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">hostname</span><span class="p">]</span> <span class="n">run</span><span class="p">:</span> <span class="n">ls</span> <span class="s2">&quot;/home/username/Folder Name With Spaces/&quot;</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">debug</span></code> on, and assuming you’ve left <a class="reference internal" href="env.html#shell"><span class="std std-ref">shell</span></a> set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, you
+will see the literal, full string as passed to the remote server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">hostname</span><span class="p">]</span> <span class="n">run</span><span class="p">:</span> <span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span> <span class="o">-</span><span class="n">l</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;ls </span><span class="se">\&quot;</span><span class="s2">/home/username/Folder Name With Spaces</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Enabling <code class="docutils literal notranslate"><span class="pre">debug</span></code> output will also display full Python tracebacks during
+aborts (as if <code class="docutils literal notranslate"><span class="pre">exceptions</span></code> output was enabled).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Where modifying other pieces of output (such as in the above example
+where it modifies the ‘running’ line to show the shell and any escape
+characters), this setting takes precedence over the others; so if
+<code class="docutils literal notranslate"><span class="pre">running</span></code> is False but <code class="docutils literal notranslate"><span class="pre">debug</span></code> is True, you will still be shown the
+‘running’ line in its debugging form.</p>
+</div>
+</li>
+<li><p class="first"><strong>exceptions</strong>: Enables display of tracebacks when exceptions occur; intended
+for use when <code class="docutils literal notranslate"><span class="pre">debug</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code> but one is still interested in
+detailed error info.</p>
+</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Debug output now includes full Python tracebacks during aborts.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.11: </span>Added the <code class="docutils literal notranslate"><span class="pre">exceptions</span></code> output level.</p>
+</div>
+</div>
+<div class="section" id="output-level-aliases">
+<span id="output-aliases"></span><h3>Output level aliases<a class="headerlink" href="#output-level-aliases" title="Permalink to this headline">¶</a></h3>
+<p>In addition to the atomic/standalone levels above, Fabric also provides a
+couple of convenience aliases which map to multiple other levels. These may be
+referenced anywhere the other levels are referenced, and will effectively
+toggle all of the levels they are mapped to.</p>
+<ul class="simple">
+<li><strong>output</strong>: Maps to both <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code>. Useful for when you only
+care to see the ‘running’ lines and your own print statements (and warnings).</li>
+<li><strong>everything</strong>: Includes <code class="docutils literal notranslate"><span class="pre">warnings</span></code>, <code class="docutils literal notranslate"><span class="pre">running</span></code>, <code class="docutils literal notranslate"><span class="pre">user</span></code> and <code class="docutils literal notranslate"><span class="pre">output</span></code>
+(see above.) Thus, when turning off <code class="docutils literal notranslate"><span class="pre">everything</span></code>, you will only see a bare
+minimum of output (just <code class="docutils literal notranslate"><span class="pre">status</span></code> and <code class="docutils literal notranslate"><span class="pre">debug</span></code> if it’s on), along with your
+own print statements.</li>
+<li><strong>commands</strong>: Includes <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">running</span></code>. Good for hiding
+non-erroring commands entirely, while still displaying any stderr output.</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.4: </span>Added the <code class="docutils literal notranslate"><span class="pre">commands</span></code> output alias.</p>
+</div>
+</div>
+</div>
+<div class="section" id="hiding-and-or-showing-output-levels">
+<h2>Hiding and/or showing output levels<a class="headerlink" href="#hiding-and-or-showing-output-levels" title="Permalink to this headline">¶</a></h2>
+<p>You may toggle any of Fabric’s output levels in a number of ways; for examples,
+please see the API docs linked in each bullet point:</p>
+<ul>
+<li><p class="first"><strong>Direct modification of fabric.state.output</strong>: <code class="xref py py-obj docutils literal notranslate"><span class="pre">fabric.state.output</span></code> is a
+dictionary subclass (similar to <a class="reference internal" href="env.html"><span class="doc">env</span></a>) whose keys are the output
+level names, and whose values are either True (show that particular type of
+output) or False (hide it.)</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fabric.state.output</span></code> is the lowest-level implementation of output levels and
+is what Fabric’s internals reference when deciding whether or not to print
+their output.</p>
+</li>
+<li><p class="first"><strong>Context managers</strong>: <a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.hide" title="fabric.context_managers.hide"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide</span></code></a> and
+<a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.show" title="fabric.context_managers.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a> are twin context managers that take one or
+more output level names as strings, and either hide or show them within the
+wrapped block. As with Fabric’s other context managers, the prior values are
+restored when the block exits.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>, which can nest calls to
+<a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.hide" title="fabric.context_managers.hide"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide</span></code></a> and/or <a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.show" title="fabric.context_managers.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>
+inside itself.</p>
+</div>
+</li>
+<li><p class="first"><strong>Command-line arguments</strong>: You may use the <a class="reference internal" href="fab.html#cmdoption-hide"><code class="xref std std-option docutils literal notranslate"><span class="pre">--hide</span></code></a> and/or
+<a class="reference internal" href="fab.html#cmdoption-show"><code class="xref std std-option docutils literal notranslate"><span class="pre">--show</span></code></a> arguments to <a class="reference internal" href="fab.html"><span class="doc">fab options and arguments</span></a>, which behave exactly like the
+context managers of the same names (but are, naturally, globally applied) and
+take comma-separated strings as input.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="prefix-output">
+<h2>Prefix output<a class="headerlink" href="#prefix-output" title="Permalink to this headline">¶</a></h2>
+<p>By default Fabric prefixes every line of ouput with either <code class="docutils literal notranslate"><span class="pre">[hostname]</span> <span class="pre">out:</span></code>
+or <code class="docutils literal notranslate"><span class="pre">[hostname]</span> <span class="pre">err:</span></code>. Those prefixes may be hidden by setting
+<code class="docutils literal notranslate"><span class="pre">env.output_prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Execution model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fab.html"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Library Use</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Managing output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#output-levels">Output levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hiding-and-or-showing-output-levels">Hiding and/or showing output levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prefix-output">Prefix output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/colors.html">Color output functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/context_managers.html">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/output_controls.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

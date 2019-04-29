@@ -1,0 +1,278 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tasks &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Utils" href="utils.html" />
+    <link rel="prev" title="Operations" href="operations.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fabric.tasks">
+<span id="tasks"></span><h1>Tasks<a class="headerlink" href="#module-fabric.tasks" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="fabric.tasks.Task">
+<em class="property">class </em><code class="descclassname">fabric.tasks.</code><code class="descname">Task</code><span class="sig-paren">(</span><em>alias=None</em>, <em>aliases=None</em>, <em>default=False</em>, <em>name=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.Task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for objects wishing to be picked up as Fabric tasks.</p>
+<p>Instances of subclasses will be treated as valid tasks when present in
+fabfiles loaded by the <a class="reference internal" href="../../usage/fab.html"><span class="doc">fab</span></a> tool.</p>
+<p>For details on how to implement and use <a class="reference internal" href="#fabric.tasks.Task" title="fabric.tasks.Task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code></a> subclasses,
+please see the usage documentation on <a class="reference internal" href="../../usage/tasks.html#new-style-tasks"><span class="std std-ref">new-style tasks</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+<dl class="method">
+<dt id="fabric.tasks.Task.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>alias=None</em>, <em>aliases=None</em>, <em>default=False</em>, <em>name=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.Task.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fabric.tasks.Task.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#fabric.tasks.Task.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fabric.tasks.Task.get_hosts_and_effective_roles">
+<code class="descname">get_hosts_and_effective_roles</code><span class="sig-paren">(</span><em>arg_hosts</em>, <em>arg_roles</em>, <em>arg_exclude_hosts</em>, <em>env=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.Task.get_hosts_and_effective_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing the host list the given task should be using
+and the roles being used.</p>
+<p>See <a class="reference internal" href="../../usage/execution.html#host-lists"><span class="std std-ref">How host lists are constructed</span></a> for detailed documentation on how host lists are
+set.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.9.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fabric.tasks.WrappedCallableTask">
+<em class="property">class </em><code class="descclassname">fabric.tasks.</code><code class="descname">WrappedCallableTask</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.WrappedCallableTask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps a given callable transparently, while marking it as a valid Task.</p>
+<p>Generally used via <a class="reference internal" href="decorators.html#fabric.decorators.task" title="fabric.decorators.task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code></a> and not directly.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="docs.html#fabric.docs.unwrap_tasks" title="fabric.docs.unwrap_tasks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unwrap_tasks</span></code></a>, <a class="reference internal" href="decorators.html#fabric.decorators.task" title="fabric.decorators.task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code></a></p>
+</div>
+<dl class="method">
+<dt id="fabric.tasks.WrappedCallableTask.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.WrappedCallableTask.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call self as a function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fabric.tasks.WrappedCallableTask.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.WrappedCallableTask.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.tasks.execute">
+<code class="descclassname">fabric.tasks.</code><code class="descname">execute</code><span class="sig-paren">(</span><em>task</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute <code class="docutils literal notranslate"><span class="pre">task</span></code> (callable or name), honoring host/role decorators, etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">task</span></code> may be an actual callable object, or it may be a registered task
+name, which is used to look up a callable just as if the name had been
+given on the command line (including <a class="reference internal" href="../../usage/tasks.html#namespaces"><span class="std std-ref">namespaced tasks</span></a>,
+e.g. <code class="docutils literal notranslate"><span class="pre">&quot;deploy.migrate&quot;</span></code>.</p>
+<p>The task will then be executed once per host in its host list, which is
+(again) assembled in the same manner as CLI-specified tasks: drawing from
+<a class="reference internal" href="../../usage/fab.html#cmdoption-hosts"><code class="xref std std-option docutils literal notranslate"><span class="pre">-H</span></code></a>, <a class="reference internal" href="../../usage/env.html#hosts"><span class="std std-ref">env.hosts</span></a>, the <a class="reference internal" href="decorators.html#fabric.decorators.hosts" title="fabric.decorators.hosts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hosts</span></code></a> or
+<a class="reference internal" href="decorators.html#fabric.decorators.roles" title="fabric.decorators.roles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roles</span></code></a> decorators, and so forth.</p>
+<p><code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">hosts</span></code>, <code class="docutils literal notranslate"><span class="pre">role</span></code>, <code class="docutils literal notranslate"><span class="pre">roles</span></code> and <code class="docutils literal notranslate"><span class="pre">exclude_hosts</span></code> kwargs will
+be stripped out of the final call, and used to set the task’s host list, as
+if they had been specified on the command line like e.g. <code class="docutils literal notranslate"><span class="pre">fab</span>
+<span class="pre">taskname:host=hostname</span></code>.</p>
+<p>Any other arguments or keyword arguments will be passed verbatim into
+<code class="docutils literal notranslate"><span class="pre">task</span></code> (the function itself – not the <code class="docutils literal notranslate"><span class="pre">&#64;task</span></code> decorator wrapping your
+function!) when it is called, so <code class="docutils literal notranslate"><span class="pre">execute(mytask,</span> <span class="pre">'arg1',</span>
+<span class="pre">kwarg1='value')</span></code> will (once per host) invoke <code class="docutils literal notranslate"><span class="pre">mytask('arg1',</span>
+<span class="pre">kwarg1='value')</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a dictionary mapping host strings to the given task’s return value for
+that host’s execution run. For example, <code class="docutils literal notranslate"><span class="pre">execute(foo,</span> <span class="pre">hosts=['a',</span>
+<span class="pre">'b'])</span></code> might return <code class="docutils literal notranslate"><span class="pre">{'a':</span> <span class="pre">None,</span> <span class="pre">'b':</span> <span class="pre">'bar'}</span></code> if <code class="docutils literal notranslate"><span class="pre">foo</span></code> returned
+nothing on host <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> but returned <code class="docutils literal notranslate"><span class="pre">'bar'</span></code> on host <code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code>.<p>In situations where a task execution fails for a given host but overall
+progress does not abort (such as when <a class="reference internal" href="../../usage/env.html#skip-bad-hosts"><span class="std std-ref">env.skip_bad_hosts</span></a> is True) the return value for that host will be the
+error object or message.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../usage/execution.html#execute"><span class="std std-ref">The execute usage docs</span></a>, for an expanded explanation
+and some examples.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.3.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.4: </span>Added the return value mapping; previously this function had no defined
+return value.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.tasks.requires_parallel">
+<code class="descclassname">fabric.tasks.</code><code class="descname">requires_parallel</code><span class="sig-paren">(</span><em>task</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.requires_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if given <code class="docutils literal notranslate"><span class="pre">task</span></code> should be run in parallel mode.</p>
+<p>Specifically:</p>
+<ul class="simple">
+<li>It’s been explicitly marked with <code class="docutils literal notranslate"><span class="pre">&#64;parallel</span></code>, or:</li>
+<li>It’s <em>not</em> been explicitly marked with <code class="docutils literal notranslate"><span class="pre">&#64;serial</span></code> <em>and</em> the global
+parallel option (<code class="docutils literal notranslate"><span class="pre">env.parallel</span></code>) is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/execution.html">Execution model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fab.html"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/library.html">Library Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output_controls.html">Managing output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Color output functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context_managers.html">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/core/tasks.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

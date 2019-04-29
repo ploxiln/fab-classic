@@ -1,0 +1,571 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Context Managers &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Decorators" href="decorators.html" />
+    <link rel="prev" title="Color output functions" href="colors.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fabric.context_managers">
+<span id="context-managers"></span><h1>Context Managers<a class="headerlink" href="#module-fabric.context_managers" title="Permalink to this headline">¶</a></h1>
+<p>Context managers for use with the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you are using multiple directly nested <code class="docutils literal notranslate"><span class="pre">with</span></code> statements, it can
+be convenient to use multiple context expressions in one single with
+statement. Instead of writing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/path/to/app&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;workon myvenv&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py syncdb&#39;</span><span class="p">)</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py loaddata myfixture&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>you can write:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/path/to/app&#39;</span><span class="p">),</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;workon myvenv&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py syncdb&#39;</span><span class="p">)</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py loaddata myfixture&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="function">
+<dt id="fabric.context_managers.cd">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">cd</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.cd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager that keeps directory state when calling remote operations.</p>
+<p>Any calls to <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code>, or <code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code> within the wrapped block will
+implicitly have a string similar to <code class="docutils literal notranslate"><span class="pre">&quot;cd</span> <span class="pre">&lt;path&gt;</span> <span class="pre">&amp;&amp;</span> <span class="pre">&quot;</span></code> prefixed in order
+to give the sense that there is actually statefulness involved.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a> only affects <em>remote</em> paths – to modify <em>local</em> paths, use
+<a class="reference internal" href="#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>.</p>
+</div>
+<p>Because use of <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a> affects all such invocations, any code making use of
+those operations, such as much of the <code class="docutils literal notranslate"><span class="pre">contrib</span></code> section, will also be
+affected by use of <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>.</p>
+<p>Like the actual ‘cd’ shell builtin, <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a> may be called with relative paths
+(keep in mind that your default starting directory is your remote user’s
+<code class="docutils literal notranslate"><span class="pre">$HOME</span></code>) and may be nested as well.</p>
+<p>Below is a “normal” attempt at using the shell ‘cd’, which doesn’t work due
+to how shell-less SSH connections are implemented – state is <strong>not</strong> kept
+between invocations of <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;cd /var/www&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above snippet will list the contents of the remote user’s <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>
+instead of <code class="docutils literal notranslate"><span class="pre">/var/www</span></code>. With <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, however, it will work as expected:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/var/www&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span> <span class="c1"># Turns into &quot;cd /var/www &amp;&amp; ls&quot;</span>
+</pre></div>
+</div>
+<p>Finally, a demonstration (see inline comments) of nesting:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/var/www&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span> <span class="c1"># cd /var/www &amp;&amp; ls</span>
+    <span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;website1&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span> <span class="c1"># cd /var/www/website1 &amp;&amp; ls</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This context manager is currently implemented by appending to (and, as
+always, restoring afterwards) the current value of an environment
+variable, <code class="docutils literal notranslate"><span class="pre">env.cwd</span></code>. However, this implementation may change in the
+future, so we do not recommend manually altering <code class="docutils literal notranslate"><span class="pre">env.cwd</span></code> – only
+the <em>behavior</em> of <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a> will have any guarantee of backwards
+compatibility.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Space characters will be escaped automatically to make dealing with
+such directory names easier.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Applies to <code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code> in addition to the command-running
+operations.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.char_buffered">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">char_buffered</code><span class="sig-paren">(</span><em>pipe</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.char_buffered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force local terminal <code class="docutils literal notranslate"><span class="pre">pipe</span></code> be character, not line, buffered.</p>
+<p>Only applies on Unix-based systems; on Windows this is a no-op.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.hide">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">hide</code><span class="sig-paren">(</span><em>*groups</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.hide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager for setting the given output <code class="docutils literal notranslate"><span class="pre">groups</span></code> to False.</p>
+<p><code class="docutils literal notranslate"><span class="pre">groups</span></code> must be one or more strings naming the output groups defined in
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">output</span></code>. The given groups will be set to False for the
+duration of the enclosed block, and restored to their previous value
+afterwards.</p>
+<p>For example, to hide the “[hostname] run:” status lines, as well as
+preventing printout of stdout and stderr, one might use <a class="reference internal" href="#fabric.context_managers.hide" title="fabric.context_managers.hide"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide</span></code></a> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">hide</span><span class="p">(</span><span class="s1">&#39;running&#39;</span><span class="p">,</span> <span class="s1">&#39;stdout&#39;</span><span class="p">,</span> <span class="s1">&#39;stderr&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /var/www&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.lcd">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">lcd</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.lcd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager for updating local current working directory.</p>
+<p>This context manager is identical to <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, except
+that it changes a different env var (<code class="xref py py-obj docutils literal notranslate"><span class="pre">lcwd</span></code>, instead of <code class="xref py py-obj docutils literal notranslate"><span class="pre">cwd</span></code>) and thus
+only affects the invocation of <a class="reference internal" href="operations.html#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> and the local
+arguments to <a class="reference internal" href="operations.html#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>/<a class="reference internal" href="operations.html#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a>.</p>
+<p>Relative path arguments are relative to the local user’s current working
+directory, which will vary depending on where Fabric (or Fabric-using code)
+was invoked. You can check what this is with <a class="reference external" href="http://docs.python.org/release/2.6/library/os.html#os.getcwd">os.getcwd</a>. It may be
+useful to pin things relative to the location of the fabfile in use, which
+may be found in <a class="reference internal" href="../../usage/env.html#real-fabfile"><span class="std std-ref">env.real_fabfile</span></a></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="fabric.context_managers.nested">
+<em class="property">class </em><code class="descclassname">fabric.context_managers.</code><code class="descname">nested</code><span class="sig-paren">(</span><em>*managers</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.nested" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="fabric.context_managers.nested.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*managers</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.nested.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.path">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">path</code><span class="sig-paren">(</span><em>path</em>, <em>behavior='append'</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append the given <code class="docutils literal notranslate"><span class="pre">path</span></code> to the PATH used to execute any wrapped commands.</p>
+<p>Any calls to <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code> within the wrapped block will implicitly have
+a string similar to <code class="docutils literal notranslate"><span class="pre">&quot;PATH=$PATH:&lt;path&gt;</span> <span class="pre">&quot;</span></code> prepended before the given
+command.</p>
+<p>You may customize the behavior of <a class="reference internal" href="#fabric.context_managers.path" title="fabric.context_managers.path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">path</span></code></a> by specifying the optional
+<code class="docutils literal notranslate"><span class="pre">behavior</span></code> keyword argument, as follows:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">'append'</span></code>: append given path to the current <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>, e.g.
+<code class="docutils literal notranslate"><span class="pre">PATH=$PATH:&lt;path&gt;</span></code>. This is the default behavior.</li>
+<li><code class="docutils literal notranslate"><span class="pre">'prepend'</span></code>: prepend given path to the current <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>, e.g.
+<code class="docutils literal notranslate"><span class="pre">PATH=&lt;path&gt;:$PATH</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">'replace'</span></code>: ignore previous value of <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> altogether, e.g.
+<code class="docutils literal notranslate"><span class="pre">PATH=&lt;path&gt;</span></code>.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This context manager is currently implemented by modifying (and, as
+always, restoring afterwards) the current value of environment
+variables, <code class="docutils literal notranslate"><span class="pre">env.path</span></code> and <code class="docutils literal notranslate"><span class="pre">env.path_behavior</span></code>. However, this
+implementation may change in the future, so we do not recommend
+manually altering them directly.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.prefix">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">prefix</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefix all wrapped <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>/<code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code> commands with given command plus <code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code>.</p>
+<p>This is nearly identical to <code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code>, except that nested
+invocations append to a list of command strings instead of modifying a
+single string.</p>
+<p>Most of the time, you’ll want to be using this alongside a shell script
+which alters shell state, such as ones which export or alter shell
+environment variables.</p>
+<p>For example, one of the most common uses of this tool is with the
+<code class="docutils literal notranslate"><span class="pre">workon</span></code> command from <a class="reference external" href="http://www.doughellmann.com/projects/virtualenvwrapper/">virtualenvwrapper</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;workon myvenv&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py syncdb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the above snippet, the actual shell command run would be this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ workon myvenv &amp;&amp; ./manage.py syncdb
+</pre></div>
+</div>
+<p>This context manager is compatible with <a class="reference internal" href="#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, so
+if your virtualenv doesn’t <code class="docutils literal notranslate"><span class="pre">cd</span></code> in its <code class="docutils literal notranslate"><span class="pre">postactivate</span></code> script, you could
+do the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s1">&#39;/path/to/app&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;workon myvenv&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py syncdb&#39;</span><span class="p">)</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;./manage.py loaddata myfixture&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which would result in executions like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /path/to/app &amp;&amp; workon myvenv &amp;&amp; ./manage.py syncdb
+$ cd /path/to/app &amp;&amp; workon myvenv &amp;&amp; ./manage.py loaddata myfixture
+</pre></div>
+</div>
+<p>Finally, as alluded to near the beginning,
+<a class="reference internal" href="#fabric.context_managers.prefix" title="fabric.context_managers.prefix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></a> may be nested if desired, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;workon myenv&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">prefix</span><span class="p">(</span><span class="s1">&#39;source /some/script&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;touch a_file&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The result:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ workon myenv &amp;&amp; ls
+$ workon myenv &amp;&amp; source /some/script &amp;&amp; touch a_file
+</pre></div>
+</div>
+<p>Contrived, but hopefully illustrative.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.quiet">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">quiet</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.quiet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to <code class="docutils literal notranslate"><span class="pre">settings(hide('everything'),</span> <span class="pre">warn_only=True)</span></code>.</p>
+<p>Useful for wrapping remote interrogative commands which you expect to fail
+occasionally, and/or which you want to silence.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">quiet</span><span class="p">():</span>
+    <span class="n">have_build_dir</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;test -e /tmp/build&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">succeeded</span>
+</pre></div>
+</div>
+<p>When used in a task, the above snippet will not produce any <code class="docutils literal notranslate"><span class="pre">run:</span> <span class="pre">test</span> <span class="pre">-e</span>
+<span class="pre">/tmp/build</span></code> line, nor will any stdout/stderr display, and command failure
+is ignored.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../usage/env.html#warn-only"><span class="std std-ref">env.warn_only</span></a>,
+<a class="reference internal" href="#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>,
+<a class="reference internal" href="#fabric.context_managers.hide" title="fabric.context_managers.hide"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.remote_tunnel">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">remote_tunnel</code><span class="sig-paren">(</span><em>remote_port</em>, <em>local_port=None</em>, <em>local_host='localhost'</em>, <em>remote_bind_address='127.0.0.1'</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.remote_tunnel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a tunnel forwarding a locally-visible port to the remote target.</p>
+<p>For example, you can let the remote host access a database that is
+installed on the client host:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Map localhost:6379 on the server to localhost:6379 on the client,</span>
+<span class="c1"># so that the remote &#39;redis-cli&#39; program ends up speaking to the local</span>
+<span class="c1"># redis-server.</span>
+<span class="k">with</span> <span class="n">remote_tunnel</span><span class="p">(</span><span class="mi">6379</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s2">&quot;redis-cli -i&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The database might be installed on a client only reachable from the client
+host (as opposed to <em>on</em> the client itself):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Map localhost:6379 on the server to redis.internal:6379 on the client</span>
+<span class="k">with</span> <span class="n">remote_tunnel</span><span class="p">(</span><span class="mi">6379</span><span class="p">,</span> <span class="n">local_host</span><span class="o">=</span><span class="s2">&quot;redis.internal&quot;</span><span class="p">)</span>
+    <span class="n">run</span><span class="p">(</span><span class="s2">&quot;redis-cli -i&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">remote_tunnel</span></code> accepts up to four arguments:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">remote_port</span></code> (mandatory) is the remote port to listen to.</li>
+<li><code class="docutils literal notranslate"><span class="pre">local_port</span></code> (optional) is the local port to connect to; the default is
+the same port as the remote one.</li>
+<li><code class="docutils literal notranslate"><span class="pre">local_host</span></code> (optional) is the locally-reachable computer (DNS name or
+IP address) to connect to; the default is <code class="docutils literal notranslate"><span class="pre">localhost</span></code> (that is, the
+same computer Fabric is running on).</li>
+<li><code class="docutils literal notranslate"><span class="pre">remote_bind_address</span></code> (optional) is the remote IP address to bind to
+for listening, on the current target. It should be an IP address assigned
+to an interface on the target (or a DNS name that resolves to such IP).
+You can use “0.0.0.0” to bind to all interfaces.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, most SSH servers only allow remote tunnels to listen to the
+localhost interface (127.0.0.1). In these cases, <code class="xref py py-obj docutils literal notranslate"><span class="pre">remote_bind_address</span></code>
+is ignored by the server, and the tunnel will listen only to 127.0.0.1.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.settings">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">settings</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nest context managers and/or override <code class="docutils literal notranslate"><span class="pre">env</span></code> variables.</p>
+<p><a class="reference internal" href="#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a> serves two purposes:</p>
+<ul>
+<li><p class="first">Most usefully, it allows temporary overriding/updating of <code class="docutils literal notranslate"><span class="pre">env</span></code> with
+any provided keyword arguments, e.g. <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">settings(user='foo'):</span></code>.
+Original values, if any, will be restored once the <code class="docutils literal notranslate"><span class="pre">with</span></code> block closes.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The keyword argument <code class="docutils literal notranslate"><span class="pre">clean_revert</span></code> has special meaning for
+<code class="docutils literal notranslate"><span class="pre">settings</span></code> itself (see below) and will be stripped out before
+execution.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">In addition, it will use <a class="reference external" href="http://docs.python.org/library/contextlib.html#contextlib.nested">contextlib.nested</a> to nest any given
+non-keyword arguments, which should be other context managers, e.g.
+<code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">settings(hide('stderr'),</span> <span class="pre">show('stdout')):</span></code>.</p>
+</li>
+</ul>
+<p>These behaviors may be specified at the same time if desired. An example
+will hopefully illustrate why this is considered useful:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">settings</span><span class="p">(</span>
+        <span class="n">hide</span><span class="p">(</span><span class="s1">&#39;warnings&#39;</span><span class="p">,</span> <span class="s1">&#39;running&#39;</span><span class="p">,</span> <span class="s1">&#39;stdout&#39;</span><span class="p">,</span> <span class="s1">&#39;stderr&#39;</span><span class="p">),</span>
+        <span class="n">warn_only</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /etc/lsb-release&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;Ubuntu&#39;</span>
+        <span class="k">elif</span> <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /etc/redhat-release&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;RedHat&#39;</span>
+</pre></div>
+</div>
+<p>The above task executes a <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code> statement, but will warn instead of
+aborting if the <code class="docutils literal notranslate"><span class="pre">ls</span></code> fails, and all output – including the warning
+itself – is prevented from printing to the user. The end result, in this
+scenario, is a completely silent task that allows the caller to figure out
+what type of system the remote host is, without incurring the handful of
+output that would normally occur.</p>
+<p>Thus, <a class="reference internal" href="#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a> may be used to set any combination of environment
+variables in tandem with hiding (or showing) specific levels of output, or
+in tandem with any other piece of Fabric functionality implemented as a
+context manager.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">clean_revert</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">settings</span></code> will <strong>not</strong> revert
+keys which are altered within the nested block, instead only reverting keys
+whose values remain the same as those given. More examples will make this
+clear; below is how <code class="docutils literal notranslate"><span class="pre">settings</span></code> operates normally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before the block, env.parallel defaults to False, host_string to None</span>
+<span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host_string</span><span class="o">=</span><span class="s1">&#39;myhost&#39;</span><span class="p">):</span>
+    <span class="c1"># env.parallel is True</span>
+    <span class="c1"># env.host_string is &#39;myhost&#39;</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">host_string</span> <span class="o">=</span> <span class="s1">&#39;otherhost&#39;</span>
+    <span class="c1"># env.host_string is now &#39;otherhost&#39;</span>
+<span class="c1"># Outside the block:</span>
+<span class="c1"># * env.parallel is False again</span>
+<span class="c1"># * env.host_string is None again</span>
+</pre></div>
+</div>
+<p>The internal modification of <code class="docutils literal notranslate"><span class="pre">env.host_string</span></code> is nullified – not always
+desirable. That’s where <code class="docutils literal notranslate"><span class="pre">clean_revert</span></code> comes in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before the block, env.parallel defaults to False, host_string to None</span>
+<span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host_string</span><span class="o">=</span><span class="s1">&#39;myhost&#39;</span><span class="p">,</span> <span class="n">clean_revert</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="c1"># env.parallel is True</span>
+    <span class="c1"># env.host_string is &#39;myhost&#39;</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">host_string</span> <span class="o">=</span> <span class="s1">&#39;otherhost&#39;</span>
+    <span class="c1"># env.host_string is now &#39;otherhost&#39;</span>
+<span class="c1"># Outside the block:</span>
+<span class="c1"># * env.parallel is False again</span>
+<span class="c1"># * env.host_string remains &#39;otherhost&#39;</span>
+</pre></div>
+</div>
+<p>Brand new keys which did not exist in <code class="docutils literal notranslate"><span class="pre">env</span></code> prior to using <code class="docutils literal notranslate"><span class="pre">settings</span></code>
+are also preserved if <code class="docutils literal notranslate"><span class="pre">clean_revert</span></code> is active. When <code class="docutils literal notranslate"><span class="pre">False</span></code>, such keys
+are removed when the block exits.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.1: </span>The <code class="docutils literal notranslate"><span class="pre">clean_revert</span></code> kwarg.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.shell_env">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">shell_env</code><span class="sig-paren">(</span><em>**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.shell_env" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set shell environment variables for wrapped commands.</p>
+<p>For example, the below shows how you might set a ZeroMQ related environment
+variable when installing a Python ZMQ library:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">shell_env</span><span class="p">(</span><span class="n">ZMQ_DIR</span><span class="o">=</span><span class="s1">&#39;/home/user/local&#39;</span><span class="p">):</span>
+    <span class="n">run</span><span class="p">(</span><span class="s1">&#39;pip install pyzmq&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As with <a class="reference internal" href="#fabric.context_managers.prefix" title="fabric.context_managers.prefix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prefix</span></code></a>, this effectively turns the
+<code class="docutils literal notranslate"><span class="pre">run</span></code> command into:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export ZMQ_DIR=&#39;/home/user/local&#39; &amp;&amp; pip install pyzmq
+</pre></div>
+</div>
+<p>Multiple key-value pairs may be given simultaneously.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If used to affect the behavior of <a class="reference internal" href="operations.html#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> when
+running from a Windows localhost, <code class="docutils literal notranslate"><span class="pre">SET</span></code> commands will be used to
+implement this feature.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.show">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">show</code><span class="sig-paren">(</span><em>*groups</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Context manager for setting the given output <code class="docutils literal notranslate"><span class="pre">groups</span></code> to True.</p>
+<p><code class="docutils literal notranslate"><span class="pre">groups</span></code> must be one or more strings naming the output groups defined in
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">output</span></code>. The given groups will be set to True for the
+duration of the enclosed block, and restored to their previous value
+afterwards.</p>
+<p>For example, to turn on debug output (which is typically off by default):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">show</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">):</span>
+        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /var/www&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As almost all output groups are displayed by default, <a class="reference internal" href="#fabric.context_managers.show" title="fabric.context_managers.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a> is most useful
+for turning on the normally-hidden <code class="docutils literal notranslate"><span class="pre">debug</span></code> group, or when you know or
+suspect that code calling your own code is trying to hide output with
+<a class="reference internal" href="#fabric.context_managers.hide" title="fabric.context_managers.hide"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hide</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fabric.context_managers.warn_only">
+<code class="descclassname">fabric.context_managers.</code><code class="descname">warn_only</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fabric.context_managers.warn_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to <code class="docutils literal notranslate"><span class="pre">settings(warn_only=True)</span></code>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../usage/env.html#warn-only"><span class="std std-ref">env.warn_only</span></a>,
+<a class="reference internal" href="#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>,
+<a class="reference internal" href="#fabric.context_managers.quiet" title="fabric.context_managers.quiet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quiet</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/execution.html">Execution model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fab.html"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/library.html">Library Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output_controls.html">Managing output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Color output functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/core/context_managers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

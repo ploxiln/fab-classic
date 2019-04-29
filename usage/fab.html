@@ -1,0 +1,822 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fab options and arguments &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fabfile construction and use" href="fabfiles.html" />
+    <link rel="prev" title="Execution model" href="execution.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fab-options-and-arguments">
+<h1><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments<a class="headerlink" href="#fab-options-and-arguments" title="Permalink to this headline">¶</a></h1>
+<p>The most common method for utilizing Fabric is via its command-line tool,
+<code class="docutils literal notranslate"><span class="pre">fab</span></code>, which should have been placed on your shell’s executable path when
+Fabric was installed. <code class="docutils literal notranslate"><span class="pre">fab</span></code> tries hard to be a good Unix citizen, using a
+standard style of command-line switches, help output, and so forth.</p>
+<div class="section" id="basic-use">
+<h2>Basic use<a class="headerlink" href="#basic-use" title="Permalink to this headline">¶</a></h2>
+<p>In its most simple form, <code class="docutils literal notranslate"><span class="pre">fab</span></code> may be called with no options at all, and
+with one or more arguments, which should be task names, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab task1 task2
+</pre></div>
+</div>
+<p>As detailed in <a class="reference internal" href="../tutorial.html"><span class="doc">Overview and Tutorial</span></a> and <a class="reference internal" href="execution.html"><span class="doc">Execution model</span></a>, this will run <code class="docutils literal notranslate"><span class="pre">task1</span></code>
+followed by <code class="docutils literal notranslate"><span class="pre">task2</span></code>, assuming that Fabric was able to find a fabfile nearby
+containing Python functions with those names.</p>
+<p>However, it’s possible to expand this simple usage into something more
+flexible, by using the provided options and/or passing arguments to individual
+tasks.</p>
+</div>
+<div class="section" id="arbitrary-remote-shell-commands">
+<span id="arbitrary-commands"></span><h2>Arbitrary remote shell commands<a class="headerlink" href="#arbitrary-remote-shell-commands" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.2.</span></p>
+</div>
+<p>Fabric leverages a lesser-known command line convention and may be called in
+the following manner:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab [options] -- [shell command]
+</pre></div>
+</div>
+<p>where everything after the <code class="docutils literal notranslate"><span class="pre">--</span></code> is turned into a temporary
+<a class="reference internal" href="../api/core/operations.html#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> call, and is not parsed for <code class="docutils literal notranslate"><span class="pre">fab</span></code> options. If you’ve
+defined a host list at the module level or on the command line, this usage will
+act like a one-line anonymous task.</p>
+<p>For example, let’s say you just wanted to get the kernel info for a bunch of
+systems; you could do this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab -H system1,system2,system3 -- uname -a
+</pre></div>
+</div>
+<p>which would be literally equivalent to the following fabfile:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span>
+
+<span class="k">def</span> <span class="nf">anonymous</span><span class="p">():</span>
+    <span class="n">run</span><span class="p">(</span><span class="s2">&quot;uname -a&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>as if it were executed thusly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab -H system1,system2,system3 anonymous
+</pre></div>
+</div>
+<p>Most of the time you will want to just write out the task in your fabfile
+(anything you use once, you’re likely to use again) but this feature provides a
+handy, fast way to quickly dash off an SSH-borne command while leveraging your
+fabfile’s connection settings.</p>
+</div>
+<div class="section" id="command-line-options">
+<span id="id1"></span><h2>Command-line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
+<p>A quick overview of all possible command line options can be found via <code class="docutils literal notranslate"><span class="pre">fab</span>
+<span class="pre">--help</span></code>. If you’re looking for details on a specific option, we go into detail
+below.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">fab</span></code> uses Python’s <a class="reference external" href="http://docs.python.org/library/optparse.html">optparse</a> library, meaning that it honors typical
+Linux or GNU style short and long options, as well as freely mixing options
+and arguments. E.g. <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">task1</span> <span class="pre">-H</span> <span class="pre">hostname</span> <span class="pre">task2</span> <span class="pre">-i</span> <span class="pre">path/to/keyfile</span></code> is
+just as valid as the more straightforward <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">-H</span> <span class="pre">hostname</span> <span class="pre">-i</span>
+<span class="pre">path/to/keyfile</span> <span class="pre">task1</span> <span class="pre">task2</span></code>.</p>
+</div>
+<dl class="cmdoption">
+<dt id="cmdoption-a">
+<code class="descname">-a</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--no_agent</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#no-agent"><span class="std std-ref">env.no_agent</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, forcing our SSH layer not
+to talk to the SSH agent when trying to unlock private key files.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-forward-agent">
+<code class="descname">-A</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--forward-agent</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-forward-agent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#forward-agent"><span class="std std-ref">env.forward_agent</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, enabling agent
+forwarding.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-abort-on-prompts">
+<code class="descname">--abort-on-prompts</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-abort-on-prompts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#abort-on-prompts"><span class="std std-ref">env.abort_on_prompts</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, forcing
+Fabric to abort whenever it would prompt for input.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-c">
+<code class="descname">-c</code><code class="descclassname"> RCFILE</code><code class="descclassname">, </code><code class="descname">--config</code><code class="descclassname">=RCFILE</code><a class="headerlink" href="#cmdoption-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#rcfile"><span class="std std-ref">env.rcfile</span></a> to the given file path, which Fabric will
+try to load on startup and use to update environment variables.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-d">
+<code class="descname">-d</code><code class="descclassname"> COMMAND</code><code class="descclassname">, </code><code class="descname">--display</code><code class="descclassname">=COMMAND</code><a class="headerlink" href="#cmdoption-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the entire docstring for the given task, if there is one. Does not
+currently print out the task’s function signature, so descriptive
+docstrings are a good idea. (They’re <em>always</em> a good idea, of course –
+just moreso here.)</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-connection-attempts">
+<code class="descname">--connection-attempts</code><code class="descclassname">=M</code><code class="descclassname">, </code><code class="descname">-n</code><code class="descclassname"> M</code><a class="headerlink" href="#cmdoption-connection-attempts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set number of times to attempt connections. Sets
+<a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a>,
+<a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-disable-known-hosts">
+<code class="descname">-D</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--disable-known-hosts</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-disable-known-hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#disable-known-hosts"><span class="std std-ref">env.disable_known_hosts</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+preventing Fabric from loading the user’s SSH <code class="file docutils literal notranslate"><span class="pre">known_hosts</span></code> file.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-f">
+<code class="descname">-f</code><code class="descclassname"> FABFILE</code><code class="descclassname">, </code><code class="descname">--fabfile</code><code class="descclassname">=FABFILE</code><a class="headerlink" href="#cmdoption-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fabfile name pattern to search for (defaults to <code class="docutils literal notranslate"><span class="pre">fabfile.py</span></code>), or
+alternately an explicit file path to load as the fabfile (e.g.
+<code class="docutils literal notranslate"><span class="pre">/path/to/my/fabfile.py</span></code>.)</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="fabfiles.html"><span class="doc">Fabfile construction and use</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-list-format">
+<code class="descname">-F</code><code class="descclassname"> LIST_FORMAT</code><code class="descclassname">, </code><code class="descname">--list-format</code><code class="descclassname">=LIST_FORMAT</code><a class="headerlink" href="#cmdoption-list-format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows control over the output format of <a class="reference internal" href="#cmdoption-l"><code class="xref std std-option docutils literal notranslate"><span class="pre">--list</span></code></a>. <code class="docutils literal notranslate"><span class="pre">short</span></code> is
+equivalent to <a class="reference internal" href="#cmdoption-shortlist"><code class="xref std std-option docutils literal notranslate"><span class="pre">--shortlist</span></code></a>, <code class="docutils literal notranslate"><span class="pre">normal</span></code> is the same as simply
+omitting this option entirely (i.e. the default), and <code class="docutils literal notranslate"><span class="pre">nested</span></code> prints out
+a nested namespace tree.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cmdoption-shortlist"><code class="xref std std-option docutils literal notranslate"><span class="pre">--shortlist</span></code></a>, <a class="reference internal" href="#cmdoption-l"><code class="xref std std-option docutils literal notranslate"><span class="pre">--list</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-g">
+<code class="descname">-g</code><code class="descclassname"> HOST</code><code class="descclassname">, </code><code class="descname">--gateway</code><code class="descclassname">=HOST</code><a class="headerlink" href="#cmdoption-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#gateway"><span class="std std-ref">env.gateway</span></a> to <code class="docutils literal notranslate"><span class="pre">HOST</span></code> host string.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-gss-auth">
+<code class="descname">--gss-auth</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-gss-auth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles use of GSS-API authentication.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#kerberos"><span class="std std-ref">gss_(auth|deleg|kex)</span></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-gss-deleg">
+<code class="descname">--gss-deleg</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-gss-deleg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether GSS-API client credentials are delegated.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#kerberos"><span class="std std-ref">gss_(auth|deleg|kex)</span></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-gss-kex">
+<code class="descname">--gss-kex</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-gss-kex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggles whether GSS-API key exchange is used.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#kerberos"><span class="std std-ref">gss_(auth|deleg|kex)</span></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-h">
+<code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a standard help message, with all possible options and a brief
+overview of what they do, then exits.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-hide">
+<code class="descname">--hide</code><code class="descclassname">=LEVELS</code><a class="headerlink" href="#cmdoption-hide" title="Permalink to this definition">¶</a></dt>
+<dd><p>A comma-separated list of <a class="reference internal" href="output_controls.html"><span class="doc">output levels</span></a> to hide by
+default.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-hosts">
+<code class="descname">-H</code><code class="descclassname"> HOSTS</code><code class="descclassname">, </code><code class="descname">--hosts</code><code class="descclassname">=HOSTS</code><a class="headerlink" href="#cmdoption-hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#hosts"><span class="std std-ref">env.hosts</span></a> to the given comma-delimited list of host
+strings.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-x">
+<code class="descname">-x</code><code class="descclassname"> HOSTS</code><code class="descclassname">, </code><code class="descname">--exclude-hosts</code><code class="descclassname">=HOSTS</code><a class="headerlink" href="#cmdoption-x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#exclude-hosts"><span class="std std-ref">env.exclude_hosts</span></a> to the given comma-delimited
+list of host strings to then keep out of the final host list.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-i">
+<code class="descname">-i</code><code class="descclassname"> KEY_FILENAME</code><a class="headerlink" href="#cmdoption-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>When set to a file path, will load the given file as an SSH identity file
+(usually a private key.) This option may be repeated multiple times. Sets
+(or appends to) <a class="reference internal" href="env.html#key-filename"><span class="std std-ref">env.key_filename</span></a>.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-initial-password-prompt">
+<code class="descname">-I</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--initial-password-prompt</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-initial-password-prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forces a password prompt at the start of the session (after fabfile load
+and option parsing, but before executing any tasks) in order to pre-fill
+<a class="reference internal" href="env.html#password"><span class="std std-ref">env.password</span></a>.</p>
+<p>This is useful for fire-and-forget runs (especially parallel sessions, in
+which runtime input is not possible) when setting the password via
+<a class="reference internal" href="#cmdoption-p"><code class="xref std std-option docutils literal notranslate"><span class="pre">--password</span></code></a> or by setting <a class="reference internal" href="env.html#password"><span class="std std-ref">env.password</span></a> in
+your fabfile, is undesirable.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The value entered into this prompt will <em>overwrite</em> anything
+supplied via <a class="reference internal" href="env.html#password"><span class="std std-ref">env.password</span></a> at module level, or via
+<a class="reference internal" href="#cmdoption-p"><code class="xref std std-option docutils literal notranslate"><span class="pre">--password</span></code></a>.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="execution.html#password-management"><span class="std std-ref">Password management</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-initial-sudo-password-prompt">
+<code class="descname">--initial-sudo-password-prompt</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-initial-sudo-password-prompt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like <a class="reference internal" href="#cmdoption-initial-password-prompt"><code class="xref std std-option docutils literal notranslate"><span class="pre">--initial-password-prompt</span></code></a>, but for prefilling
+<a class="reference internal" href="env.html#sudo-password"><span class="std std-ref">sudo_password</span></a> instead of <a class="reference internal" href="env.html#password"><span class="std std-ref">password</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.12.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-k">
+<code class="descname">-k</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#no-keys"><span class="std std-ref">env.no_keys</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, forcing the SSH layer to not
+look for SSH private key files in one’s home directory.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-keepalive">
+<code class="descname">--keepalive</code><code class="descclassname">=KEEPALIVE</code><a class="headerlink" href="#cmdoption-keepalive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#keepalive"><span class="std std-ref">env.keepalive</span></a> to the given (integer) value, specifying an SSH keepalive interval.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-linewise">
+<code class="descname">--linewise</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-linewise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forces output to be buffered line-by-line instead of byte-by-byte. Often useful or required for <a class="reference internal" href="parallel.html#linewise-output"><span class="std std-ref">parallel execution</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.3.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-l">
+<code class="descname">-l</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--list</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports a fabfile as normal, but then prints a list of all discovered tasks
+and exits. Will also print the first line of each task’s docstring, if it
+has one, next to it (truncating if necessary.)</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.1: </span>Added docstring to output.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cmdoption-shortlist"><code class="xref std std-option docutils literal notranslate"><span class="pre">--shortlist</span></code></a>, <a class="reference internal" href="#cmdoption-list-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">--list-format</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-p">
+<code class="descname">-p</code><code class="descclassname"> PASSWORD</code><code class="descclassname">, </code><code class="descname">--password</code><code class="descclassname">=PASSWORD</code><a class="headerlink" href="#cmdoption-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#password"><span class="std std-ref">env.password</span></a> to the given string; it will then be
+used as the default password when making SSH connections or calling the
+<code class="docutils literal notranslate"><span class="pre">sudo</span></code> program.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cmdoption-initial-password-prompt"><code class="xref std std-option docutils literal notranslate"><span class="pre">--initial-password-prompt</span></code></a>,
+<a class="reference internal" href="#cmdoption-sudo-password"><code class="xref std std-option docutils literal notranslate"><span class="pre">--sudo-password</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-parallel">
+<code class="descname">-P</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--parallel</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#env-parallel"><span class="std std-ref">env.parallel</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, causing
+tasks to run in parallel.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.3.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="parallel.html"><span class="doc">Parallel execution</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-no-pty">
+<code class="descname">--no-pty</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-no-pty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#always-use-pty"><span class="std std-ref">env.always_use_pty</span></a> to <code class="docutils literal notranslate"><span class="pre">False</span></code>, causing all
+<a class="reference internal" href="../api/core/operations.html#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>/<a class="reference internal" href="../api/core/operations.html#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a> calls to behave as if
+one had specified <code class="docutils literal notranslate"><span class="pre">pty=False</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-r">
+<code class="descname">-r</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--reject-unknown-hosts</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#reject-unknown-hosts"><span class="std std-ref">env.reject_unknown_hosts</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+causing Fabric to abort when connecting to hosts not found in the user’s SSH
+<code class="file docutils literal notranslate"><span class="pre">known_hosts</span></code> file.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-roles">
+<code class="descname">-R</code><code class="descclassname"> ROLES</code><code class="descclassname">, </code><code class="descname">--roles</code><code class="descclassname">=ROLES</code><a class="headerlink" href="#cmdoption-roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#roles"><span class="std std-ref">env.roles</span></a> to the given comma-separated list of role
+names.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-set">
+<code class="descname">--set</code><code class="descclassname"> KEY=VALUE,...</code><a class="headerlink" href="#cmdoption-set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows you to set default values for arbitrary Fabric env vars. Values set
+this way have a low precedence – they will not override more specific env
+vars which are also specified on the command line. E.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fab</span> <span class="o">--</span><span class="nb">set</span> <span class="n">password</span><span class="o">=</span><span class="n">foo</span> <span class="o">--</span><span class="n">password</span><span class="o">=</span><span class="n">bar</span>
+</pre></div>
+</div>
+<p>will result in <code class="docutils literal notranslate"><span class="pre">env.password</span> <span class="pre">=</span> <span class="pre">'bar'</span></code>, not <code class="docutils literal notranslate"><span class="pre">'foo'</span></code></p>
+<p>Multiple <code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code> pairs may be comma-separated, e.g. <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">--set</span>
+<span class="pre">var1=val1,var2=val2</span></code>.</p>
+<p>Other than basic string values, you may also set env vars to True by
+omitting the <code class="docutils literal notranslate"><span class="pre">=VALUE</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">--set</span> <span class="pre">KEY</span></code>), and you may set values to
+the empty string (and thus a False-equivalent value) by keeping the equals
+sign, but omitting <code class="docutils literal notranslate"><span class="pre">VALUE</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">--set</span> <span class="pre">KEY=</span></code>.)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-s">
+<code class="descname">-s</code><code class="descclassname"> SHELL</code><code class="descclassname">, </code><code class="descname">--shell</code><code class="descclassname">=SHELL</code><a class="headerlink" href="#cmdoption-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#shell"><span class="std std-ref">env.shell</span></a> to the given string, overriding the default
+shell wrapper used to execute remote commands.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-shortlist">
+<code class="descname">--shortlist</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-shortlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <a class="reference internal" href="#cmdoption-l"><code class="xref std std-option docutils literal notranslate"><span class="pre">--list</span></code></a>, but without any embellishment, just task
+names separated by newlines with no indentation or docstrings.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.2.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cmdoption-l"><code class="xref std std-option docutils literal notranslate"><span class="pre">--list</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-show">
+<code class="descname">--show</code><code class="descclassname">=LEVELS</code><a class="headerlink" href="#cmdoption-show" title="Permalink to this definition">¶</a></dt>
+<dd><p>A comma-separated list of <a class="reference internal" href="output_controls.html"><span class="doc">output levels</span></a> to
+be added to those that are shown by
+default.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../api/core/operations.html#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, <a class="reference internal" href="../api/core/operations.html#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-ssh-config-path">
+<code class="descname">--ssh-config-path</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-ssh-config-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#ssh-config-path"><span class="std std-ref">env.ssh_config_path</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="execution.html#ssh-config"><span class="std std-ref">Leveraging native SSH config files</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-skip-bad-hosts">
+<code class="descname">--skip-bad-hosts</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-skip-bad-hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#skip-bad-hosts"><span class="std std-ref">env.skip_bad_hosts</span></a>, causing Fabric to skip
+unavailable hosts.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-skip-unknown-tasks">
+<code class="descname">--skip-unknown-tasks</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-skip-unknown-tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#skip-unknown-tasks"><span class="std std-ref">env.skip_unknown_tasks</span></a>, causing Fabric to
+skip unknown tasks.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#skip-unknown-tasks"><span class="std std-ref">env.skip_unknown_tasks</span></a></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-sudo-password">
+<code class="descname">--sudo-password</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-sudo-password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#sudo-password"><span class="std std-ref">env.sudo_password</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.12.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-timeout">
+<code class="descname">--timeout</code><code class="descclassname">=N</code><code class="descclassname">, </code><code class="descname">-t</code><code class="descclassname"> N</code><a class="headerlink" href="#cmdoption-timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set connection timeout in seconds. Sets <a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a>,
+<a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-command-timeout">
+<code class="descname">--command-timeout</code><code class="descclassname">=N</code><code class="descclassname">, </code><code class="descname">-T</code><code class="descclassname"> N</code><a class="headerlink" href="#cmdoption-command-timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set remote command timeout in seconds. Sets
+<a class="reference internal" href="env.html#command-timeout"><span class="std std-ref">env.command_timeout</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="env.html#command-timeout"><span class="std std-ref">env.command_timeout</span></a>,</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-u">
+<code class="descname">-u</code><code class="descclassname"> USER</code><code class="descclassname">, </code><code class="descname">--user</code><code class="descclassname">=USER</code><a class="headerlink" href="#cmdoption-u" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#user"><span class="std std-ref">env.user</span></a> to the given string; it will then be used as the
+default username when making SSH connections.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-v">
+<code class="descname">-V</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--version</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays Fabric’s version number, then exits.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-w">
+<code class="descname">-w</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--warn-only</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#warn-only"><span class="std std-ref">env.warn_only</span></a> to <code class="docutils literal notranslate"><span class="pre">True</span></code>, causing Fabric to
+continue execution even when commands encounter error conditions.</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-z">
+<code class="descname">-z</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--pool-size</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets <a class="reference internal" href="env.html#pool-size"><span class="std std-ref">env.pool_size</span></a>, which specifies how many processes
+to run concurrently during parallel execution.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.3.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="parallel.html"><span class="doc">Parallel execution</span></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="per-task-arguments">
+<span id="task-arguments"></span><h2>Per-task arguments<a class="headerlink" href="#per-task-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The options given in <a class="reference internal" href="#command-line-options"><span class="std std-ref">Command-line options</span></a> apply to the invocation of
+<code class="docutils literal notranslate"><span class="pre">fab</span></code> as a whole; even if the order is mixed around, options still apply to
+all given tasks equally. Additionally, since tasks are just Python functions,
+it’s often desirable to pass in arguments to them at runtime.</p>
+<p>Answering both these needs is the concept of “per-task arguments”, which is a
+special syntax you can tack onto the end of any task name:</p>
+<ul class="simple">
+<li>Use a colon (<code class="docutils literal notranslate"><span class="pre">:</span></code>) to separate the task name from its arguments;</li>
+<li>Use commas (<code class="docutils literal notranslate"><span class="pre">,</span></code>) to separate arguments from one another (may be escaped
+by using a backslash, i.e. <code class="docutils literal notranslate"><span class="pre">\,</span></code>);</li>
+<li>Use equals signs (<code class="docutils literal notranslate"><span class="pre">=</span></code>) for keyword arguments, or omit them for positional
+arguments. May also be escaped with backslashes.</li>
+</ul>
+<p>Additionally, since this process involves string parsing, all values will end
+up as Python strings, so plan accordingly. (We hope to improve upon this in
+future versions of Fabric, provided an intuitive syntax can be found.)</p>
+<p>For example, a “create a new user” task might be defined like so (omitting most
+of the actual logic for brevity):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">admin</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;No comment provided&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New User (</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>You can specify just the username:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:myusername
+</pre></div>
+</div>
+<p>Or treat it as an explicit keyword argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:username=myusername
+</pre></div>
+</div>
+<p>If both args are given, you can again give them as positional args:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:myusername,yes
+</pre></div>
+</div>
+<p>Or mix and match, just like in Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:myusername,admin=yes
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">print</span></code> call above is useful for illustrating escaped commas, like
+so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:myusername,admin=no,comment=&#39;Gary\, new developer (starts Monday)&#39;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Quoting the backslash-escaped comma is required, as not doing so will cause
+shell syntax errors. Quotes are also needed whenever an argument involves
+other shell-related characters such as spaces.</p>
+</div>
+<p>All of the above are translated into the expected Python function calls. For
+example, the last call above would become:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_user</span><span class="p">(</span><span class="s1">&#39;myusername&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">=</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;Gary, new developer (starts Monday)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="roles-and-hosts">
+<h3>Roles and hosts<a class="headerlink" href="#roles-and-hosts" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned in <a class="reference internal" href="execution.html#hosts-per-task-cli"><span class="std std-ref">the section on task execution</span></a>,
+there are a handful of per-task keyword arguments (<code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">hosts</span></code>,
+<code class="docutils literal notranslate"><span class="pre">role</span></code> and <code class="docutils literal notranslate"><span class="pre">roles</span></code>) which do not actually map to the task functions
+themselves, but are used for setting per-task host and/or role lists.</p>
+<p>These special kwargs are <strong>removed</strong> from the args/kwargs sent to the task
+function itself; this is so that you don’t run into TypeErrors if your task
+doesn’t define the kwargs in question. (It also means that if you <strong>do</strong> define
+arguments with these names, you won’t be able to specify them in this manner –
+a regrettable but necessary sacrifice.)</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If both the plural and singular forms of these kwargs are given, the value
+of the plural will win out and the singular will be discarded.</p>
+</div>
+<p>When using the plural form of these arguments, one must use semicolons (<code class="docutils literal notranslate"><span class="pre">;</span></code>)
+since commas are already being used to separate arguments from one another.
+Furthermore, since your shell is likely to consider semicolons a special
+character, you’ll want to quote the host list string to prevent shell
+interpretation, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fab new_user:myusername,hosts=&quot;host1;host2&quot;
+</pre></div>
+</div>
+<p>Again, since the <code class="docutils literal notranslate"><span class="pre">hosts</span></code> kwarg is removed from the argument list sent to the
+<code class="docutils literal notranslate"><span class="pre">new_user</span></code> task function, the actual Python invocation would be
+<code class="docutils literal notranslate"><span class="pre">new_user('myusername')</span></code>, and the function would be executed on a host list
+of <code class="docutils literal notranslate"><span class="pre">['host1',</span> <span class="pre">'host2']</span></code>.</p>
+</div>
+</div>
+<div class="section" id="settings-files">
+<span id="fabricrc"></span><h2>Settings files<a class="headerlink" href="#settings-files" title="Permalink to this headline">¶</a></h2>
+<p>Fabric currently honors a simple user settings file, or <code class="docutils literal notranslate"><span class="pre">fabricrc</span></code> (think
+<code class="docutils literal notranslate"><span class="pre">bashrc</span></code> but for <code class="docutils literal notranslate"><span class="pre">fab</span></code>) which should contain one or more key-value pairs,
+one per line. These lines will be subject to <code class="docutils literal notranslate"><span class="pre">string.split('=')</span></code>, and thus
+can currently only be used to specify string settings. Any such key-value pairs
+will be used to update <a class="reference internal" href="env.html"><span class="doc">env</span></a> when <code class="docutils literal notranslate"><span class="pre">fab</span></code> runs, and is loaded prior
+to the loading of any fabfile.</p>
+<p>By default, Fabric looks for <code class="docutils literal notranslate"><span class="pre">~/.fabricrc</span></code>, and this may be overridden by
+specifying the <a class="reference internal" href="#cmdoption-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">-c</span></code></a> flag to <code class="docutils literal notranslate"><span class="pre">fab</span></code>.</p>
+<p>For example, if your typical SSH login username differs from your workstation
+username, and you don’t want to modify <code class="docutils literal notranslate"><span class="pre">env.user</span></code> in a project’s fabfile
+(possibly because you expect others to use it as well) you could write a
+<code class="docutils literal notranslate"><span class="pre">fabricrc</span></code> file like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">ssh_user_name</span>
+</pre></div>
+</div>
+<p>Then, when running <code class="docutils literal notranslate"><span class="pre">fab</span></code>, your fabfile would load up with <code class="docutils literal notranslate"><span class="pre">env.user</span></code> set to
+<code class="docutils literal notranslate"><span class="pre">'ssh_user_name'</span></code>. Other users of that fabfile could do the same, allowing
+the fabfile itself to be cleanly agnostic regarding the default username.</p>
+</div>
+<div class="section" id="exit-status">
+<h2>Exit status<a class="headerlink" href="#exit-status" title="Permalink to this headline">¶</a></h2>
+<p>If <code class="docutils literal notranslate"><span class="pre">fab</span></code> executes all commands on all hosts successfully, success (0) is returned.</p>
+<p>Otherwise,</p>
+<ul class="simple">
+<li>If an invalid command or option is specified, <code class="docutils literal notranslate"><span class="pre">fab</span></code> aborts with an exit
+status of 1.</li>
+<li>If a connection to a host fails, <code class="docutils literal notranslate"><span class="pre">fab</span></code> aborts with an exit status of 1. It
+will not try the next host.</li>
+<li>If a local or remote command fails (returns non-zero status), <code class="docutils literal notranslate"><span class="pre">fab</span></code> aborts
+with an exit status of 1. The exit status of the original command can be
+found in the log.</li>
+<li>If a Python exception is thrown, <code class="docutils literal notranslate"><span class="pre">fab</span></code> aborts with an exit status of 1.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="execution.html">Execution model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-use">Basic use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arbitrary-remote-shell-commands">Arbitrary remote shell commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-options">Command-line options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#per-task-arguments">Per-task arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#settings-files">Settings files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit-status">Exit status</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Library Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_controls.html">Managing output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/colors.html">Color output functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/context_managers.html">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/core/utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/fab.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

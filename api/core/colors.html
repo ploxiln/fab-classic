@@ -1,0 +1,215 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Color output functions &#8212; fab-classic  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Context Managers" href="context_managers.html" />
+    <link rel="prev" title="Frequently Asked Questions (FAQ)" href="../../faq.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fabric.colors">
+<span id="color-output-functions"></span><h1>Color output functions<a class="headerlink" href="#module-fabric.colors" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.2.</span></p>
+</div>
+<p>Functions for wrapping strings in ANSI color codes.</p>
+<p>Each function within this module returns the input string <code class="docutils literal notranslate"><span class="pre">text</span></code>, wrapped
+with ANSI color codes for the appropriate color.</p>
+<p>For example, to print some text as green on supporting terminals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="k">import</span> <span class="n">green</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;This text is green!&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Because these functions simply return modified strings, you can nest them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="k">import</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">red</span><span class="p">(</span><span class="s2">&quot;This sentence is red, except for &quot;</span> <span class="o">+</span>           <span class="n">green</span><span class="p">(</span><span class="s2">&quot;these words, which are green&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">bold</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the ANSI flag for bolding will be flipped on
+for that particular invocation, which usually shows up as a bold or brighter
+version of the original color on most terminals.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.11: </span>Added support for the shell env var <code class="docutils literal notranslate"><span class="pre">FABRIC_DISABLE_COLORS</span></code>; if this
+variable is present and set to any non-empty value, all colorization driven
+by this module will be skipped/disabled.</p>
+</div>
+<dl class="function">
+<dt id="fabric.colors.blue">
+<code class="descclassname">fabric.colors.</code><code class="descname">blue</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.cyan">
+<code class="descclassname">fabric.colors.</code><code class="descname">cyan</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.cyan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.green">
+<code class="descclassname">fabric.colors.</code><code class="descname">green</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.magenta">
+<code class="descclassname">fabric.colors.</code><code class="descname">magenta</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.magenta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.red">
+<code class="descclassname">fabric.colors.</code><code class="descname">red</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.white">
+<code class="descclassname">fabric.colors.</code><code class="descname">white</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.white" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fabric.colors.yellow">
+<code class="descclassname">fabric.colors.</code><code class="descname">yellow</code><span class="sig-paren">(</span><em>text</em>, <em>bold=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.colors.yellow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">fab-classic</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Pythonic remote execution</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ploxiln&repo=fab-classic&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
+    <img
+        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Overview and Tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/env.html">The environment dictionary, <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/execution.html">Execution model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fab.html"><code class="docutils literal notranslate"><span class="pre">fab</span></code> options and arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/fabfiles.html">Fabfile construction and use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/interactivity.html">Interaction with remote programs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/library.html">Library Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/output_controls.html">Managing output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/parallel.html">Parallel execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/ssh.html">SSH behavior</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/tasks.html">Defining tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Color output functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context_managers.html">Context Managers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="decorators.html">Decorators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs.html">Documentation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operations.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/console.html">Console Output Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/django.html">Django Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/files.html">File and Directory Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contrib/project.html">Project Tools</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../running_tests.html">Running Fabric’s Tests</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;Fabric authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/api/core/colors.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
