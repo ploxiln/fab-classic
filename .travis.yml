@@ -9,6 +9,10 @@ python:
 install:
   # Build/test dependencies
   - pip install -r dev-requirements.txt
+  # docs site dependencies
+  - if [ $TRAVIS_PYTHON_VERSION = 3.6 ]; then
+        pip install -r doc-requirements.txt;
+    fi
   # install fab to test fab
   - pip install -e .
 before_script:
@@ -26,6 +30,10 @@ script:
   - fab test
   # Integration tests
   - fab -H localhost test:integration
+  # test docs build
+  - if [ $TRAVIS_PYTHON_VERSION = 3.6 ]; then
+        sphinx-build -W sites/docs tmpbuild;
+    fi
 branches:
   only:
   - master

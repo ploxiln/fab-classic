@@ -286,7 +286,6 @@ aforementioned SSH library.
 Is Fabric thread-safe?
 ======================
 
-Currently, no, it's not -- the present version of Fabric relies heavily on
-shared state in order to keep the codebase simple. However, there are definite
-plans to update its internals so that Fabric may be either threaded or
-otherwise parallelized so your tasks can run on multiple servers concurrently.
+Currently, no, it's not -- Fabric-1.x and fab-classic rely heavily on
+shared state in order to keep the codebase simple. For a re-design
+that fixes this, check out `Fabric-2.x <https://github.com/fabric/fabric>`_
