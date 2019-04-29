@@ -34,9 +34,9 @@
             
   <div class="section" id="welcome-to-fabric-s-documentation">
 <h1>Welcome to Fabric’s documentation!<a class="headerlink" href="#welcome-to-fabric-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>This site covers Fabric’s usage &amp; API documentation. For basic info on what
-Fabric is, including its public changelog &amp; how the project is maintained,
-please see <a class="reference external" href="http://fabfile.org">the main project website</a>.</p>
+<p>This site covers <strong>fab-classic</strong>’s usage &amp; API documentation. fab-classic is still usually
+referred to as Fabric in the documentation, and it is still imported as <code class="docutils literal notranslate"><span class="pre">fabric</span></code>.</p>
+<p>See also: the GitHub project page at <a class="reference external" href="https://github.com/ploxiln/fab-classic/">https://github.com/ploxiln/fab-classic/</a></p>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <p>For new users, and/or for an overview of Fabric’s basic functionality, please
@@ -120,21 +120,11 @@ documentation, which expands upon the concepts outlined in the
 <li class="toctree-l2"><a class="reference internal" href="usage/tasks.html#classic-tasks">Classic tasks</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#fabric-installs-but-doesn-t-run">Fabric installs but doesn’t run!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#how-do-i-dynamically-set-host-lists">How do I dynamically set host lists?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#how-can-i-run-something-after-my-task-is-done-on-all-hosts">How can I run something after my task is done on all hosts?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#init-scripts-don-t-work">Init scripts don’t work!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#my-cd-workon-export-etc-calls-don-t-seem-to-work">My (<code class="docutils literal notranslate"><span class="pre">cd</span></code>/<code class="docutils literal notranslate"><span class="pre">workon</span></code>/<code class="docutils literal notranslate"><span class="pre">export</span></code>/etc) calls don’t seem to work!</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#how-do-i-use-su-to-run-commands-as-another-user">How do I use <code class="docutils literal notranslate"><span class="pre">su</span></code> to run commands as another user?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#why-do-i-sometimes-see-err-stdin-is-not-a-tty">Why do I sometimes see <code class="docutils literal notranslate"><span class="pre">err:</span> <span class="pre">stdin:</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">tty</span></code>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-t-i-run-programs-in-the-background-with-it-makes-fabric-hang">Why can’t I run programs in the background with <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>? It makes Fabric hang.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#my-remote-system-doesn-t-have-bash-installed-by-default-do-i-need-to-install-bash">My remote system doesn’t have <code class="docutils literal notranslate"><span class="pre">bash</span></code> installed by default, do I need to install <code class="docutils literal notranslate"><span class="pre">bash</span></code>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#i-use-csh-remotely-and-keep-getting-errors-about-unmatched">I use <code class="docutils literal notranslate"><span class="pre">csh</span></code> remotely and keep getting errors about <code class="docutils literal notranslate"><span class="pre">Unmatched</span> <span class="pre">&quot;.</span></code>.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#i-m-sometimes-incorrectly-asked-for-a-passphrase-instead-of-a-password">I’m sometimes incorrectly asked for a passphrase instead of a password.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#is-fabric-thread-safe">Is Fabric thread-safe?</a></li>
 </ul>
-</li>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
 </ul>
 </div>
 </div>
@@ -182,6 +172,14 @@ backwards-compatible) as more use-cases are solved and added.</p>
 <h2>Contributing &amp; Running Tests<a class="headerlink" href="#contributing-running-tests" title="Permalink to this headline">¶</a></h2>
 <p>For advanced users &amp; developers looking to help fix bugs or add new features.</p>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="running_tests.html">Running Fabric’s Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running_tests.html#first-time-setup">First-time Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_tests.html#running-tests">Running Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="old_changelog.html">Old Changelog</a></li>
+</ul>
 </div>
 </div>
 </div>
@@ -245,6 +243,8 @@ backwards-compatible) as more use-cases are solved and added.</p>
 <li class="toctree-l1"><a class="reference internal" href="usage/parallel.html">Parallel execution</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/ssh.html">SSH behavior</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/tasks.html">Defining tasks</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
 </ul>
 <ul>
@@ -265,6 +265,7 @@ backwards-compatible) as more use-cases are solved and added.</p>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="running_tests.html">Running Fabric’s Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="old_changelog.html">Old Changelog</a></li>
 </ul>
 
 
