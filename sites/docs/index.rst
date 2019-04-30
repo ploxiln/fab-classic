@@ -39,6 +39,7 @@ documentation, which expands upon the concepts outlined in the
 .. toctree::
     :maxdepth: 1
 
+    troubleshooting
     faq
 
 
