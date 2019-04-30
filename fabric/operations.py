@@ -125,8 +125,7 @@ def require(*keys, **kwargs):
             command = "one of the following commands"
         else:
             command = "the following command"
-        to_s = lambda obj: getattr(obj, '__name__', str(obj))
-        provided_by = [to_s(obj) for obj in funcs]
+        provided_by = [getattr(obj, '__name__', str(obj)) for obj in funcs]
         msg += "\n\nTry running %s prior to this one, to fix the problem:\n%s"\
             % (command, indent(provided_by))
     abort(msg)

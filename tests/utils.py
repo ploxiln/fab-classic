@@ -99,10 +99,13 @@ def password_response(password, times_called=None, silent=True):
         passwords = [password]
     else:
         passwords = list(password)
+
     # Optional echoing of prompt to mimic real behavior of getpass
     # NOTE: also echo a newline if the prompt isn't a "passthrough" from the
     # server (as it means the server won't be sending its own newline for us).
-    echo = lambda x, y: y.write(x + ("\n" if x != " " else ""))
+    def echo(x, y):
+        return y.write(x + ("\n" if x != " " else ""))
+
     # Always return first (only?) password right away
     fake = fake.returns(passwords.pop(0))
     if not silent:

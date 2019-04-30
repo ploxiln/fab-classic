@@ -6,9 +6,10 @@ from fabric.network import ssh
 
 
 class FakeFile(six.StringIO):
-
     def __init__(self, value=None, path=None):
-        init = lambda x: six.StringIO.__init__(self, x)
+        def init(x):
+            six.StringIO.__init__(self, x)
+
         if value is None:
             init("")
             ftype = 'dir'

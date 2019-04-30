@@ -387,7 +387,9 @@ class TestMultipleOKReturnCodes(FabricTest):
 
 
 slow_server = server(responses={'slow': ['', '', 0, 3]})
-slow = lambda x: slow_server(raises(CommandTimeout)(x))
+
+def slow(x):
+    return slow_server(raises(CommandTimeout)(x))
 
 class TestRun(FabricTest):
     """

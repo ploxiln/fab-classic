@@ -566,8 +566,8 @@ def remote_tunnel(remote_port, local_port=None, local_host="localhost",
         transport.cancel_port_forward(remote_bind_address, remote_port)
 
 
-quiet = lambda: settings(hide('everything'), warn_only=True)
-quiet.__doc__ = """
+def quiet():
+    """
     Alias to ``settings(hide('everything'), warn_only=True)``.
 
     Useful for wrapping remote interrogative commands which you expect to fail
@@ -588,15 +588,17 @@ quiet.__doc__ = """
         `~fabric.context_managers.hide`
 
     .. versionadded:: 1.5
-"""
+    """
+    return settings(hide('everything'), warn_only=True)
 
 
-warn_only = lambda: settings(warn_only=True)
-warn_only.__doc__ = """
+def warn_only():
+    """
     Alias to ``settings(warn_only=True)``.
 
     .. seealso::
         :ref:`env.warn_only <warn_only>`,
         `~fabric.context_managers.settings`,
         `~fabric.context_managers.quiet`
-"""
+    """
+    return settings(warn_only=True)

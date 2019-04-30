@@ -44,7 +44,7 @@ def abort(msg):
     """
     from fabric.state import output, env
     if not env.colorize_errors:
-        red = lambda x: x
+        red = lambda x: x  # noqa: E731
     else:
         from fabric.colors import red
 
@@ -76,7 +76,7 @@ def warn(msg):
     from fabric.state import output, env
 
     if not env.colorize_errors:
-        magenta = lambda x: x
+        magenta = lambda x: x  # noqa: E731
     else:
         from fabric.colors import magenta
 

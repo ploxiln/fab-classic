@@ -70,8 +70,7 @@ def load_settings(path):
     Usage docs are in sites/docs/usage/fab.rst, in "Settings files."
     """
     if os.path.exists(path):
-        comments = lambda s: s and not s.startswith("#")
-        settings = filter(comments, open(path, 'r'))
+        settings = [s for s in open(path, 'r') if s and not s.startswith("#")]
         return dict((k.strip(), v.strip()) for k, _, v in
             [s.partition('=') for s in settings])
     # Handle nonexistent or empty settings file
@@ -82,7 +81,9 @@ def _is_package(path):
     """
     Is the given path a Python package?
     """
-    _exists = lambda s: os.path.exists(os.path.join(path, s))
+    def _exists(s):
+        return os.path.exists(os.path.join(path, s))
+
     return (
         os.path.isdir(path)
         and (_exists('__init__.py') or _exists('__init__.pyc'))
@@ -396,8 +397,8 @@ def _task_names(mapping):
         module = mapping[collection]
         if hasattr(module, 'default'):
             tasks.append(collection)
-        join = lambda x: ".".join((collection, x))
-        tasks.extend(map(join, _task_names(module)))
+        for x in _task_names(module):
+            tasks.append(".".join((collection, x)))
     return tasks
 
 
