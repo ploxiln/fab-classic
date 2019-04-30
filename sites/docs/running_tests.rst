@@ -21,10 +21,10 @@ First-time Setup
 * ``cd fabric``
 * ``virtualenv env``
 * ``. env/bin/activate``
-* ``pip install -r dev_requirements.txt``
+* ``pip install -r dev-requirements.txt``
 * ``python setup.py develop``
 
-.. _`repository`: https://github.com/fabric/fabric
+.. _`repository`: https://github.com/ploxiln/fab-classic
 
 .. _running-tests:
 
