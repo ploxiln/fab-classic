@@ -5,21 +5,6 @@ Troubleshooting
 Stuck? Having a problem? Here are the steps to try before you submit a bug
 report.
 
-* **Make sure you're on the latest version.** If you're not on the most recent
-  version, your problem may have been solved already! Upgrading is always the
-  best first step.
-* **Try older versions.** If you're already *on* the latest Fabric, try rolling
-  back a few minor versions (e.g. if on 1.7, try Fabric 1.5 or 1.6) and see if
-  the problem goes away. This will help the devs narrow down when the problem
-  first arose in the commit log.
-* **Try switching up your Paramiko.** Fabric relies heavily on the Paramiko
-  library for its SSH functionality, so try applying the above two steps to
-  your Paramiko install as well.
-
-  .. note::
-      Fabric versions sometimes have different Paramiko dependencies - so to
-      try older Paramikos you may need to downgrade Fabric as well.
-
 * **Make sure Fabric is really the problem.** If your problem is in the
   behavior or output of a remote command, try recreating it without Fabric
   involved:
@@ -48,5 +33,3 @@ report.
   This should start printing Paramiko's debug statements to your standard error
   stream. (Feel free to add more logging kwargs to ``basicConfig()`` such as
   ``filename='/path/to/a/file'`` if you like.)
-
-  Then submit this info to anybody helping you on IRC or in your bug report.
