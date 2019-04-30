@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Running Fabric’s Tests &#8212; fab-classic  documentation</title>
+    <title>Troubleshooting &#8212; fab-classic  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Old Changelog" href="old_changelog.html" />
-    <link rel="prev" title="Project Tools" href="api/contrib/project.html" />
+    <link rel="next" title="Frequently Asked Questions (FAQ)" href="faq.html" />
+    <link rel="prev" title="Defining tasks" href="usage/tasks.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,42 +33,46 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="running-fabric-s-tests">
-<h1>Running Fabric’s Tests<a class="headerlink" href="#running-fabric-s-tests" title="Permalink to this headline">¶</a></h1>
-<p>Fabric is maintained with 100% passing tests. Where possible, patches should
-include tests covering the changes, making things far easier to verify &amp; merge.</p>
-<p>When developing on Fabric, it works best to establish a <a class="reference external" href="https://virtualenv.pypa.io/en/latest/">virtualenv</a> to install
-the dependencies in isolation for running tests.</p>
-<div class="section" id="first-time-setup">
-<span id="id1"></span><h2>First-time Setup<a class="headerlink" href="#first-time-setup" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Fork the <a class="reference external" href="https://github.com/ploxiln/fab-classic">repository</a> on GitHub</li>
-<li>Clone your new fork (e.g.
-<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:&lt;your_username&gt;/fabric.git</span></code>)</li>
-<li><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">fabric</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">virtualenv</span> <span class="pre">env</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">env/bin/activate</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">dev-requirements.txt</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">develop</span></code></li>
+  <div class="section" id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h1>
+<p>Stuck? Having a problem? Here are the steps to try before you submit a bug
+report.</p>
+<ul>
+<li><p class="first"><strong>Make sure Fabric is really the problem.</strong> If your problem is in the
+behavior or output of a remote command, try recreating it without Fabric
+involved:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Run Fabric with <code class="docutils literal notranslate"><span class="pre">--show=debug</span></code> and look for the <code class="docutils literal notranslate"><span class="pre">run:</span></code> or <code class="docutils literal notranslate"><span class="pre">sudo:</span></code>
+line about the command in question. Try running that exact command,
+including any <code class="docutils literal notranslate"><span class="pre">/bin/bash</span></code> wrapper, remotely and see what happens. This
+may find problems related to the bash or sudo wrappers.</p>
+</li>
+<li><p class="first">Execute the command (both the normal version, and the ‘unwrapped’ version
+seen via <code class="docutils literal notranslate"><span class="pre">--show=debug</span></code>) from your local workstation using <code class="docutils literal notranslate"><span class="pre">ssh</span></code>,
+e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ssh -t mytarget &quot;my command&quot;
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-t</span></code> flag matches Fabric’s default behavior of enabling a PTY
+remotely. This helps identify apps that behave poorly when run in a
+non-shell-spawned PTY.</p>
+</li>
 </ul>
-</div>
-<div class="section" id="running-tests">
-<span id="id2"></span><h2>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
-<p>Once your virtualenv is activated (<code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">env/bin/activate</span></code>) &amp; you have the latest
-requirements, running tests is just:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">tests</span><span class="o">/</span>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>Enable Paramiko-level debug logging.</strong> If your issue is in the lower level
+Paramiko library, it can help us to see the debug output Paramiko prints. At
+top level in your fabfile, add the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You should <strong>always</strong> run tests on <code class="docutils literal notranslate"><span class="pre">master</span></code> (or the release branch you’re
-working with) to ensure they’re passing before working on your own
-changes/tests.</p>
-<p>Alternatively, if you’ve run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">develop</span></code> on your Fabric clone,
-you can also run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">test</span>
-</pre></div>
-</div>
-<p>This adds additional flags which enable running doctests &amp; adds nice coloration.</p>
-</div>
+<p>This should start printing Paramiko’s debug statements to your standard error
+stream. (Feel free to add more logging kwargs to <code class="docutils literal notranslate"><span class="pre">basicConfig()</span></code> such as
+<code class="docutils literal notranslate"><span class="pre">filename='/path/to/a/file'</span></code> if you like.)</p>
+</li>
+</ul>
 </div>
 
 
@@ -132,8 +136,8 @@ you can also run:</p>
 <li class="toctree-l1"><a class="reference internal" href="usage/ssh.html">SSH behavior</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage/tasks.html">Defining tasks</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
 </ul>
 <ul>
@@ -152,12 +156,8 @@ you can also run:</p>
 <li class="toctree-l1"><a class="reference internal" href="api/contrib/files.html">File and Directory Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/contrib/project.html">Project Tools</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Running Fabric’s Tests</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#first-time-setup">First-time Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="running_tests.html">Running Fabric’s Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="old_changelog.html">Old Changelog</a></li>
 </ul>
 
@@ -186,7 +186,7 @@ you can also run:</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/running_tests.rst.txt"
+      <a href="_sources/troubleshooting.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
