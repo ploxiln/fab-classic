@@ -5,7 +5,9 @@ Welcome to Fabric's documentation!
 This site covers **fab-classic**'s usage & API documentation. fab-classic is still usually
 referred to as Fabric in the documentation, and it is still imported as ``fabric``.
 
-See also: the GitHub project page at https://github.com/ploxiln/fab-classic/
+The primary site is the GitHub project page: https://github.com/ploxiln/fab-classic/
+
+For information about installing fab-classic: :doc:`installing`.
 
 
 Tutorial
@@ -18,6 +20,7 @@ at least passingly familiar with the material contained within.
 .. toctree::
     :hidden:
 
+    installing
     tutorial
 
 
