@@ -20,7 +20,7 @@ setup(
     packages=find_packages(),
     test_suite='nose.collector',
     tests_require=['nose<2.0', 'fudge<1.0', 'jinja2<3.0'],
-    install_requires=['paramiko>=2.0,<3.0', 'six>=1.10.0'],
+    install_requires=['paramiko-ng', 'six>=1.10.0'],
     entry_points={
         'console_scripts': [
             'fab = fabric.main:main',
