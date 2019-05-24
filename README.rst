@@ -28,6 +28,17 @@ Old Changelog: https://ploxiln.github.io/fab-classic/old_changelog.html
 
 For a quick command reference, run ``fab --help``
 
+Starting with version 1.16 (not yet released), *fab-classic* depends on
+`paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
+`paramiko <https://github.com/paramiko/paramiko/>`_. Both of those packages
+are imported with the name ``paramiko``, and unfortunately that means that you
+should make sure you uninstall *paramiko* before *paramiko-ng* is installed
+(which can happen while installing *fab-classic* from git master), or else
+*paramiko-ng* will not really be installed, even though *pip* thinks it is.
+(Stuff will still use original *paramiko* and work, but you may want
+*paramiko-ng* and will have to uninstall **both** before installing
+*paramiko-ng* actually works.)
+
 ------
 
 fab-classic provides a basic suite of operations for executing local or remote shell
@@ -62,5 +73,5 @@ servers, like so::
 
 In addition to use via the ``fab`` tool, Fabric's components may be imported
 into other Python code, providing a Pythonic interface to the SSH protocol
-suite at a higher level than that provided by e.g. the ``Paramiko`` library
+suite at a higher level than that provided by the ``paramiko-ng`` library
 (which Fabric itself uses).
