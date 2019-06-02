@@ -1,32 +1,28 @@
-**fab-classic** is a Python (2.7 or 3.4+) library and command-line tool
+fab-classic
+===========
+
+*fab-classic* is a Python (2.7 or 3.4+) library and command-line tool
 for streamlining the use of SSH for application deployment or systems
 administration tasks.
 
-fab-classic is forked from `Fabric-1.14 <https://github.com/fabric/fabric/tree/1.14>`_
+fab-classic is forked from `Fabric 1.14 <https://github.com/fabric/fabric/tree/1.14>`_
 and is intended to add only bug fixes and compatibility patches, for projects
 already using Fabric-1.x in some way. It includes python3 compatibility patches
 from `Fabric3 <https://github.com/mathiasertl/fabric/>`_.
 
-Upstream Fabric is now on version 2.x. Fabric-2.x is python3 compatible,
+Upstream *Fabric* is now on version 2.x. Fabric-2.x is python3 compatible,
 and comes *after* Fabric3. Fabric-2.x has significant compatibility-breaking
-changes, in order to fix some long-standing limitations. It makes some common
-"easy" use-cases more difficult, and porting to it can be a large task.
+changes, in order to fix some long-standing limitations.
 
-------
+
+Install
+-------
 
 .. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
     :target: https://travis-ci.org/ploxiln/fab-classic
 
 fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_,
 so you can ``pip install fab-classic``
-
-API Documentation: https://ploxiln.github.io/fab-classic/
-
-New Changelog: https://github.com/ploxiln/fab-classic/releases
-
-Old Changelog: https://ploxiln.github.io/fab-classic/old_changelog.html
-
-For a quick command reference, run ``fab --help``
 
 Starting with version 1.16 (not yet released), *fab-classic* depends on
 `paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
@@ -39,7 +35,21 @@ should make sure you uninstall *paramiko* before *paramiko-ng* is installed
 *paramiko-ng* and will have to uninstall **both** before installing
 *paramiko-ng* actually works.)
 
-------
+
+Documentation
+-------------
+
+API Documentation: https://ploxiln.github.io/fab-classic/
+
+New Changelog: https://github.com/ploxiln/fab-classic/releases
+
+Old Changelog: https://ploxiln.github.io/fab-classic/old_changelog.html
+
+For a quick command reference, run ``fab --help``
+
+
+Usage Introduction
+------------------
 
 fab-classic provides a basic suite of operations for executing local or remote shell
 commands (normally or via ``sudo``) and uploading/downloading files, as well as
