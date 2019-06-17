@@ -31,6 +31,7 @@ Starting with version 1.16, *fab-classic* depends on
 are imported with the name ``paramiko``, and unfortunately that means that you
 should make sure you uninstall *paramiko* before *paramiko-ng* is installed,
 or you will get strange issues (even if things seem to work at first).
+So, if upgrading, please first run: ``pip uninstall paramiko``
 
 
 Documentation
