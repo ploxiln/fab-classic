@@ -5,27 +5,14 @@ This functionality is contained in its own module to prevent circular import
 problems with ``__init__.py`` (which is loaded by setup.py during installation,
 which in turn needs access to this version information.)
 """
-from subprocess import Popen, PIPE
-from os.path import abspath, dirname
 
 
 VERSION = (1, 15, 3, 'beta', 1)
 
 
 def git_sha():
-    loc = abspath(dirname(__file__))
-    try:
-        p = Popen(
-            "cd \"%s\" && git log -1 --format=format:%%h" % loc,
-            shell=True,
-            stdout=PIPE,
-            stderr=PIPE
-        )
-        return p.communicate()[0]
-    # OSError occurs on Unix-derived platforms lacking Popen's configured shell
-    # default, /bin/sh. E.g. Android.
-    except OSError:
-        return None
+    # removed functionality - only worked if this file is currently in a git repo
+    return None
 
 
 def get_version(form='short'):
