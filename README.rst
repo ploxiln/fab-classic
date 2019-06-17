@@ -21,16 +21,16 @@ Install
 fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_,
 so you can ``pip install fab-classic``
 
-Starting with version 1.16 (not yet released), *fab-classic* depends on
+Be sure to ``pip uninstall Fabric`` if you happen to have it installed,
+because *fab-classic* uses the same import name "fabric" and entrypoint
+(tool) name "fab".
+
+Starting with version 1.16, *fab-classic* depends on
 `paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
 `paramiko <https://github.com/paramiko/paramiko/>`_. Both of those packages
 are imported with the name ``paramiko``, and unfortunately that means that you
-should make sure you uninstall *paramiko* before *paramiko-ng* is installed
-(which can happen while installing *fab-classic* from git master), or else
-*paramiko-ng* will not really be installed, even though *pip* thinks it is.
-(Stuff will still use original *paramiko* and work, but you may want
-*paramiko-ng* and will have to uninstall **both** before installing
-*paramiko-ng* actually works.)
+should make sure you uninstall *paramiko* before *paramiko-ng* is installed,
+or you will get strange issues (even if things seem to work at first).
 
 
 Documentation
