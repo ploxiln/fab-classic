@@ -38,9 +38,16 @@
 <p><strong>fab-classic</strong> is best installed via <a class="reference external" href="http://pip-installer.org">pip</a></p>
 <blockquote>
 <div>$ pip install fab-classic</div></blockquote>
+<p>Make sure that “Fabric” and “paramiko” packages are removed first, if you happen
+to have previously installed them (because <em>fab-classic</em> depends on <em>Paramiko-NG</em>).</p>
+<p>If you are upgrading <em>fab-classic</em> from version 1.15.x to version 1.16 or later,
+then you do have “paramiko” installed as a dependency for fab-classic 1.15.x,
+and you should uninstall it first:</p>
+<blockquote>
+<div>$ pip uninstall paramiko</div></blockquote>
 <p>Advanced users wanting to install a development version may use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to grab
-the latest master branch (as well as the dev version of the Paramiko dependency):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/paramiko/paramiko/#egg=paramiko
+the latest master branch (as well as the dev version of the Paramiko-NG dependency):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/ploxiln/paramiko-ng/#egg=paramiko-ng
 $ pip install -e git+https://github.com/ploxiln/fab-classic/#egg=fab-classic
 </pre></div>
 </div>
@@ -50,12 +57,12 @@ $ pip install -e git+https://github.com/ploxiln/fab-classic/#egg=fab-classic
 <ul class="simple">
 <li>the Python programming language version 2.7, or version 3.4, or a later 3.x release;</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> packaging/installation library;</li>
-<li>and the Python <a class="reference external" href="http://paramiko.org">Paramiko</a> SSH library.
-See the <a class="reference external" href="http://www.paramiko.org/installing.html">Paramiko installation docs</a> for more info.</li>
+<li>and the Python <a class="reference external" href="https://github.com/ploxiln/paramiko-ng">Paramiko-NG</a> SSH library.
+See the <a class="reference external" href="https://github.com/ploxiln/paramiko-ng#installation">Paramiko installation docs</a> for more info.</li>
 </ul>
 <div class="section" id="setuptools">
 <h3>setuptools<a class="headerlink" href="#setuptools" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="http://pypi.python.org/pypi/setuptools">Setuptools</a> comes with some Python installations by default; if yours doesn’t,
+<p><a class="reference external" href="https://pypi.org/project/setuptools/">Setuptools</a> comes with some Python installations by default; if yours doesn’t,
 you’ll need to grab it. In such situations it’s typically packaged as
 <code class="docutils literal notranslate"><span class="pre">python-setuptools</span></code>, <code class="docutils literal notranslate"><span class="pre">py27-setuptools</span></code> or similar.</p>
 </div>

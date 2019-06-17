@@ -6,10 +6,19 @@ Installing
 
     $ pip install fab-classic
 
-Advanced users wanting to install a development version may use ``pip`` to grab
-the latest master branch (as well as the dev version of the Paramiko dependency)::
+Make sure that "Fabric" and "paramiko" packages are removed first, if you happen
+to have previously installed them (because *fab-classic* depends on *Paramiko-NG*).
 
-    $ pip install -e git+https://github.com/paramiko/paramiko/#egg=paramiko
+If you are upgrading *fab-classic* from version 1.15.x to version 1.16 or later,
+then you do have "paramiko" installed as a dependency for fab-classic 1.15.x,
+and you should uninstall it first:
+
+    $ pip uninstall paramiko
+
+Advanced users wanting to install a development version may use ``pip`` to grab
+the latest master branch (as well as the dev version of the Paramiko-NG dependency)::
+
+    $ pip install -e git+https://github.com/ploxiln/paramiko-ng/#egg=paramiko-ng
     $ pip install -e git+https://github.com/ploxiln/fab-classic/#egg=fab-classic
 
 
@@ -20,8 +29,8 @@ In order for Fabric's installation to succeed, you will need three primary piece
 
 * the Python programming language version 2.7, or version 3.4, or a later 3.x release;
 * the ``setuptools`` packaging/installation library;
-* and the Python `Paramiko <http://paramiko.org>`_ SSH library.
-  See the `Paramiko installation docs <http://www.paramiko.org/installing.html>`_ for more info.
+* and the Python `Paramiko-NG <https://github.com/ploxiln/paramiko-ng>`_ SSH library.
+  See the `Paramiko installation docs <https://github.com/ploxiln/paramiko-ng#installation>`_ for more info.
 
 setuptools
 ----------
@@ -30,7 +39,7 @@ setuptools
 you'll need to grab it. In such situations it's typically packaged as
 ``python-setuptools``, ``py27-setuptools`` or similar.
 
-.. _setuptools: http://pypi.python.org/pypi/setuptools
+.. _setuptools: https://pypi.org/project/setuptools/
 
 Development dependencies
 ------------------------
