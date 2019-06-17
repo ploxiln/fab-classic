@@ -14,5 +14,5 @@ mccabe==0.6.1
 pycodestyle==2.5.0
 pyflakes==2.1.1
 # for making releases
-wheel==0.31.1
+wheel>=0.31.0
 twine>=1.11.0
