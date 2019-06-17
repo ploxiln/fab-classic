@@ -4,9 +4,15 @@ import sys
 from os.path import abspath, join, dirname
 sys.path.append(abspath(join(dirname(__file__), '..', '..')))
 
+extensions = [
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc',
+    'alabaster',
+    'releases',
+]
+
 # Alabaster theme + mini-extension
 html_theme_path = [alabaster.get_path()]
-extensions = ['alabaster']
 html_static_path = ['_shared_static']
 html_theme = 'alabaster'
 html_theme_options = {
@@ -37,9 +43,6 @@ templates_path = ['_templates']
 exclude_trees = ['_build']
 source_suffix = '.rst'
 default_role = 'obj'
-
-
-extensions.extend(['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'releases'])
 
 # Autodoc settings
 autodoc_default_flags = ['members', 'special-members']
