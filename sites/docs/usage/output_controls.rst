@@ -53,12 +53,6 @@ The standard, atomic output levels/groups are as follows:
 * **user**: User-generated output, i.e. local output printed by fabfile code
   via use of the `~fabric.utils.fastprint` or `~fabric.utils.puts` functions.
   
-.. versionchanged:: 0.9.2
-    Added "Executing task" lines to the ``running`` output level.
-
-.. versionchanged:: 0.9.2
-    Added the ``user`` output level.
-
 Debug output
 ------------
 
@@ -97,9 +91,6 @@ separately.
 * **exceptions**: Enables display of tracebacks when exceptions occur; intended
   for use when ``debug`` is set to ``False`` but one is still interested in
   detailed error info.
-
-.. versionchanged:: 1.0
-    Debug output now includes full Python tracebacks during aborts.
 
 .. versionchanged:: 1.11
     Added the ``exceptions`` output level.

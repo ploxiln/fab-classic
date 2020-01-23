@@ -4,9 +4,9 @@ import six
 import stat
 import re
 import uuid
-from fnmatch import filter as fnfilter
+import fnmatch
 
-from fabric.state import output, connections, env
+from fabric.state import output, connections, env, win32
 from fabric.utils import warn
 from fabric.context_managers import settings
 
@@ -56,11 +56,10 @@ class SFTP(object):
         return True
 
     def glob(self, path):
-        from fabric.state import win32
         dirpart, pattern = os.path.split(path)
         rlist = self.ftp.listdir(dirpart)
 
-        names = fnfilter([f for f in rlist if not f[0] == '.'], pattern)
+        names = fnmatch.filter([f for f in rlist if not f[0] == '.'], pattern)
         ret = []
         if len(names):
             s = '/'
@@ -70,8 +69,6 @@ class SFTP(object):
         return ret
 
     def walk(self, top, topdown=True, onerror=None, followlinks=False):
-        from os.path import join
-
         # We may not have read permission for top, in which case we can't get a
         # list of the files the directory contains. os.path.walk always
         # suppressed the exception then, rather than blow up for a minor reason
@@ -88,7 +85,7 @@ class SFTP(object):
 
         dirs, nondirs = [], []
         for name in names:
-            if self.isdir(join(top, name)):
+            if self.isdir(os.path.join(top, name)):
                 dirs.append(name)
             else:
                 nondirs.append(name)
@@ -97,7 +94,7 @@ class SFTP(object):
             yield top, dirs, nondirs
 
         for name in dirs:
-            path = join(top, name)
+            path = os.path.join(top, name)
             if followlinks or not self.islink(path):
                 for x in self.walk(path, topdown, onerror, followlinks):
                     yield x

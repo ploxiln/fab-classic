@@ -1,6 +1,4 @@
 """
-.. versionadded:: 0.9.2
-
 These functions streamline the process of initializing Django's settings module
 environment variable. Once this is done, your fabfile may import from your
 Django project, or Django itself, without requiring the use of ``manage.py``

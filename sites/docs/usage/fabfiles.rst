@@ -42,9 +42,6 @@ When in this mode, tilde-expansion will be applied, so one may refer to e.g.
     fabfile's containing folder to the Python load path (and removes it
     immediately afterwards.)
 
-.. versionchanged:: 0.9.2
-    The ability to load package fabfiles.
-
 
 .. _importing-the-api:
 
