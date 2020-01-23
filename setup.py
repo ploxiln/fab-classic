@@ -18,8 +18,6 @@ setup(
     maintainer_email='pierce.lopez@gmail.com',
     url='https://github.com/ploxiln/fab-classic',
     packages=find_packages(),
-    test_suite='nose.collector',
-    tests_require=['nose<2.0', 'fudge<1.0', 'jinja2<3.0'],
     install_requires=['paramiko-ng', 'six>=1.10.0'],
     entry_points={
         'console_scripts': [
@@ -43,6 +41,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Software Development',
         'Topic :: Software Development :: Build Tools',
         'Topic :: Software Development :: Libraries',
