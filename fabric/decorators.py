@@ -83,10 +83,6 @@ def hosts(*host_list):
 
     Note that this decorator actually just sets the function's ``.hosts``
     attribute, which is then read prior to executing the function.
-
-    .. versionchanged:: 0.9.2
-        Allow a single, iterable argument (``@hosts(iterable)``) to be used
-        instead of requiring ``@hosts(*iterable)``.
     """
     return _list_annotating_decorator('hosts', *host_list)
 
@@ -113,10 +109,6 @@ def roles(*role_list):
     invoked with either an argument list or a single, iterable argument.
     Similarly, this decorator uses the same mechanism as
     `~fabric.decorators.hosts` and simply sets ``<function>.roles``.
-
-    .. versionchanged:: 0.9.2
-        Allow a single, iterable argument to be used (same as
-        `~fabric.decorators.hosts`).
     """
     return _list_annotating_decorator('roles', *role_list)
 
@@ -210,7 +202,6 @@ def with_settings(*arg_settings, **kw_settings):
             ...
 
     .. seealso:: `~fabric.context_managers.settings`
-    .. versionadded:: 1.1
     """
     def outer(func):
         @wraps(func)

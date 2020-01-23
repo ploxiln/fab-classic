@@ -1,6 +1,4 @@
 """
-.. versionadded:: 0.9.2
-
 Functions for wrapping strings in ANSI color codes.
 
 Each function within this module returns the input string ``text``, wrapped

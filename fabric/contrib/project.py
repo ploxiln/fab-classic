@@ -96,8 +96,10 @@ def rsync_project(
 
     .. versionadded:: 1.4.0
         The ``ssh_opts`` keyword argument.
+
     .. versionadded:: 1.4.1
         The ``capture`` keyword argument.
+
     .. versionadded:: 1.8.0
         The ``default_opts`` keyword argument.
     """
@@ -180,9 +182,6 @@ def upload_project(local_dir=None, remote_dir="", use_sudo=False):
     thus it will not work too well on Win32 systems unless one is using Cygwin
     or something similar. It will attempt to clean up the local and remote
     tarfiles when it finishes executing, even in the event of a failure.
-
-    .. versionchanged:: 1.1
-        Added the ``local_dir`` and ``remote_dir`` kwargs.
 
     .. versionchanged:: 1.7
         Added the ``use_sudo`` kwarg.

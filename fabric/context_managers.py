@@ -295,10 +295,6 @@ def cd(path):
         Space characters will be escaped automatically to make dealing with
         such directory names easier.
 
-    .. versionchanged:: 1.0
-        Applies to `get` and `put` in addition to the command-running
-        operations.
-
     .. seealso:: `~fabric.context_managers.lcd`
     """
     return _change_cwd('cwd', path)
@@ -319,8 +315,6 @@ def lcd(path):
     <http://docs.python.org/release/2.6/library/os.html#os.getcwd>`_. It may be
     useful to pin things relative to the location of the fabfile in use, which
     may be found in :ref:`env.real_fabfile <real-fabfile>`
-
-    .. versionadded:: 1.0
     """
     return _change_cwd('lcwd', path)
 
@@ -353,14 +347,11 @@ def path(path, behavior='append'):
       ``PATH=<path>``.
 
     .. note::
-
         This context manager is currently implemented by modifying (and, as
         always, restoring afterwards) the current value of environment
         variables, ``env.path`` and ``env.path_behavior``. However, this
         implementation may change in the future, so we do not recommend
         manually altering them directly.
-
-    .. versionadded:: 1.0
     """
     return _setenv({'path': path, 'path_behavior': behavior})
 

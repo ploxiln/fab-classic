@@ -85,9 +85,6 @@ def require(*keys, **kwargs):
     Note: it is assumed that the keyword arguments apply to all given keys as a
     group. If you feel the need to specify more than one ``used_for``, for
     example, you should break your logic into multiple calls to ``require()``.
-
-    .. versionchanged:: 1.1
-        Allow iterable ``provided_by`` values instead of just single values.
     """
     # If all keys exist and are non-empty, we're good, so keep going.
     missing_keys = [
@@ -323,20 +320,10 @@ def put(local_path=None, remote_path=None, use_sudo=False,
         If a file-like object such as StringIO has a ``name`` attribute, that
         will be used in Fabric's printed output instead of the default
         ``<file obj>``
-    .. versionchanged:: 1.0
-        Now honors the remote working directory as manipulated by
-        `~fabric.context_managers.cd`, and the local working directory as
-        manipulated by `~fabric.context_managers.lcd`.
-    .. versionchanged:: 1.0
-        Now allows file-like objects in the ``local_path`` argument.
-    .. versionchanged:: 1.0
-        Directories may be specified in the ``local_path`` argument and will
-        trigger recursive uploads.
-    .. versionchanged:: 1.0
-        Return value is now an iterable of uploaded remote file paths which
-        also exhibits the ``.failed`` and ``.succeeded`` attributes.
+
     .. versionchanged:: 1.5
         Allow a ``name`` attribute on file-like objects for log output
+
     .. versionchanged:: 1.7
         Added ``use_glob`` option to allow disabling of globbing.
     """
@@ -506,21 +493,6 @@ def get(remote_path, local_path=None, use_sudo=False, temp_dir=""):
         will be used in Fabric's printed output instead of the default
         ``<file obj>``
 
-    .. versionchanged:: 1.0
-        Now honors the remote working directory as manipulated by
-        `~fabric.context_managers.cd`, and the local working directory as
-        manipulated by `~fabric.context_managers.lcd`.
-    .. versionchanged:: 1.0
-        Now allows file-like objects in the ``local_path`` argument.
-    .. versionchanged:: 1.0
-        ``local_path`` may now contain interpolated path- and host-related
-        variables.
-    .. versionchanged:: 1.0
-        Directories may be specified in the ``remote_path`` argument and will
-        trigger recursive downloads.
-    .. versionchanged:: 1.0
-        Return value is now an iterable of downloaded local file paths, which
-        also exhibits the ``.failed`` and ``.succeeded`` attributes.
     .. versionchanged:: 1.5
         Allow a ``name`` attribute on file-like objects for log output
     """
@@ -880,8 +852,6 @@ def open_shell(command=None):
 
     Thus, this function does not have a return value and will not trigger
     Fabric's failure handling if any remote programs result in errors.
-
-    .. versionadded:: 1.0
     """
     _execute(channel=default_channel(), command=command, pty=True,
         combine_stderr=True, invoke_shell=True)
@@ -1059,18 +1029,6 @@ def run(command, shell=True, pty=True, combine_stderr=None, quiet=False,
         output = run('ls /var/www/site1')
         run("take_a_long_time", timeout=5)
 
-    .. versionadded:: 1.0
-        The ``succeeded`` and ``stderr`` return value attributes, the
-        ``combine_stderr`` kwarg, and interactive behavior.
-
-    .. versionchanged:: 1.0
-        The default value of ``pty`` is now ``True``.
-
-    .. versionchanged:: 1.0.2
-        The default value of ``combine_stderr`` is now ``None`` instead of
-        ``True``. However, the default *behavior* is unchanged, as the global
-        setting is still ``True``.
-
     .. versionadded:: 1.5
         The ``quiet``, ``warn_only``, ``stdout`` and ``stderr`` kwargs.
 
@@ -1123,9 +1081,6 @@ def sudo(command, shell=True, pty=True, combine_stderr=None, user=None,
         result = sudo("ls /tmp/")
         with settings(sudo_user='mysql'):
             sudo("whoami") # prints 'mysql'
-
-    .. versionchanged:: 1.0
-        See the changed and added notes for `~fabric.operations.run`.
 
     .. versionchanged:: 1.5
         Now honors :ref:`env.sudo_user <sudo_user>`.
@@ -1190,12 +1145,6 @@ def local(command, capture=False, shell=None, pty=True):
     independently of the remote end (which honors
     `~fabric.context_managers.cd`).
 
-    .. versionchanged:: 1.0
-        Added the ``succeeded`` and ``stderr`` attributes.
-    .. versionchanged:: 1.0
-        Now honors the `~fabric.context_managers.lcd` context manager.
-    .. versionchanged:: 1.0
-        Changed the default value of ``capture`` from ``True`` to ``False``.
     .. versionadded:: 1.9
         The return value attributes ``.command`` and ``.real_command``.
 
@@ -1269,21 +1218,16 @@ def reboot(wait=120, command='reboot', use_sudo=True):
     for at least ``wait`` seconds.
 
     .. note::
-        As of Fabric 1.4, the ability to reconnect partway through a session no
-        longer requires use of internal APIs.  While we are not officially
-        deprecating this function, adding more features to it will not be a
-        priority.
-
         Users who want greater control
         are encouraged to check out this function's (6 lines long, well
         commented) source code and write their own adaptation using different
         timeout/attempt values or additional logic.
 
-    .. versionadded:: 0.9.2
     .. versionchanged:: 1.4
         Changed the ``wait`` kwarg to be optional, and refactored to leverage
         the new reconnection functionality; it may not actually have to wait
         for ``wait`` seconds before reconnecting.
+
     .. versionchanged:: 1.11
         Added ``use_sudo`` as a kwarg. Maintained old functionality by setting
         the default value to True.

@@ -71,8 +71,6 @@ class Task(object):
     For details on how to implement and use `~fabric.tasks.Task` subclasses,
     please see the usage documentation on :ref:`new-style tasks
     <new-style-tasks>`.
-
-    .. versionadded:: 1.1
     """
     name = 'undefined'
     use_task_objects = True
@@ -145,8 +143,6 @@ class WrappedCallableTask(Task):
     Wraps a given callable transparently, while marking it as a valid Task.
 
     Generally used via `~fabric.decorators.task` and not directly.
-
-    .. versionadded:: 1.1
 
     .. seealso:: `~fabric.docs.unwrap_tasks`, `~fabric.decorators.task`
     """
@@ -316,6 +312,7 @@ def execute(task, *args, **kwargs):
         and some examples.
 
     .. versionadded:: 1.3
+
     .. versionchanged:: 1.4
         Added the return value mapping; previously this function had no defined
         return value.

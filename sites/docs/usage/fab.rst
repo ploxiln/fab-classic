@@ -30,8 +30,6 @@ tasks.
 Arbitrary remote shell commands
 ===============================
 
-.. versionadded:: 0.9.2
-
 Fabric leverages a lesser-known command line convention and may be called in
 the following manner::
 
@@ -88,8 +86,6 @@ below.
     Sets :ref:`env.no_agent <no_agent>` to ``True``, forcing our SSH layer not
     to talk to the SSH agent when trying to unlock private key files.
 
-    .. versionadded:: 0.9.1
-
 .. cmdoption:: -A, --forward-agent
 
     Sets :ref:`env.forward_agent <forward-agent>` to ``True``, enabling agent
@@ -101,8 +97,6 @@ below.
 
     Sets :ref:`env.abort_on_prompts <abort-on-prompts>` to ``True``, forcing
     Fabric to abort whenever it would prompt for input.
-
-    .. versionadded:: 1.1
 
 .. cmdoption:: -c RCFILE, --config=RCFILE
 
@@ -146,7 +140,6 @@ below.
     omitting this option entirely (i.e. the default), and ``nested`` prints out
     a nested namespace tree.
 
-    .. versionadded:: 1.1
     .. seealso:: :option:`--shortlist`, :option:`--list <-l>`
 
 .. cmdoption:: -g HOST, --gateway=HOST
@@ -197,8 +190,6 @@ below.
     Sets :ref:`env.exclude_hosts <exclude-hosts>` to the given comma-delimited
     list of host strings to then keep out of the final host list.
 
-    .. versionadded:: 1.1
-
 .. cmdoption:: -i KEY_FILENAME
 
     When set to a file path, will load the given file as an SSH identity file
@@ -234,13 +225,9 @@ below.
     Sets :ref:`env.no_keys <no_keys>` to ``True``, forcing the SSH layer to not
     look for SSH private key files in one's home directory.
 
-    .. versionadded:: 0.9.1
-
 .. cmdoption:: --keepalive=KEEPALIVE
 
     Sets :ref:`env.keepalive <keepalive>` to the given (integer) value, specifying an SSH keepalive interval.
-
-    .. versionadded:: 1.1
 
 .. cmdoption:: --linewise
 
@@ -254,8 +241,6 @@ below.
     and exits. Will also print the first line of each task's docstring, if it
     has one, next to it (truncating if necessary.)
 
-    .. versionchanged:: 0.9.1
-        Added docstring to output.
     .. seealso:: :option:`--shortlist`, :option:`--list-format <-F>`
 
 .. cmdoption:: -p PASSWORD, --password=PASSWORD
@@ -281,8 +266,6 @@ below.
     Sets :ref:`env.always_use_pty <always-use-pty>` to ``False``, causing all
     `~fabric.operations.run`/`~fabric.operations.sudo` calls to behave as if
     one had specified ``pty=False``.
-
-    .. versionadded:: 1.0
 
 .. cmdoption:: -r, --reject-unknown-hosts
 
@@ -325,7 +308,6 @@ below.
     Similar to :option:`--list <-l>`, but without any embellishment, just task
     names separated by newlines with no indentation or docstrings.
 
-    .. versionadded:: 0.9.2
     .. seealso:: :option:`--list <-l>`
 
 .. cmdoption:: --show=LEVELS

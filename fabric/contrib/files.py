@@ -105,12 +105,12 @@ def upload_template(filename, destination, context=None, use_jinja=False,
     Jinja2 Environment which is False by default, same as Jinja2's
     behaviour.
 
-    .. versionchanged:: 1.1
-        Added the ``backup``, ``mirror_local_mode`` and ``mode`` kwargs.
     .. versionchanged:: 1.9
         Added the ``pty`` kwarg.
+
     .. versionchanged:: 1.11
         Added the ``keep_trailing_newline`` kwarg.
+
     .. versionchanged:: 1.11
         Added the  ``temp_dir`` kwarg.
     """
@@ -205,8 +205,6 @@ def sed(filename, before, after, limit='', use_sudo=False, backup='.bak',
     ``flags="i"``. The ``g`` flag is always specified regardless, so you do not
     need to remember to include it when overriding this parameter.
 
-    .. versionadded:: 1.1
-        The ``flags`` parameter.
     .. versionadded:: 1.6
         Added the ``shell`` keyword argument.
     """
@@ -357,16 +355,16 @@ def contains(filename, text, exact=False, use_sudo=False, escape=True,
 
     If ``case_sensitive`` is False, the `-i` flag will be passed to ``egrep``.
 
-    .. versionchanged:: 1.0
-        Swapped the order of the ``filename`` and ``text`` arguments to be
-        consistent with other functions in this module.
     .. versionchanged:: 1.4
         Updated the regular expression related escaping to try and solve
         various corner cases.
+
     .. versionchanged:: 1.4
         Added ``escape`` keyword argument.
+
     .. versionadded:: 1.6
         Added the ``shell`` keyword argument.
+
     .. versionadded:: 1.11
         Added the ``case_sensitive`` keyword argument.
     """
@@ -406,16 +404,10 @@ def append(filename, text, use_sudo=False, partial=False, escape=True,
     The ``shell`` argument will be eventually passed to ``run/sudo``. See
     description of the same argument in `~fabric.contrib.files.sed` for details.
 
-    .. versionchanged:: 0.9.1
-        Added the ``partial`` keyword argument.
-    .. versionchanged:: 1.0
-        Swapped the order of the ``filename`` and ``text`` arguments to be
-        consistent with other functions in this module.
-    .. versionchanged:: 1.0
-        Changed default value of ``partial`` kwarg to be ``False``.
     .. versionchanged:: 1.4
         Updated the regular expression related escaping to try and solve
         various corner cases.
+
     .. versionadded:: 1.6
         Added the ``shell`` keyword argument.
     """
