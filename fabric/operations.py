@@ -1126,6 +1126,10 @@ def local(command, capture=False, shell=None, pty=True):
     linked documentation, on Unix the default behavior is to use ``/bin/sh``,
     so this option is useful for setting that value to e.g.  ``/bin/bash``.
 
+    If ``pty`` is changed to ``False``, it redirects the subprocess stdin to
+    an empty pipe to avoid it reading from the terminal, and creates a new
+    "session id" for the subprocess.
+
     `local` is not currently capable of simultaneously printing and
     capturing output, as `~fabric.operations.run`/`~fabric.operations.sudo`
     do. The ``capture`` kwarg allows you to switch between printing and
