@@ -1,19 +1,33 @@
 dist: xenial
 language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
+jobs:
+  include:
+    - python: "2.7"
+      env: PARAMIKO_VER=2.5.0
+    - python: "3.4"
+      env: PARAMIKO_VER=2.5.0
+    - python: "3.5"
+      env: PARAMIKO_VER=2.5.0
+    - python: "3.6"
+      env: PARAMIKO_VER=2.5.0
+    - python: "2.7"
+      env: PARAMIKO_VER=2.7.6
+    - python: "3.4"
+      env: PARAMIKO_VER=2.7.6
+    - python: "3.7"
+      env: PARAMIKO_VER=2.7.6 BUILD_DOCS=true
+    - python: "3.8"
+      env: PARAMIKO_VER=2.7.6
+
 install:
   # Build/test dependencies
   - pip install -r dev-requirements.txt
   # docs site dependencies
-  - if [ $TRAVIS_PYTHON_VERSION = 3.6 ]; then
+  - if [ -n "$BUILD_DOCS" ]; then
         pip install -r doc-requirements.txt;
     fi
   # install fab to test fab
+  - pip install paramiko-ng==$PARAMIKO_VER
   - pip install -e .
 before_script:
   # Allow us to SSH passwordless to localhost
@@ -31,7 +45,7 @@ script:
   # Integration tests
   - fab -H localhost test:integration
   # test docs build
-  - if [ $TRAVIS_PYTHON_VERSION = 3.6 ]; then
+  - if [ -n "$BUILD_DOCS" ]; then
         sphinx-build -W sites/docs tmpbuild;
     fi
 branches:
