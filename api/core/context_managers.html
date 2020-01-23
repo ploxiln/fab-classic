@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Decorators" href="decorators.html" />
@@ -106,10 +107,6 @@ compatibility.</p>
 <p class="last">Space characters will be escaped automatically to make dealing with
 such directory names easier.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Applies to <code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code> in addition to the command-running
-operations.</p>
-</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a></p>
@@ -153,9 +150,6 @@ directory, which will vary depending on where Fabric (or Fabric-using code)
 was invoked. You can check what this is with <a class="reference external" href="http://docs.python.org/release/2.6/library/os.html#os.getcwd">os.getcwd</a>. It may be
 useful to pin things relative to the location of the fabfile in use, which
 may be found in <a class="reference internal" href="../../usage/env.html#real-fabfile"><span class="std std-ref">env.real_fabfile</span></a></p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.</span></p>
-</div>
 </dd></dl>
 
 <dl class="class">
@@ -193,9 +187,6 @@ always, restoring afterwards) the current value of environment
 variables, <code class="docutils literal notranslate"><span class="pre">env.path</span></code> and <code class="docutils literal notranslate"><span class="pre">env.path_behavior</span></code>. However, this
 implementation may change in the future, so we do not recommend
 manually altering them directly.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.</span></p>
 </div>
 </dd></dl>
 
@@ -561,7 +552,7 @@ suspect that code calling your own code is trying to hide output with
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

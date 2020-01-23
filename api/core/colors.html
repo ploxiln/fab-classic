@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Context Managers" href="context_managers.html" />
@@ -35,20 +36,17 @@
             
   <div class="section" id="module-fabric.colors">
 <span id="color-output-functions"></span><h1>Color output functions<a class="headerlink" href="#module-fabric.colors" title="Permalink to this headline">¶</a></h1>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.2.</span></p>
-</div>
 <p>Functions for wrapping strings in ANSI color codes.</p>
 <p>Each function within this module returns the input string <code class="docutils literal notranslate"><span class="pre">text</span></code>, wrapped
 with ANSI color codes for the appropriate color.</p>
 <p>For example, to print some text as green on supporting terminals:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="k">import</span> <span class="n">green</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="kn">import</span> <span class="n">green</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">green</span><span class="p">(</span><span class="s2">&quot;This text is green!&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Because these functions simply return modified strings, you can nest them:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="k">import</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.colors</span> <span class="kn">import</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">red</span><span class="p">(</span><span class="s2">&quot;This sentence is red, except for &quot;</span> <span class="o">+</span>           <span class="n">green</span><span class="p">(</span><span class="s2">&quot;these words, which are green&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">))</span>
 </pre></div>
@@ -205,7 +203,7 @@ by this module will be skipped/disabled.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

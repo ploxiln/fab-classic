@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Network" href="network.html" />
@@ -49,7 +50,7 @@ signature and so forth. Without use of <code class="docutils literal notranslate
 to access the function signature (though it is able to see e.g.
 <code class="docutils literal notranslate"><span class="pre">__doc__</span></code>.)</p>
 <p>For example, at the bottom of your <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.docs</span> <span class="k">import</span> <span class="n">unwrap_tasks</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.docs</span> <span class="kn">import</span> <span class="n">unwrap_tasks</span>
 <span class="kn">import</span> <span class="nn">my_package.my_fabfile</span>
 <span class="n">unwrap_tasks</span><span class="p">(</span><span class="n">my_package</span><span class="o">.</span><span class="n">my_fabfile</span><span class="p">)</span>
 </pre></div>
@@ -177,7 +178,7 @@ within a Sphinx <code class="docutils literal notranslate"><span class="pre">con
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

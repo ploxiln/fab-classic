@@ -13,6 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Color output functions" href="api/core/colors.html" />
@@ -57,7 +58,7 @@ dependencies may use.</p>
 <li><p class="first"><code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">[args]</span></code> then results in the following traceback:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
   <span class="n">File</span> <span class="s2">&quot;/usr/local/bin/fab&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">5</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">load_entry_point</span>
+    <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">load_entry_point</span>
   <span class="n">File</span> <span class="s2">&quot;/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/pkg_resources.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">2603</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
     <span class="n">working_set</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">__requires__</span><span class="p">)</span>
   <span class="n">File</span> <span class="s2">&quot;/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/pkg_resources.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">666</span><span class="p">,</span> <span class="ow">in</span> <span class="n">require</span>
@@ -256,7 +257,7 @@ entirely and it may be safely omitted in such cases.</p>
 <p>A relatively safe baseline is to call <code class="docutils literal notranslate"><span class="pre">/bin/sh</span></code>, which may call the original
 <code class="docutils literal notranslate"><span class="pre">sh</span></code> binary, or (on some systems) <code class="docutils literal notranslate"><span class="pre">csh</span></code>, and give it the <code class="docutils literal notranslate"><span class="pre">-c</span></code>
 argument, like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;/bin/sh -c&quot;</span>
 </pre></div>
@@ -402,7 +403,7 @@ that fixes this, check out <a class="reference external" href="https://github.co
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

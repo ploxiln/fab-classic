@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="File and Directory Management" href="files.html" />
@@ -35,9 +36,6 @@
             
   <div class="section" id="module-fabric.contrib.django">
 <span id="django-integration"></span><h1>Django Integration<a class="headerlink" href="#module-fabric.contrib.django" title="Permalink to this headline">¶</a></h1>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.2.</span></p>
-</div>
 <p>These functions streamline the process of initializing Django’s settings module
 environment variable. Once this is done, your fabfile may import from your
 Django project, or Django itself, without requiring the use of <code class="docutils literal notranslate"><span class="pre">manage.py</span></code>
@@ -47,11 +45,11 @@ your fabfile.</p>
 local-to-your-fabfile Django installations. This is not as limiting as it
 sounds; for example, you can use Fabric as a remote “build” tool as well as
 using it locally. Imagine the following fabfile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">cd</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib</span> <span class="k">import</span> <span class="n">django</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">cd</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib</span> <span class="kn">import</span> <span class="n">django</span>
 
 <span class="n">django</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="s1">&#39;myproject&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">myproject.myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="kn">from</span> <span class="nn">myproject.myapp.models</span> <span class="kn">import</span> <span class="n">MyModel</span>
 
 <span class="k">def</span> <span class="nf">print_instances</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
@@ -71,11 +69,11 @@ production Django database.</p>
 it to obtain e.g. your database settings, and then use those when executing a
 remote (non-Fabric) command. This would allow you some degree of freedom even
 if Fabric is only installed locally:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib</span> <span class="k">import</span> <span class="n">django</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib</span> <span class="kn">import</span> <span class="n">django</span>
 
 <span class="n">django</span><span class="o">.</span><span class="n">settings_module</span><span class="p">(</span><span class="s1">&#39;myproject.settings&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">django.conf</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
 
 <span class="k">def</span> <span class="nf">dump_production_database</span><span class="p">():</span>
     <span class="n">run</span><span class="p">(</span><span class="s1">&#39;mysqldump -u </span><span class="si">%s</span><span class="s1"> -p=</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> &gt; /tmp/prod-db.sql&#39;</span> <span class="o">%</span> <span class="p">(</span>
@@ -226,7 +224,7 @@ variables.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Project Tools" href="project.html" />
@@ -53,16 +54,6 @@ backslash-escaped. This can be disabled with <code class="docutils literal notra
 <p>If <code class="docutils literal notranslate"><span class="pre">use_sudo</span></code> is True, will use <code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code> instead of <code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">shell</span></code> argument will be eventually passed to <code class="docutils literal notranslate"><span class="pre">run/sudo</span></code>. See
 description of the same argument in <a class="reference internal" href="#fabric.contrib.files.sed" title="fabric.contrib.files.sed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sed</span></code></a> for details.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.1: </span>Added the <code class="docutils literal notranslate"><span class="pre">partial</span></code> keyword argument.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Swapped the order of the <code class="docutils literal notranslate"><span class="pre">filename</span></code> and <code class="docutils literal notranslate"><span class="pre">text</span></code> arguments to be
-consistent with other functions in this module.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Changed default value of <code class="docutils literal notranslate"><span class="pre">partial</span></code> kwarg to be <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.4: </span>Updated the regular expression related escaping to try and solve
 various corner cases.</p>
@@ -123,10 +114,6 @@ added.)</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">shell</span></code> argument will be eventually passed to <code class="docutils literal notranslate"><span class="pre">run/sudo</span></code>. See
 description of the same argument in <code class="docutils literal notranslate"><span class="pre">~fabric.contrib.sed</span></code> for details.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">case_sensitive</span></code> is False, the <code class="xref py py-obj docutils literal notranslate"><span class="pre">-i</span></code> flag will be passed to <code class="docutils literal notranslate"><span class="pre">egrep</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Swapped the order of the <code class="docutils literal notranslate"><span class="pre">filename</span></code> and <code class="docutils literal notranslate"><span class="pre">text</span></code> arguments to be
-consistent with other functions in this module.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.4: </span>Updated the regular expression related escaping to try and solve
 various corner cases.</p>
@@ -197,9 +184,6 @@ example, to make the search and replace case insensitive, specify
 <code class="docutils literal notranslate"><span class="pre">flags=&quot;i&quot;</span></code>. The <code class="docutils literal notranslate"><span class="pre">g</span></code> flag is always specified regardless, so you do not
 need to remember to include it when overriding this parameter.</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.1: </span>The <code class="docutils literal notranslate"><span class="pre">flags</span></code> parameter.</p>
-</div>
-<div class="versionadded">
 <p><span class="versionmodified">New in version 1.6: </span>Added the <code class="docutils literal notranslate"><span class="pre">shell</span></code> keyword argument.</p>
 </div>
 </dd></dl>
@@ -249,9 +233,6 @@ used for testing directory-ness, making backups, etc.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">keep_trailing_newline</span></code> kwarg will be passed when creating
 Jinja2 Environment which is False by default, same as Jinja2’s
 behaviour.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.1: </span>Added the <code class="docutils literal notranslate"><span class="pre">backup</span></code>, <code class="docutils literal notranslate"><span class="pre">mirror_local_mode</span></code> and <code class="docutils literal notranslate"><span class="pre">mode</span></code> kwargs.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.9: </span>Added the <code class="docutils literal notranslate"><span class="pre">pty</span></code> kwarg.</p>
 </div>
@@ -372,7 +353,7 @@ behaviour.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

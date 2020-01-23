@@ -139,9 +139,7 @@ as password prompts, "What host to connect to?" prompts, fabfile invocation of
 session will always terminate cleanly instead of blocking on user input forever
 when unforeseen circumstances arise.
 
-.. versionadded:: 1.1
 .. seealso:: :option:`--abort-on-prompts`
-
 
 ``all_hosts``
 -------------
@@ -164,7 +162,6 @@ When set to ``False``, causes `~fabric.operations.run`/`~fabric.operations.sudo`
 to act as if they have been called with ``pty=False``.
 
 .. seealso:: :option:`--no-pty`
-.. versionadded:: 1.0
 
 .. _colorize-errors:
 
@@ -189,8 +186,6 @@ Causes the SSH layer to merge a remote program's stdout and stderr streams to
 avoid becoming meshed together when printed. See :ref:`combine_streams` for
 details on why this is needed and what its effects are.
 
-.. versionadded:: 1.0
-
 ``command``
 -----------
 
@@ -210,8 +205,6 @@ only.
 
 Modified by `~fabric.context_managers.prefix`, and prepended to commands
 executed by `~fabric.operations.run`/`~fabric.operations.sudo`.
-
-.. versionadded:: 1.0
 
 .. _command-timeout:
 
@@ -315,8 +308,6 @@ informational purposes only.
 
 Specifies a list of host strings to be :ref:`skipped over <exclude-hosts>`
 during ``fab`` execution. Typically set via :option:`--exclude-hosts/-x <-x>`.
-
-.. versionadded:: 1.1
 
 
 ``fabfile``
@@ -429,8 +420,6 @@ SSH config option ``ServerAliveInterval``. Useful if you find connections are
 timing out due to meddlesome network hardware or what have you.
 
 .. seealso:: :option:`--keepalive`
-.. versionadded:: 1.1
-
 
 .. _key:
 
@@ -446,7 +435,6 @@ authentication.
     The most common method for using SSH keys is to set :ref:`key-filename`.
 
 .. versionadded:: 1.7
-
 
 .. _key-filename:
 
@@ -477,7 +465,6 @@ if ``parallel`` is True then linewise behavior will occur.
 
 .. versionadded:: 1.3
 
-
 .. _local-user:
 
 ``local_user``
@@ -498,7 +485,6 @@ contain the same value.
 If ``True``, will tell the SSH layer not to seek out running SSH agents when
 using key-based authentication.
 
-.. versionadded:: 0.9.1
 .. seealso:: :option:`--no_agent <-a>`
 
 .. _no_keys:
@@ -512,7 +498,6 @@ If ``True``, will tell the SSH layer not to load any private key files from
 one's ``$HOME/.ssh/`` folder. (Key files explicitly loaded via ``fab -i`` will
 still be used, of course.)
 
-.. versionadded:: 0.9.1
 .. seealso:: :option:`-k`
 
 .. _output_prefix:
@@ -525,8 +510,6 @@ still be used, of course.)
 By default Fabric prefixes every line of output with either ``[hostname] out:``
 or ``[hostname] err:``. Those prefixes may be hidden by setting
 ``env.output_prefix`` to ``False``.
-
-.. versionadded:: 1.0.0
 
 .. _env-parallel:
 
@@ -571,9 +554,6 @@ per-host-string password cache. Keys are full :ref:`host strings
 
 .. seealso:: :ref:`password-management`
 
-.. versionadded:: 1.0
-
-
 .. _env-path:
 
 ``path``
@@ -585,9 +565,6 @@ Used to set the ``$PATH`` shell environment variable when executing commands in
 `~fabric.operations.run`/`~fabric.operations.sudo`/`~fabric.operations.local`.
 It is recommended to use the `~fabric.context_managers.path` context manager
 for managing this value instead of setting it directly.
-
-.. versionadded:: 1.0
-
 
 .. _pool-size:
 

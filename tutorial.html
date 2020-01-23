@@ -13,6 +13,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="The environment dictionary, env" href="usage/env.html" />
@@ -155,7 +156,7 @@ not tied to any external codebase, save for its SSH library.</p>
 </div>
 <p>For starters, perhaps we want to run our tests and commit to our VCS so we’re
 ready for a deploy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">local</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">local</span>
 
 <span class="k">def</span> <span class="nf">prepare_deploy</span><span class="p">():</span>
     <span class="n">local</span><span class="p">(</span><span class="s2">&quot;./manage.py test my_app&quot;</span><span class="p">)</span>
@@ -200,7 +201,7 @@ commands. The rest of Fabric’s API is similar – it’s all just Python.</p>
 <p>Because Fabric is “just Python” you’re free to organize your fabfile any way
 you want. For example, it’s often useful to start splitting things up into
 subtasks:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">local</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">local</span>
 
 <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
     <span class="n">local</span><span class="p">(</span><span class="s2">&quot;./manage.py test my_app&quot;</span><span class="p">)</span>
@@ -264,8 +265,8 @@ aborted, never running the <code class="docutils literal notranslate"><span clas
 handling to occur.</p>
 <p>Let’s flip this setting on for our <code class="docutils literal notranslate"><span class="pre">test</span></code> function, and then inspect the
 result of the <a class="reference internal" href="api/core/operations.html#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> call ourselves:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">local</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">abort</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="k">import</span> <span class="n">confirm</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">local</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">abort</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="kn">import</span> <span class="n">confirm</span>
 
 <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">warn_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -318,8 +319,8 @@ which does the same locally.</li>
 runs <strong>remotely</strong> instead of locally.</li>
 </ul>
 <p>We also need to make sure we import the new functions at the top of our file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">local</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">cd</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="k">import</span> <span class="n">confirm</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">local</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">cd</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="kn">import</span> <span class="n">confirm</span>
 </pre></div>
 </div>
 <p>With these changes in place, let’s deploy:</p>
@@ -406,8 +407,8 @@ host list, <a class="reference internal" href="usage/env.html#hosts"><span class
 Fabric’s settings, and can be written to with attributes as well (in fact,
 <a class="reference internal" href="api/core/context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>, seen above, is simply a wrapper for this.)
 Thus, we can modify it at module level near the top of our fabfile like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="k">import</span> <span class="n">confirm</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="kn">import</span> <span class="n">confirm</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;my_server&#39;</span><span class="p">]</span>
 
@@ -431,8 +432,8 @@ task once for each connection.</p>
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>Our completed fabfile is still pretty short, as such things go. Here it is in
 its entirety:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="k">import</span> <span class="n">confirm</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">fabric.contrib.console</span> <span class="kn">import</span> <span class="n">confirm</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;my_server&#39;</span><span class="p">]</span>
 
@@ -602,7 +603,7 @@ contents on <a class="reference internal" href="index.html"><span class="doc">th
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Utils" href="utils.html" />
@@ -43,9 +44,6 @@
 fabfiles loaded by the <a class="reference internal" href="../../usage/fab.html"><span class="doc">fab</span></a> tool.</p>
 <p>For details on how to implement and use <a class="reference internal" href="#fabric.tasks.Task" title="fabric.tasks.Task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Task</span></code></a> subclasses,
 please see the usage documentation on <a class="reference internal" href="../../usage/tasks.html#new-style-tasks"><span class="std std-ref">new-style tasks</span></a>.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.1.</span></p>
-</div>
 <dl class="method">
 <dt id="fabric.tasks.Task.__init__">
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>alias=None</em>, <em>aliases=None</em>, <em>default=False</em>, <em>name=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.Task.__init__" title="Permalink to this definition">¶</a></dt>
@@ -77,9 +75,6 @@ set.</p>
 <em class="property">class </em><code class="descclassname">fabric.tasks.</code><code class="descname">WrappedCallableTask</code><span class="sig-paren">(</span><em>callable</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.tasks.WrappedCallableTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wraps a given callable transparently, while marking it as a valid Task.</p>
 <p>Generally used via <a class="reference internal" href="decorators.html#fabric.decorators.task" title="fabric.decorators.task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code></a> and not directly.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.1.</span></p>
-</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="docs.html#fabric.docs.unwrap_tasks" title="fabric.docs.unwrap_tasks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unwrap_tasks</span></code></a>, <a class="reference internal" href="decorators.html#fabric.decorators.task" title="fabric.decorators.task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">task</span></code></a></p>
@@ -268,7 +263,7 @@ parallel option (<code class="docutils literal notranslate"><span class="pre">en
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

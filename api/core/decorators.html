@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Documentation helpers" href="docs.html" />
@@ -53,10 +54,6 @@ command line, <code class="docutils literal notranslate"><span class="pre">my_fu
 argument (<code class="docutils literal notranslate"><span class="pre">&#64;hosts(['host1',</span> <span class="pre">'host2'])</span></code>).</p>
 <p>Note that this decorator actually just sets the function’s <code class="docutils literal notranslate"><span class="pre">.hosts</span></code>
 attribute, which is then read prior to executing the function.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.2: </span>Allow a single, iterable argument (<code class="docutils literal notranslate"><span class="pre">&#64;hosts(iterable)</span></code>) to be used
-instead of requiring <code class="docutils literal notranslate"><span class="pre">&#64;hosts(*iterable)</span></code>.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -92,10 +89,6 @@ against the hosts listed in the <code class="docutils literal notranslate"><span
 invoked with either an argument list or a single, iterable argument.
 Similarly, this decorator uses the same mechanism as
 <a class="reference internal" href="#fabric.decorators.hosts" title="fabric.decorators.hosts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hosts</span></code></a> and simply sets <code class="docutils literal notranslate"><span class="pre">&lt;function&gt;.roles</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.2: </span>Allow a single, iterable argument to be used (same as
-<a class="reference internal" href="#fabric.decorators.hosts" title="fabric.decorators.hosts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hosts</span></code></a>).</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -164,9 +157,6 @@ retrofit old code without indenting everything.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.1.</span></p>
 </div>
 </dd></dl>
 
@@ -279,7 +269,7 @@ retrofit old code without indenting everything.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

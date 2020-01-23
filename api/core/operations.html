@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Tasks" href="tasks.html" />
@@ -126,26 +127,6 @@ will be used in Fabric’s printed output instead of the default
 <code class="docutils literal notranslate"><span class="pre">&lt;file</span> <span class="pre">obj&gt;</span></code></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the remote working directory as manipulated by
-<a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, and the local working directory as
-manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Now allows file-like objects in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span><code class="docutils literal notranslate"><span class="pre">local_path</span></code> may now contain interpolated path- and host-related
-variables.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Directories may be specified in the <code class="docutils literal notranslate"><span class="pre">remote_path</span></code> argument and will
-trigger recursive downloads.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Return value is now an iterable of downloaded local file paths, which
-also exhibits the <code class="docutils literal notranslate"><span class="pre">.failed</span></code> and <code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> attributes.</p>
-</div>
-<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.5: </span>Allow a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute on file-like objects for log output</p>
 </div>
 </dd></dl>
@@ -181,17 +162,11 @@ attributes. See <a class="reference internal" href="#fabric.operations.run" titl
 context manager, allowing you to control its current working directory
 independently of the remote end (which honors
 <a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>).</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Added the <code class="docutils literal notranslate"><span class="pre">succeeded</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> attributes.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a> context manager.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Changed the default value of <code class="docutils literal notranslate"><span class="pre">capture</span></code> from <code class="docutils literal notranslate"><span class="pre">True</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.9: </span>The return value attributes <code class="docutils literal notranslate"><span class="pre">.command</span></code> and <code class="docutils literal notranslate"><span class="pre">.real_command</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.15: </span>The <code class="docutils literal notranslate"><span class="pre">pty</span></code> argument.</p>
 </div>
 </dd></dl>
 
@@ -217,9 +192,6 @@ failed, and pollutes the stdout/stderr stream with shell output such as
 login banners, prompts and echoed stdin.</p>
 <p>Thus, this function does not have a return value and will not trigger
 Fabric’s failure handling if any remote programs result in errors.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.</span></p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -344,22 +316,6 @@ will be used in Fabric’s printed output instead of the default
 <code class="docutils literal notranslate"><span class="pre">&lt;file</span> <span class="pre">obj&gt;</span></code></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Now honors the remote working directory as manipulated by
-<a class="reference internal" href="context_managers.html#fabric.context_managers.cd" title="fabric.context_managers.cd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cd</span></code></a>, and the local working directory as
-manipulated by <a class="reference internal" href="context_managers.html#fabric.context_managers.lcd" title="fabric.context_managers.lcd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lcd</span></code></a>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Now allows file-like objects in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Directories may be specified in the <code class="docutils literal notranslate"><span class="pre">local_path</span></code> argument and will
-trigger recursive uploads.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>Return value is now an iterable of uploaded remote file paths which
-also exhibits the <code class="docutils literal notranslate"><span class="pre">.failed</span></code> and <code class="docutils literal notranslate"><span class="pre">.succeeded</span></code> attributes.</p>
-</div>
-<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.5: </span>Allow a <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute on file-like objects for log output</p>
 </div>
 <div class="versionchanged">
@@ -376,17 +332,10 @@ also exhibits the <code class="docutils literal notranslate"><span class="pre">.
 for at least <code class="docutils literal notranslate"><span class="pre">wait</span></code> seconds.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>As of Fabric 1.4, the ability to reconnect partway through a session no
-longer requires use of internal APIs.  While we are not officially
-deprecating this function, adding more features to it will not be a
-priority.</p>
 <p class="last">Users who want greater control
 are encouraged to check out this function’s (6 lines long, well
 commented) source code and write their own adaptation using different
 timeout/attempt values or additional logic.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.2.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.4: </span>Changed the <code class="docutils literal notranslate"><span class="pre">wait</span></code> kwarg to be optional, and refactored to leverage
@@ -420,9 +369,6 @@ the error output if requirements are not met.</p>
 <p>Note: it is assumed that the keyword arguments apply to all given keys as a
 group. If you feel the need to specify more than one <code class="docutils literal notranslate"><span class="pre">used_for</span></code>, for
 example, you should break your logic into multiple calls to <code class="docutils literal notranslate"><span class="pre">require()</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.1: </span>Allow iterable <code class="docutils literal notranslate"><span class="pre">provided_by</span></code> values instead of just single values.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -504,18 +450,6 @@ dollar signs etc., specify <code class="docutils literal notranslate"><span clas
 </pre></div>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.0: </span>The <code class="docutils literal notranslate"><span class="pre">succeeded</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> return value attributes, the
-<code class="docutils literal notranslate"><span class="pre">combine_stderr</span></code> kwarg, and interactive behavior.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>The default value of <code class="docutils literal notranslate"><span class="pre">pty</span></code> is now <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.2: </span>The default value of <code class="docutils literal notranslate"><span class="pre">combine_stderr</span></code> is now <code class="docutils literal notranslate"><span class="pre">None</span></code> instead of
-<code class="docutils literal notranslate"><span class="pre">True</span></code>. However, the default <em>behavior</em> is unchanged, as the global
-setting is still <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</div>
-<div class="versionadded">
 <p><span class="versionmodified">New in version 1.5: </span>The <code class="docutils literal notranslate"><span class="pre">quiet</span></code>, <code class="docutils literal notranslate"><span class="pre">warn_only</span></code>, <code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> kwargs.</p>
 </div>
 <div class="versionadded">
@@ -556,9 +490,6 @@ course, override this global setting.</p>
 <span class="k">with</span> <span class="n">settings</span><span class="p">(</span><span class="n">sudo_user</span><span class="o">=</span><span class="s1">&#39;mysql&#39;</span><span class="p">):</span>
     <span class="n">sudo</span><span class="p">(</span><span class="s2">&quot;whoami&quot;</span><span class="p">)</span> <span class="c1"># prints &#39;mysql&#39;</span>
 </pre></div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0: </span>See the changed and added notes for <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.5: </span>Now honors <a class="reference internal" href="../../usage/env.html#sudo-user"><span class="std std-ref">env.sudo_user</span></a>.</p>
@@ -686,7 +617,7 @@ course, override this global setting.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

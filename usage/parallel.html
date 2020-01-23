@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="SSH behavior" href="ssh.html" />
@@ -54,7 +55,7 @@ same time.</p>
 on a number of Web servers, and then reload the servers once the code has been
 distributed everywhere (to allow for easier rollback if code updates fail.) One
 could implement this with the following fabfile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">cd</span><span class="p">(</span><span class="s2">&quot;/srv/django/myapp&quot;</span><span class="p">):</span>
@@ -97,7 +98,7 @@ seconds on average.</p>
 functionality may be enabled or disabled on a task-by-task basis using the
 <a class="reference internal" href="../api/core/decorators.html#fabric.decorators.parallel" title="fabric.decorators.parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel</span></code></a> and <a class="reference internal" href="../api/core/decorators.html#fabric.decorators.serial" title="fabric.decorators.serial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">serial</span></code></a> decorators. For
 example, this fabfile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@parallel</span>
 <span class="k">def</span> <span class="nf">runs_in_parallel</span><span class="p">():</span>
@@ -127,7 +128,7 @@ any task specifically wrapped with <a class="reference internal" href="../api/co
 setting and continue to run serially.</p>
 <p>For example, the following fabfile will result in the same execution sequence
 as the one above:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">def</span> <span class="nf">runs_in_parallel</span><span class="p">():</span>
     <span class="k">pass</span>
@@ -155,7 +156,7 @@ active processes.</p>
 can override this on a per-task level by specifying the <code class="docutils literal notranslate"><span class="pre">pool_size</span></code> keyword
 argument to <a class="reference internal" href="../api/core/decorators.html#fabric.decorators.parallel" title="fabric.decorators.parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel</span></code></a>, or globally via <a class="reference internal" href="fab.html#cmdoption-z"><code class="xref std std-option docutils literal notranslate"><span class="pre">-z</span></code></a>.</p>
 <p>For example, to run on 5 hosts at a time:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@parallel</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">heavy_task</span><span class="p">():</span>
@@ -302,7 +303,7 @@ parallel runs easier.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

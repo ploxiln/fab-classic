@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Interaction with remote programs" href="interactivity.html" />
@@ -67,9 +68,6 @@ or similar. In order for this to work, Fabric temporarily adds the found
 fabfile’s containing folder to the Python load path (and removes it
 immediately afterwards.)</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.2: </span>The ability to load package fabfiles.</p>
-</div>
 </div>
 <div class="section" id="importing-fabric">
 <span id="importing-the-api"></span><h2>Importing Fabric<a class="headerlink" href="#importing-fabric" title="Permalink to this headline">¶</a></h2>
@@ -82,7 +80,7 @@ the <code class="docutils literal notranslate"><span class="pre">fabric.api</spa
 <a class="reference internal" href="../api/core/utils.html"><span class="doc">Utils</span></a> are included in this module as a single, flat
 namespace. This enables a very simple and consistent interface to Fabric within
 your fabfiles:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="c1"># call run(), sudo(), etc etc</span>
 </pre></div>
@@ -92,11 +90,11 @@ number of reasons</a>) and if you’re only using a couple of
 Fab API calls, it <em>is</em> probably a good idea to explicitly <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">fabric.api</span>
 <span class="pre">import</span> <span class="pre">env,</span> <span class="pre">run</span></code> or similar. However, in most nontrivial fabfiles, you’ll be
 using all or most of the API, and the star import:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
 <p>will be a lot easier to write and read than:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">abort</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">hide</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> \
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">abort</span><span class="p">,</span> <span class="n">cd</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">hide</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> \
     <span class="n">put</span><span class="p">,</span> <span class="n">require</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runs_once</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">sudo</span><span class="p">,</span> <span class="n">warn</span>
 </pre></div>
 </div>
@@ -222,7 +220,7 @@ please see <a class="reference internal" href="tasks.html"><span class="doc">Def
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

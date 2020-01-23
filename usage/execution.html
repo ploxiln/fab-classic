@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="fab options and arguments" href="fab.html" />
@@ -59,7 +60,7 @@ in its host list.</li>
 always run once and only once.</li>
 </ul>
 <p>Thus, given the following fabfile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">env</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;host1&#39;</span><span class="p">,</span> <span class="s1">&#39;host2&#39;</span><span class="p">]</span>
 
@@ -131,7 +132,7 @@ strings, and can then be specified instead of writing out the entire list every
 time.</p>
 <p>This mapping is defined as a dictionary, <code class="docutils literal notranslate"><span class="pre">env.roledefs</span></code>, which must be
 modified by a fabfile in order to be used. A simple example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">roledefs</span><span class="p">[</span><span class="s1">&#39;webservers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;www1&#39;</span><span class="p">,</span> <span class="s1">&#39;www2&#39;</span><span class="p">,</span> <span class="s1">&#39;www3&#39;</span><span class="p">]</span>
 </pre></div>
@@ -139,7 +140,7 @@ modified by a fabfile in order to be used. A simple example:</p>
 <p>Since <code class="docutils literal notranslate"><span class="pre">env.roledefs</span></code> is naturally empty by default, you may also opt to
 re-assign to it without fear of losing any information (provided you aren’t
 loading other fabfiles which also modify it, of course):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">roledefs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;web&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;www1&#39;</span><span class="p">,</span> <span class="s1">&#39;www2&#39;</span><span class="p">,</span> <span class="s1">&#39;www3&#39;</span><span class="p">],</span>
@@ -150,7 +151,7 @@ loading other fabfiles which also modify it, of course):</p>
 <p>Role definitions are not necessarily configuration of hosts only, they can
 also hold additional role specific settings of your choice. This is achieved
 by defining the roles as dicts and host strings under a <code class="docutils literal notranslate"><span class="pre">hosts</span></code> key:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">roledefs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;web&#39;</span><span class="p">:</span> <span class="p">{</span>
@@ -172,9 +173,6 @@ definitions, and not worry about causing delays at fabfile load time when
 calling e.g. <code class="docutils literal notranslate"><span class="pre">fab</span> <span class="pre">--list</span></code>.)</p>
 <p>Use of roles is not required in any way – it’s simply a convenience in
 situations where you have common groupings of servers.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.2: </span>Added ability to use callables as <code class="docutils literal notranslate"><span class="pre">roledefs</span></code> values.</p>
-</div>
 </div>
 <div class="section" id="how-host-lists-are-constructed">
 <span id="host-lists"></span><h3>How host lists are constructed<a class="headerlink" href="#how-host-lists-are-constructed" title="Permalink to this headline">¶</a></h3>
@@ -190,7 +188,7 @@ The value of these variables is checked at runtime, while constructing each
 tasks’s host list.</p>
 <p>Thus, they may be set at module level, which will take effect when the fabfile
 is imported:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;host1&#39;</span><span class="p">,</span> <span class="s1">&#39;host2&#39;</span><span class="p">]</span>
 
@@ -203,7 +201,7 @@ followed by <code class="docutils literal notranslate"><span class="pre">host2</
 <p>Since the env vars are checked for <em>each</em> task, this means that if you have the
 need, you can actually modify <code class="docutils literal notranslate"><span class="pre">env</span></code> in one task and it will affect all
 following tasks:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
 
 <span class="k">def</span> <span class="nf">set_hosts</span><span class="p">():</span>
     <span class="n">env</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;host1&#39;</span><span class="p">,</span> <span class="s1">&#39;host2&#39;</span><span class="p">]</span>
@@ -248,7 +246,7 @@ string, so a string with no commas turns into a single-item list.</p>
 <p>If you wish to nondestructively merge the command-line hosts with your
 fabfile-defined ones, make sure your fabfile uses <code class="docutils literal notranslate"><span class="pre">env.hosts.extend()</span></code>
 instead:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">run</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;host3&#39;</span><span class="p">,</span> <span class="s1">&#39;host4&#39;</span><span class="p">])</span>
 
@@ -285,7 +283,7 @@ must be quoted to prevent your shell from interpreting the semicolons.</p>
 </div>
 <p>Take the below fabfile, which is the same one we’ve been using, but which
 doesn’t define any host info at all:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span>
 
 <span class="k">def</span> <span class="nf">mytask</span><span class="p">():</span>
     <span class="n">run</span><span class="p">(</span><span class="s1">&#39;ls /var/www&#39;</span><span class="p">)</span>
@@ -304,7 +302,7 @@ just those two hosts.</p>
 specify this in your fabfile itself. This can be done by decorating a task
 function with the <a class="reference internal" href="../api/core/decorators.html#fabric.decorators.hosts" title="fabric.decorators.hosts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hosts</span></code></a> or <a class="reference internal" href="../api/core/decorators.html#fabric.decorators.roles" title="fabric.decorators.roles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roles</span></code></a>
 decorators. These decorators take a variable argument list, like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">run</span>
 
 <span class="nd">@hosts</span><span class="p">(</span><span class="s1">&#39;host1&#39;</span><span class="p">,</span> <span class="s1">&#39;host2&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">mytask</span><span class="p">():</span>
@@ -357,7 +355,7 @@ because the per-task decorator host list takes precedence.</p>
 <p>However, for each given source, if both roles <strong>and</strong> hosts are specified, they
 will be merged together into a single host list. Take, for example, this
 fabfile where both of the decorators are used:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">run</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">env</span><span class="p">,</span> <span class="n">hosts</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">run</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">roledefs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;role1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]}</span>
 
@@ -450,7 +448,7 @@ calling the given task from the command line: all the rules given above in
 methods.)</p>
 <p>As an example, here’s a fabfile defining two stand-alone tasks for deploying a
 Web application:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span>
 
 <span class="n">env</span><span class="o">.</span><span class="n">roledefs</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;db&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;db1&#39;</span><span class="p">,</span> <span class="s1">&#39;db2&#39;</span><span class="p">],</span>
@@ -476,7 +474,7 @@ and that <code class="docutils literal notranslate"><span class="pre">update</sp
 </div>
 <p>Fabric &gt;=1.3 can use <a class="reference internal" href="../api/core/tasks.html#fabric.tasks.execute" title="fabric.tasks.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a> to set up a meta-task. Update the
 <code class="docutils literal notranslate"><span class="pre">import</span></code> line like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">execute</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">roles</span><span class="p">,</span> <span class="n">execute</span>
 </pre></div>
 </div>
 <p>and append this to the bottom of the file:</p>
@@ -516,7 +514,7 @@ perform calculations, etc.</p>
 rely on Fabric looping over host lists on your behalf), but with <a class="reference internal" href="../api/core/tasks.html#fabric.tasks.execute" title="fabric.tasks.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a>
 it’s pretty easy. Simply switch from calling the actual work-bearing task, to
 calling a “meta” task which takes control of execution with <a class="reference internal" href="../api/core/tasks.html#fabric.tasks.execute" title="fabric.tasks.execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">execute</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runs_once</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">execute</span><span class="p">,</span> <span class="n">run</span><span class="p">,</span> <span class="n">runs_once</span>
 
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">workhorse</span><span class="p">():</span>
@@ -541,10 +539,10 @@ that return value.</p>
 <p>A common intermediate-to-advanced use case for Fabric is to parameterize lookup
 of one’s target host list at runtime (when use of <a class="reference internal" href="#execution-roles"><span class="std std-ref">Roles</span></a> does not
 suffice). <code class="docutils literal notranslate"><span class="pre">execute</span></code> can make this extremely simple, like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">execute</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">execute</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="c1"># For example, code talking to an HTTP API, or a database, or ...</span>
-<span class="kn">from</span> <span class="nn">mylib</span> <span class="k">import</span> <span class="n">external_datastore</span>
+<span class="kn">from</span> <span class="nn">mylib</span> <span class="kn">import</span> <span class="n">external_datastore</span>
 
 <span class="c1"># This is the actual algorithm involved. It does not care about host</span>
 <span class="c1"># lists at all.</span>
@@ -583,9 +581,9 @@ query your external data store in whatever way you need – it’s just Python.<
 succession instead of an explicit <code class="docutils literal notranslate"><span class="pre">execute</span></code> call, is to mutate
 <a class="reference internal" href="env.html#hosts"><span class="std std-ref">env.hosts</span></a> in a host-list lookup task and then call <code class="docutils literal notranslate"><span class="pre">do_work</span></code>
 in the same session:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="n">run</span><span class="p">,</span> <span class="n">task</span>
 
-<span class="kn">from</span> <span class="nn">mylib</span> <span class="k">import</span> <span class="n">external_datastore</span>
+<span class="kn">from</span> <span class="nn">mylib</span> <span class="kn">import</span> <span class="n">external_datastore</span>
 
 <span class="c1"># Marked as a publicly visible task, but otherwise unchanged: still just</span>
 <span class="c1"># &quot;do the work, let somebody else worry about what hosts to run on&quot;.</span>
@@ -657,7 +655,7 @@ creating new ones otherwise.</p>
 actually make connections until they’re necessary. Take for example this task
 which does some local housekeeping prior to interacting with the remote
 server:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="k">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="nd">@hosts</span><span class="p">(</span><span class="s1">&#39;host1&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">clean_and_upload</span><span class="p">():</span>
@@ -968,7 +966,7 @@ contents entirely.</p>
       &copy;Fabric authors.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
