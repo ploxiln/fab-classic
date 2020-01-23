@@ -7,9 +7,9 @@ https://github.com/iknite/rudolf/archive/4a33a26a3aff.tar.gz#egg=rudolf==0.4
 # Mocking library
 Fudge<1.0
 # used in some tests
-jinja2
+jinja2<3.0
 # flake8
-flake8==3.7.7
+flake8==3.7.9
 mccabe==0.6.1
 pycodestyle==2.5.0
 pyflakes==2.1.1
