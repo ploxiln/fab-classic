@@ -1198,6 +1198,9 @@ def local(command, capture=False, shell=None, pty=True):
         Changed the default value of ``capture`` from ``True`` to ``False``.
     .. versionadded:: 1.9
         The return value attributes ``.command`` and ``.real_command``.
+
+    .. versionadded:: 1.15
+        The ``pty`` argument.
     """
     given_command = command
     # Apply cd(), path() etc
