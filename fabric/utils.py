@@ -5,6 +5,7 @@ or performing indenting on multiline output.
 import os
 import six
 import sys
+import struct
 import textwrap
 from traceback import format_exc
 
@@ -288,15 +289,13 @@ def _pty_size():
     Defaults to 80x24 (which is also the 'ssh' lib's default) but will detect
     local (stdout-based) terminal window size on non-Windows platforms.
     """
-    from fabric.state import win32
-    if not win32:
-        import fcntl
-        import termios
-        import struct
+    win32 = (sys.platform == 'win32')
 
     default_rows, default_cols = 24, 80
     rows, cols = default_rows, default_cols
     if not win32 and isatty(sys.stdout):
+        import fcntl
+        import termios
         # We want two short unsigned integers (rows, cols)
         fmt = 'HH'
         # Create an empty (zeroed) buffer for ioctl to map onto. Yay for C!
