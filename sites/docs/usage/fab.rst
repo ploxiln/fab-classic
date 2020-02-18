@@ -98,6 +98,21 @@ below.
     Sets :ref:`env.abort_on_prompts <abort-on-prompts>` to ``True``, forcing
     Fabric to abort whenever it would prompt for input.
 
+.. cmdoption:: --auth-timeout=N
+
+    Set SSH authentication response timeout in seconds.
+    Sets :ref:`env.auth_timeout <auth-timeout>`.
+
+    .. versionadded:: 1.17
+
+.. cmdoption:: --banner-timeout=N
+
+    Set SSH banner timeout in seconds.
+    Sets :ref:`env.banner_timeout <banner-timeout>`.
+
+    .. seealso:: :option:`--timeout`
+    .. versionadded:: 1.17
+
 .. cmdoption:: -c RCFILE, --config=RCFILE
 
     Sets :ref:`env.rcfile <rcfile>` to the given file path, which Fabric will
@@ -115,9 +130,7 @@ below.
     Set number of times to attempt connections. Sets
     :ref:`env.connection_attempts <connection-attempts>`.
 
-    .. seealso::
-        :ref:`env.connection_attempts <connection-attempts>`,
-        :ref:`env.timeout <timeout>`
+    .. seealso:: :option:`--timeout`
     .. versionadded:: 1.4
 
 .. cmdoption:: -D, --disable-known-hosts
@@ -351,8 +364,8 @@ below.
     Set connection timeout in seconds. Sets :ref:`env.timeout <timeout>`.
 
     .. seealso::
-        :ref:`env.timeout <timeout>`,
-        :ref:`env.connection_attempts <connection-attempts>`
+        :option:`--banner-timeout`,
+        :option:`--connection-attempts`
     .. versionadded:: 1.4
 
 .. cmdoption:: --command-timeout=N, -T N

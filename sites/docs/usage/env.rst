@@ -163,6 +163,30 @@ to act as if they have been called with ``pty=False``.
 
 .. seealso:: :option:`--no-pty`
 
+.. _auth-timeout:
+
+``auth_timeout``
+----------------
+
+**Default:** ``30``
+
+SSH authentication response timeout, in seconds.
+
+.. versionadded:: 1.17
+.. seealso:: :option:`--auth-timeout`
+
+.. _banner-timeout:
+
+``banner_timeout``
+------------------
+
+**Default:** ``15``
+
+SSH banner timeout, in seconds.
+
+.. versionadded:: 1.17
+.. seealso:: :option:`--banner-timeout`, :ref:`timeout`
+
 .. _colorize-errors:
 
 ``colorize_errors``
@@ -852,7 +876,10 @@ executing command. For informational purposes only.
 Network connection timeout, in seconds.
 
 .. versionadded:: 1.4
-.. seealso:: :option:`--timeout`, :ref:`connection-attempts`
+.. seealso::
+    :option:`--timeout`,
+    :ref:`connection-attempts`,
+    :ref:`banner-timeout`
 
 ``use_shell``
 -------------

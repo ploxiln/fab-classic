@@ -86,7 +86,8 @@ default_ssh_config_path = os.path.join(os.path.expanduser('~'), '.ssh', 'config'
 # optparse.NO_DEFAULT (currently a two-tuple)! In general, None is a better
 # default than ''.
 #
-# User-facing documentation for these are kept in sites/docs/env.rst.
+# User-facing documentation for these are kept in
+# sites/docs/usage/env.rst and sites/docs/usage/fab.rst
 env_options = [
 
     make_option('-a', '--no_agent',
@@ -286,6 +287,20 @@ env_options = [
         default=10,
         metavar="N",
         help="set connection timeout to N seconds"
+    ),
+
+    make_option('--banner-timeout',
+        type='int',
+        default=15,
+        metavar="N",
+        help="set ssh banner timeout to N seconds"
+    ),
+
+    make_option('--auth-timeout',
+        type='int',
+        default=30,
+        metavar="N",
+        help="set timeout for ssh authentication response to N seconds"
     ),
 
     make_option('-T', '--command-timeout',
