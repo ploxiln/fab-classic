@@ -1,17 +1,17 @@
-import sys
-import time
 import re
+import sys
 import socket
-import six
-from collections import deque
+import time
 from select import select
+from collections import deque
+
+import six
 
 from fabric.state import env, output, win32
 from fabric.auth import get_password, set_password
 import fabric.network
 from fabric.network import ssh, normalize
 from fabric.exceptions import CommandTimeout
-
 
 if win32:
     import msvcrt
@@ -244,21 +244,42 @@ class OutputLooper(object):
         return None, None
 
 
-def input_loop(chan, using_pty):
+def input_loop(chan, f, using_pty):
+    is_stdin = f == sys.stdin
+    waitable = True
+    if win32:
+        waitable = False
+    else:
+        try:
+            f.fileno()
+        except ValueError:
+            waitable = False
+
     while not chan.exit_status_ready():
-        if win32:
-            have_char = msvcrt.kbhit()
+        byte = None
+        if not chan.input_enabled:
+            pass
+        elif win32 and is_stdin:
+            if msvcrt.kbhit():
+                byte = msvcrt.getch()
+        elif waitable:
+            r, w, x = select([f], [], [], 0.0)
+            if f in r:
+                byte = f.read(1)
         else:
-            r, w, x = select([sys.stdin], [], [], 0.0)
-            have_char = (r and r[0] == sys.stdin)
-        if have_char and chan.input_enabled:
-            # Send all local stdin to remote end's stdin
-            byte = msvcrt.getch() if win32 else sys.stdin.read(1)
+            byte = f.read(1)
+
+        if byte:
             chan.sendall(byte)
             # Optionally echo locally, if needed.
-            if not using_pty and env.echo_stdin:
+            if not using_pty and is_stdin and env.echo_stdin:
                 # Not using fastprint() here -- it prints as 'user'
                 # output level, don't want it to be accidentally hidden
                 sys.stdout.write(byte)
                 sys.stdout.flush()
-        time.sleep(ssh.io_sleep)
+
+        elif byte == '':  # EOF
+            chan.shutdown_write()
+            break
+        else:
+            time.sleep(ssh.io_sleep)

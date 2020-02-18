@@ -23,7 +23,7 @@ from fabric.sftp import SFTP
 from fabric.state import env, connections, output, win32, default_channel
 from fabric.thread_handling import ThreadHandler
 from fabric.utils import (
-    abort, error, handle_prompt_abort, indent, _pty_size, warn, apply_lcwd,
+    abort, error, handle_prompt_abort, indent, _pty_size, warn, apply_lcwd, isatty
 )
 
 
@@ -693,8 +693,8 @@ def _prefix_env_vars(command, local=False):
 
 
 def _execute(channel, command, pty=True, combine_stderr=None,
-    invoke_shell=False, stdout=None, stderr=None, timeout=None,
-    capture_buffer_size=None):
+             invoke_shell=False, stdin=None, stdout=None, stderr=None,
+             timeout=None, capture_buffer_size=None):
     """
     Execute ``command`` over ``channel``.
 
@@ -717,27 +717,31 @@ def _execute(channel, command, pty=True, combine_stderr=None,
     ``stdout``/``stderr`` are captured output strings and ``status`` is the
     program's return code, if applicable.
     """
-    # stdout/stderr redirection
+    # stdin/stdout/stderr redirection
+    stdin = stdin or sys.stdin
     stdout = stdout or sys.stdout
     stderr = stderr or sys.stderr
 
     # Timeout setting control
     timeout = env.command_timeout if (timeout is None) else timeout
 
+    # Assume pty use, and allow overriding of this either via kwarg or env
+    # var.  (invoke_shell always wants a pty no matter what.)
+    using_pty = invoke_shell or (pty and env.always_use_pty and isatty(stdin))
+
     # What to do with CTRl-C?
     remote_interrupt = env.remote_interrupt
+    if remote_interrupt is None:
+        remote_interrupt = invoke_shell
+    if remote_interrupt and not using_pty:
+        remote_interrupt = False
 
-    with char_buffered(sys.stdin):
+    with char_buffered(stdin):
         # Combine stdout and stderr to get around oddball mixing issues
         if combine_stderr is None:
             combine_stderr = env.combine_stderr
         channel.set_combine_stderr(combine_stderr)
 
-        # Assume pty use, and allow overriding of this either via kwarg or env
-        # var.  (invoke_shell always wants a pty no matter what.)
-        using_pty = True
-        if not invoke_shell and (not pty or not env.always_use_pty):
-            using_pty = False
         # Request pty with size params (default to 80x24, obtain real
         # parameters if on POSIX platform)
         if using_pty:
@@ -770,13 +774,8 @@ def _execute(channel, command, pty=True, combine_stderr=None,
                 capture=stdout_buf, stream=stdout, timeout=timeout),
             ThreadHandler('err', output_loop, channel, "recv_stderr",
                 capture=stderr_buf, stream=stderr, timeout=timeout),
-            ThreadHandler('in', input_loop, channel, using_pty)
+            ThreadHandler('in', input_loop, channel, stdin, using_pty)
         )
-
-        if remote_interrupt is None:
-            remote_interrupt = invoke_shell
-        if remote_interrupt and not using_pty:
-            remote_interrupt = False
 
         while True:
             if channel.exit_status_ready():
@@ -863,9 +862,9 @@ def _noop():
 
 
 def _run_command(command, shell=True, pty=True, combine_stderr=True,
-    sudo=False, user=None, quiet=False, warn_only=False, stdout=None,
-    stderr=None, group=None, timeout=None, shell_escape=None,
-    capture_buffer_size=None):
+                 sudo=False, user=None, quiet=False, warn_only=False,
+                 stdin=None, stdout=None, stderr=None, group=None,
+                 timeout=None, shell_escape=None, capture_buffer_size=None):
     """
     Underpinnings of `run` and `sudo`. See their docstrings for more info.
     """
@@ -900,9 +899,9 @@ def _run_command(command, shell=True, pty=True, combine_stderr=True,
         # Actual execution, stdin/stdout/stderr handling, and termination
         result_stdout, result_stderr, status = _execute(
             channel=default_channel(), command=wrapped_command, pty=pty,
-            combine_stderr=combine_stderr, invoke_shell=False, stdout=stdout,
-            stderr=stderr, timeout=timeout,
-            capture_buffer_size=capture_buffer_size)
+            combine_stderr=combine_stderr, invoke_shell=False,
+            stdin=stdin, stdout=stdout, stderr=stderr,
+            timeout=timeout, capture_buffer_size=capture_buffer_size)
 
         # Assemble output string
         out = _AttributeString(result_stdout)
@@ -940,8 +939,8 @@ def _run_command(command, shell=True, pty=True, combine_stderr=True,
 
 @needs_host
 def run(command, shell=True, pty=True, combine_stderr=None, quiet=False,
-    warn_only=False, stdout=None, stderr=None, timeout=None, shell_escape=None,
-    capture_buffer_size=None):
+        warn_only=False, stdin=None, stdout=None, stderr=None,
+        timeout=None, shell_escape=None, capture_buffer_size=None):
     """
     Run a shell command on a remote host.
 
@@ -1043,18 +1042,21 @@ def run(command, shell=True, pty=True, combine_stderr=None, quiet=False,
 
     .. versionadded:: 1.11
         The ``capture_buffer_size`` argument.
+
+    .. versionadded:: 1.17
+        The ``stdin`` argument.
     """
     return _run_command(
-        command, shell, pty, combine_stderr, quiet=quiet,
-        warn_only=warn_only, stdout=stdout, stderr=stderr, timeout=timeout,
+        command, shell, pty, combine_stderr, quiet=quiet, warn_only=warn_only,
+        stdin=stdin, stdout=stdout, stderr=stderr, timeout=timeout,
         shell_escape=shell_escape, capture_buffer_size=capture_buffer_size,
     )
 
 
 @needs_host
 def sudo(command, shell=True, pty=True, combine_stderr=None, user=None,
-    quiet=False, warn_only=False, stdout=None, stderr=None, group=None,
-    timeout=None, shell_escape=None, capture_buffer_size=None):
+         quiet=False, warn_only=False, stdin=None, stdout=None, stderr=None,
+         group=None, timeout=None, shell_escape=None, capture_buffer_size=None):
     """
     Run a shell command on a remote host, with superuser privileges.
 
@@ -1096,12 +1098,16 @@ def sudo(command, shell=True, pty=True, combine_stderr=None, user=None,
 
     .. versionadded:: 1.11
         The ``capture_buffer_size`` argument.
+
+    .. versionadded:: 1.17
+        The ``stdin`` argument.
     """
     return _run_command(
         command, shell, pty, combine_stderr, sudo=True,
         user=user if user else env.sudo_user,
-        group=group, quiet=quiet, warn_only=warn_only, stdout=stdout,
-        stderr=stderr, timeout=timeout, shell_escape=shell_escape,
+        group=group, quiet=quiet, warn_only=warn_only,
+        stdin=stdin, stdout=stdout, stderr=stderr,
+        timeout=timeout, shell_escape=shell_escape,
         capture_buffer_size=capture_buffer_size,
     )
 
@@ -1119,6 +1125,10 @@ def local(command, capture=False, shell=None, pty=True):
     ``execute`` argument (which determines the local shell to use.)  As per the
     linked documentation, on Unix the default behavior is to use ``/bin/sh``,
     so this option is useful for setting that value to e.g.  ``/bin/bash``.
+
+    If ``pty`` is changed to ``False``, it redirects the subprocess stdin to
+    an empty pipe to avoid it reading from the terminal, and creates a new
+    "session id" for the subprocess.
 
     `local` is not currently capable of simultaneously printing and
     capturing output, as `~fabric.operations.run`/`~fabric.operations.sudo`
