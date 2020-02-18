@@ -1,9 +1,10 @@
-from __future__ import with_statement
-
-from six import BytesIO
 import os
 import posixpath
 import shutil
+from io import StringIO
+
+from six import BytesIO
+from nose.tools import eq_
 
 from fabric.api import (
     run, path, put, sudo, env, cd, local, settings, get
@@ -184,3 +185,26 @@ class TestOperations(Integration):
         local_ = BytesIO()
         get(local_path=local_, remote_path=remotepath)
         assert local_.getvalue() == b'foo\n'
+
+    def test_stdin_bytesio(self):
+        doc = u','.join([str(n) for n in range(500)])
+        fd = StringIO(doc)
+        out = run("openssl md5 -r", stdin=fd)
+        eq_(out, "c7b8df7a96779886bfe0e8b5fc968c52 *stdin")
+
+    def test_stdin_file(self):
+        doc = u','.join([str(n) for n in range(500)])
+        localfile = "whatever2.txt"
+        try:
+            with open(localfile, 'wt') as fd:
+                fd.write(doc)
+            with open(localfile, 'rt') as fd:
+                out = run("openssl md5 -r", stdin=fd)
+        finally:
+            os.remove(localfile)
+        eq_(out, "c7b8df7a96779886bfe0e8b5fc968c52 *stdin")
+
+    def test_stdin_sudo(self):
+        fd = StringIO(u"whoami\n")
+        out = sudo("bash", stdin=fd)
+        eq_(out, "root")
