@@ -80,9 +80,14 @@ def get_gateway(host, port, cache, replace=False):
     """
     from fabric.state import env, output
     sock = None
-    proxy_command = ssh_config().get('proxycommand', None)
-    if env.gateway:
-        gateway = normalize_to_string(env.gateway)
+    conf = ssh_config()
+    proxy_command = conf.get('proxycommand', None)
+    proxy_jump = conf.get('proxyjump', None)
+    # only support simple single ProxyJump, not comma-separated list
+    # precedence: env.gateway, ProxyJump, ProxyCommand
+    gateway = env.gateway or proxy_jump
+    if gateway:
+        gateway = normalize_to_string(gateway)
         # ensure initial gateway connection
         if replace or gateway not in cache:
             if output.debug:
