@@ -884,6 +884,9 @@ If enabled, the following SSH config directives will be loaded and honored by Fa
   enabled.
 * ``ProxyCommand`` will trigger use of a proxy command for host connections,
   just as with regular ``ssh``.
+* ``ProxyJump`` will trigger use of a :ref:`env.gateway <gateway>` for host
+  connections, which works similarly to regular ``ssh``, but only supports
+  a single hop.
 
   .. note::
     If all you want to do is bounce SSH traffic off a gateway, you may find
@@ -900,3 +903,5 @@ If enabled, the following SSH config directives will be loaded and honored by Fa
     easier for you to modify ``env.gateway`` (e.g. via
     `~fabric.context_managers.settings`) than to work around your conf file's
     contents entirely.
+
+    Similarly, ``env.gateway`` takes precedence over ``ProxyJump`` in your SSH config.

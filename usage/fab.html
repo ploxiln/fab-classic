@@ -124,6 +124,30 @@ Fabric to abort whenever it would prompt for input.</p>
 </dd></dl>
 
 <dl class="cmdoption">
+<dt id="cmdoption-auth-timeout">
+<code class="descname">--auth-timeout</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-auth-timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set SSH authentication response timeout in seconds.
+Sets <a class="reference internal" href="env.html#auth-timeout"><span class="std std-ref">env.auth_timeout</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.17.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-banner-timeout">
+<code class="descname">--banner-timeout</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-banner-timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set SSH banner timeout in seconds.
+Sets <a class="reference internal" href="env.html#banner-timeout"><span class="std std-ref">env.banner_timeout</span></a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cmdoption-timeout"><code class="xref std std-option docutils literal notranslate"><span class="pre">--timeout</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.17.</span></p>
+</div>
+</dd></dl>
+
+<dl class="cmdoption">
 <dt id="cmdoption-c">
 <code class="descname">-c</code><code class="descclassname"> RCFILE</code><code class="descclassname">, </code><code class="descname">--config</code><code class="descclassname">=RCFILE</code><a class="headerlink" href="#cmdoption-c" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets <a class="reference internal" href="env.html#rcfile"><span class="std std-ref">env.rcfile</span></a> to the given file path, which Fabric will
@@ -146,8 +170,7 @@ just moreso here.)</p>
 <a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a>,
-<a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a></p>
+<p class="last"><a class="reference internal" href="#cmdoption-timeout"><code class="xref std std-option docutils literal notranslate"><span class="pre">--timeout</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.4.</span></p>
@@ -486,8 +509,8 @@ skip unknown tasks.</p>
 <dd><p>Set connection timeout in seconds. Sets <a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="env.html#timeout"><span class="std std-ref">env.timeout</span></a>,
-<a class="reference internal" href="env.html#connection-attempts"><span class="std std-ref">env.connection_attempts</span></a></p>
+<p class="last"><a class="reference internal" href="#cmdoption-banner-timeout"><code class="xref std std-option docutils literal notranslate"><span class="pre">--banner-timeout</span></code></a>,
+<a class="reference internal" href="#cmdoption-connection-attempts"><code class="xref std std-option docutils literal notranslate"><span class="pre">--connection-attempts</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.4.</span></p>

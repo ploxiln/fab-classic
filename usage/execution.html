@@ -827,6 +827,10 @@ enabled.</p>
 </li>
 <li><p class="first"><code class="docutils literal notranslate"><span class="pre">ProxyCommand</span></code> will trigger use of a proxy command for host connections,
 just as with regular <code class="docutils literal notranslate"><span class="pre">ssh</span></code>.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">ProxyJump</span></code> will trigger use of a <a class="reference internal" href="env.html#gateway"><span class="std std-ref">env.gateway</span></a> for host
+connections, which works similarly to regular <code class="docutils literal notranslate"><span class="pre">ssh</span></code>, but only supports
+a single hop.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If all you want to do is bounce SSH traffic off a gateway, you may find
@@ -839,10 +843,11 @@ just as with regular <code class="docutils literal notranslate"><span class="pre
 <p>If your SSH config file contains <code class="docutils literal notranslate"><span class="pre">ProxyCommand</span></code> directives <em>and</em> you have
 set <a class="reference internal" href="env.html#gateway"><span class="std std-ref">env.gateway</span></a> to a non-<code class="docutils literal notranslate"><span class="pre">None</span></code> value, <code class="docutils literal notranslate"><span class="pre">env.gateway</span></code>
 will take precedence and the <code class="docutils literal notranslate"><span class="pre">ProxyCommand</span></code> will be ignored.</p>
-<p class="last">If one has a pre-created SSH config file, rationale states it will be
+<p>If one has a pre-created SSH config file, rationale states it will be
 easier for you to modify <code class="docutils literal notranslate"><span class="pre">env.gateway</span></code> (e.g. via
 <a class="reference internal" href="../api/core/context_managers.html#fabric.context_managers.settings" title="fabric.context_managers.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a>) than to work around your conf file’s
 contents entirely.</p>
+<p class="last">Similarly, <code class="docutils literal notranslate"><span class="pre">env.gateway</span></code> takes precedence over <code class="docutils literal notranslate"><span class="pre">ProxyJump</span></code> in your SSH config.</p>
 </div>
 </li>
 </ul>

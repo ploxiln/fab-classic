@@ -142,6 +142,9 @@ do anything special, consider using the <code class="docutils literal notranslat
 <code class="docutils literal notranslate"><span class="pre">execute</span></code> argument (which determines the local shell to use.)  As per the
 linked documentation, on Unix the default behavior is to use <code class="docutils literal notranslate"><span class="pre">/bin/sh</span></code>,
 so this option is useful for setting that value to e.g.  <code class="docutils literal notranslate"><span class="pre">/bin/bash</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">pty</span></code> is changed to <code class="docutils literal notranslate"><span class="pre">False</span></code>, it redirects the subprocess stdin to
+an empty pipe to avoid it reading from the terminal, and creates a new
+“session id” for the subprocess.</p>
 <p><a class="reference internal" href="#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> is not currently capable of simultaneously printing and
 capturing output, as <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>/<a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>
 do. The <code class="docutils literal notranslate"><span class="pre">capture</span></code> kwarg allows you to switch between printing and
@@ -373,7 +376,7 @@ example, you should break your logic into multiple calls to <code class="docutil
 
 <dl class="function">
 <dt id="fabric.operations.run">
-<code class="descclassname">fabric.operations.</code><code class="descname">run</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.run" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fabric.operations.</code><code class="descname">run</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdin=None</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a shell command on a remote host.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">shell</span></code> is True (the default), <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> will execute the given command
 string via a shell interpreter, the value of which may be controlled by
@@ -464,11 +467,14 @@ dollar signs etc., specify <code class="docutils literal notranslate"><span clas
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.11: </span>The <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> argument.</p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.17: </span>The <code class="docutils literal notranslate"><span class="pre">stdin</span></code> argument.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="fabric.operations.sudo">
-<code class="descclassname">fabric.operations.</code><code class="descname">sudo</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>user=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>group=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.sudo" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fabric.operations.</code><code class="descname">sudo</code><span class="sig-paren">(</span><em>command</em>, <em>shell=True</em>, <em>pty=True</em>, <em>combine_stderr=None</em>, <em>user=None</em>, <em>quiet=False</em>, <em>warn_only=False</em>, <em>stdin=None</em>, <em>stdout=None</em>, <em>stderr=None</em>, <em>group=None</em>, <em>timeout=None</em>, <em>shell_escape=None</em>, <em>capture_buffer_size=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.sudo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a shell command on a remote host, with superuser privileges.</p>
 <p><a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a> is identical in every way to <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>, except that it will always wrap
 the given <code class="docutils literal notranslate"><span class="pre">command</span></code> in a call to the <code class="docutils literal notranslate"><span class="pre">sudo</span></code> program to provide
@@ -505,6 +511,9 @@ course, override this global setting.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.11: </span>The <code class="docutils literal notranslate"><span class="pre">capture_buffer_size</span></code> argument.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.17: </span>The <code class="docutils literal notranslate"><span class="pre">stdin</span></code> argument.</p>
 </div>
 </dd></dl>
 
