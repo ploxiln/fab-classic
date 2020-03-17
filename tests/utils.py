@@ -1,16 +1,16 @@
 from contextlib import contextmanager
-from fudge.patcher import with_patched_object
 from functools import partial
 import copy
 import getpass
 import os
 import re
 import shutil
-import six
 import sys
 import tempfile
 
+import six
 from fudge import Fake, patched_context, clear_expectations
+from fudge.patcher import with_patched_object
 from nose.tools import raises
 
 from fabric.state import env, output
@@ -167,6 +167,25 @@ Got:
     if (repr(result) != str(result)) or (repr(expected) != str(expected)):
         default_msg += aka
     assert result == expected, msg or default_msg
+
+
+def match_(result, expected):
+    default_msg = """
+Expected Regex:
+%(expected)s
+
+Got:
+%(result)s
+
+--------------------------------- aka -----------------------------------------
+
+Expected Regex:
+%(expected)r
+
+Got:
+%(result)r
+""" % {'expected': expected, 'result': result}
+    assert re.match(expected, result, re.M), default_msg
 
 
 def eq_contents(path, text):
