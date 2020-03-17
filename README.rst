@@ -33,6 +33,12 @@ should make sure you uninstall *paramiko* before *paramiko-ng* is installed,
 or you will get strange issues (even if things seem to work at first).
 So, if upgrading, please first run: ``pip uninstall paramiko``
 
+Starting with version 1.18, you can switch back to depending on the package
+named *paramiko* by setting the environment variable ``PARAMIKO_REPLACE=1``
+while installing *fab-classic*::
+
+    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.17.9b2
+
 
 Documentation
 -------------

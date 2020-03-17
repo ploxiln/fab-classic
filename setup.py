@@ -1,11 +1,14 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages
+import os
+from setuptools import setup
 
 from fabric.version import get_version
 
 
 long_description = open("README.rst").read()
 
+# set PARAMIKO_REPLACE=1 to require "paramiko" instead of "paramiko-ng"
+paramiko = 'paramiko' if os.environ.get('PARAMIKO_REPLACE') else 'paramiko-ng'
 
 setup(
     name='fab-classic',
@@ -17,8 +20,8 @@ setup(
     maintainer='Pierce Lopez',
     maintainer_email='pierce.lopez@gmail.com',
     url='https://github.com/ploxiln/fab-classic',
-    packages=find_packages(),
-    install_requires=['paramiko-ng', 'six>=1.10.0'],
+    packages=['fabric', 'fabric.contrib'],
+    install_requires=[paramiko, 'six>=1.10.0'],
     entry_points={
         'console_scripts': [
             'fab = fabric.main:main',
