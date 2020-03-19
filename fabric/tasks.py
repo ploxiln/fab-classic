@@ -204,6 +204,33 @@ def _is_network_error_ignored():
     return not state.env.use_exceptions_for['network'] and state.env.skip_bad_hosts
 
 
+def _parallel_wrap(task, args, kwargs, queue, name, env):
+    # Wrap in another callable that:
+    # * expands the env it's given to ensure parallel, linewise, etc are
+    #   all set correctly and explicitly
+    # * nukes the connection cache to prevent shared-access problems
+    # * knows how to send the tasks' return value back over a Queue
+    # * captures exceptions raised by the task
+    state.env.update(env)
+    try:
+        state.connections.clear()
+        queue.put({'name': name, 'result': task.run(*args, **kwargs)})
+    except BaseException as e:  # We really do want to capture everything
+        # SystemExit implies use of abort(), which prints its own
+        # traceback, host info etc -- so we don't want to double up
+        # on that. For everything else, though, we need to make
+        # clear what host encountered the exception that will
+        # print.
+        if type(e) is not SystemExit:
+            if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
+                sys.stderr.write("!!! Parallel execution exception under host %r:\n" % name)
+            queue.put({'name': name, 'result': e})
+        # Here, anything -- unexpected exceptions, or abort()
+        # driven SystemExits -- will bubble up and terminate the
+        # child process.
+        if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
+            raise
+
 def _execute(task, host, my_env, args, kwargs, jobs, queue, multiprocessing):
     """
     Primary single-host work body of execute()
@@ -220,45 +247,17 @@ def _execute(task, host, my_env, args, kwargs, jobs, queue, multiprocessing):
     # Handle parallel execution
     if queue is not None: # Since queue is only set for parallel
         name = local_env['host_string']
-        # Wrap in another callable that:
-        # * expands the env it's given to ensure parallel, linewise, etc are
-        #   all set correctly and explicitly. Such changes are naturally
-        #   insulted from the parent process.
-        # * nukes the connection cache to prevent shared-access problems
-        # * knows how to send the tasks' return value back over a Queue
-        # * captures exceptions raised by the task
-        def inner(args, kwargs, queue, name, env):
-            state.env.update(env)
-            def submit(result):
-                queue.put({'name': name, 'result': result})
-            try:
-                state.connections.clear()
-                submit(task.run(*args, **kwargs))
-            except BaseException as e:  # We really do want to capture everything
-                # SystemExit implies use of abort(), which prints its own
-                # traceback, host info etc -- so we don't want to double up
-                # on that. For everything else, though, we need to make
-                # clear what host encountered the exception that will
-                # print.
-                if e.__class__ is not SystemExit:
-                    if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
-                        sys.stderr.write("!!! Parallel execution exception under host %r:\n" % name)
-                    submit(e)
-                # Here, anything -- unexpected exceptions, or abort()
-                # driven SystemExits -- will bubble up and terminate the
-                # child process.
-                if not (isinstance(e, NetworkError) and _is_network_error_ignored()):
-                    raise
 
         # Stuff into Process wrapper
         kwarg_dict = {
+            'task': task,
             'args': args,
             'kwargs': kwargs,
             'queue': queue,
             'name': name,
             'env': local_env,
         }
-        p = multiprocessing.Process(target=inner, kwargs=kwarg_dict)
+        p = multiprocessing.Process(target=_parallel_wrap, kwargs=kwarg_dict)
         # Name/id is host string
         p.name = name
         # Add to queue
