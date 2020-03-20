@@ -2,6 +2,7 @@ import inspect
 import six
 import sys
 import textwrap
+from importlib import import_module
 
 from fabric import state
 from fabric.utils import abort, warn, error
@@ -204,13 +205,15 @@ def _is_network_error_ignored():
     return not state.env.use_exceptions_for['network'] and state.env.skip_bad_hosts
 
 
-def _parallel_wrap(task, args, kwargs, queue, name, env):
+def _parallel_wrap(task_module, task_name, args, kwargs, queue, name, env):
     # Wrap in another callable that:
     # * expands the env it's given to ensure parallel, linewise, etc are
     #   all set correctly and explicitly
     # * nukes the connection cache to prevent shared-access problems
     # * knows how to send the tasks' return value back over a Queue
     # * captures exceptions raised by the task
+    module = import_module(task_module)
+    task = getattr(module, task_name)
     state.env.update(env)
     try:
         state.connections.clear()
@@ -250,7 +253,8 @@ def _execute(task, host, my_env, args, kwargs, jobs, queue, multiprocessing):
 
         # Stuff into Process wrapper
         kwarg_dict = {
-            'task': task,
+            'task_module': task.__module__,
+            'task_name': task.__name__,
             'args': args,
             'kwargs': kwargs,
             'queue': queue,
