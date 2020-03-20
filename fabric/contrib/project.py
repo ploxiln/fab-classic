@@ -27,7 +27,7 @@ def rsync_project(
     """
     Synchronize a remote directory with the current project directory via rsync.
 
-    Where ``upload_project()`` makes use of ``scp`` to copy one's entire
+    Where ``upload_project()`` makes use of ``sftp`` to copy one's entire
     project every time it is invoked, ``rsync_project()`` uses the ``rsync``
     command-line utility, which only transfers files newer than those on the
     remote end.
