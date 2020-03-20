@@ -8,13 +8,14 @@ fabfile, and executing the commands given.
 The other callables defined in this module are internal only. Anything useful
 to individuals leveraging Fabric as a library, should be kept elsewhere.
 """
-import getpass
-from collections import Mapping
-import inspect
-from optparse import OptionParser
 import os
 import sys
 import types
+import getpass
+import inspect
+from optparse import OptionParser
+from importlib import import_module
+from collections import Mapping
 
 import six
 
@@ -152,7 +153,7 @@ def load_fabfile(path, importer=None):
     the "is a Fabric task" test.
     """
     if importer is None:
-        importer = __import__
+        importer = import_module
     # Get directory and fabfile name
     directory, fabfile = os.path.split(path)
     # If the directory isn't in the PYTHONPATH, add it so our import will work
