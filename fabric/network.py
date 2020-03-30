@@ -564,14 +564,13 @@ def connect(user, host, port, cache, seek_gateway=True):
             # * In this condition (trying a key file, password is None)
             # ssh raises PasswordRequiredException.
             text = None
-            if e.__class__ is ssh.PasswordRequiredException \
-                    or is_key_load_error(e):
+            if isinstance(e, ssh.PasswordRequiredException) or is_key_load_error(e):
                 # NOTE: we can't easily say WHICH key's passphrase is needed,
                 # because ssh doesn't provide us with that info, and
-                # env.key_filename may be a list of keys, so we can't know
-                # which one raised the exception. Best not to try.
-                prompt = "[%s] Passphrase for private key"
-                text = prompt % env.host_string
+                # env.key_filename may be a list of keys
+                text = "[%s] Passphrase for private key" % env.host_string
+            else:
+                print("Connect error: %s" % e)
             password = prompt_for_password(text)
             # Update env.password, env.passwords if empty
             set_password(user, host, port, password)

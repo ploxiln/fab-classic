@@ -1,4 +1,5 @@
 import sys
+import textwrap
 
 from nose.tools import ok_, raises
 from fudge import (Fake, patch_object, with_patched_object, patched_context,
@@ -8,17 +9,18 @@ from fabric.context_managers import settings, hide, show
 from fabric.network import (HostConnectionCache, join_host_strings, normalize,
                             denormalize, key_filenames, ssh, NetworkError, connect)
 import fabric.network  # noqa: F401  # So I can call patch_object correctly
+import fabric.utils  # noqa: F401  # for patch_object()
 from fabric.state import env, output, _get_system_username
 from fabric.operations import run, sudo, prompt
 from fabric.tasks import execute
 from fabric.api import parallel
-from fabric import utils # for patching
 
 from mock_streams import mock_streams
 from server import (server, RESPONSES, PASSWORDS, CLIENT_PRIVKEY, USER,
                     CLIENT_PRIVKEY_PASSPHRASE)
-from utils import (FabricTest, aborts, assert_contains, eq_, password_response,
-                   patched_input, support)
+from utils import (
+    FabricTest, aborts, assert_contains, eq_, match_, password_response, patched_input, support,
+)
 
 
 #
@@ -392,23 +394,27 @@ class TestNetwork(FabricTest):
         ):
             sudo('oneliner')
         if display_output:
-            expected = """
-[%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: sudo password:
-[%(prefix)s] out: Sorry, try again.
-[%(prefix)s] out: sudo password: \n[%(prefix)s] out: result
-""" % {'prefix': env.host_string, 'user': env.user}
+            expected = textwrap.dedent(r"""
+                \[%(prefix)s\] sudo: oneliner
+                Connect error: .*
+                \[%(prefix)s\] Login password for '%(user)s': 
+                \[%(prefix)s\] out: sudo password:
+                \[%(prefix)s\] out: Sorry, try again.
+                \[%(prefix)s\] out: sudo password: 
+                \[%(prefix)s\] out: result
+                """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
         else:
             # Note lack of first sudo prompt (as it's autoresponded to) and of
             # course the actual result output.
-            expected = """
-[%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: Sorry, try again.
-[%(prefix)s] out: sudo password: """ % {
-                'prefix': env.host_string,
-                'user': env.user
-            }
-        eq_(expected[1:], sys.stdall.getvalue())
+            expected = textwrap.dedent(r"""
+                \[%(prefix)s\] sudo: oneliner
+                Connect error: .*
+                \[%(prefix)s\] Login password for '%(user)s': 
+                \[%(prefix)s\] out: Sorry, try again.
+                \[%(prefix)s\] out: sudo password: 
+                """[1:])[:-1] % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+
+        match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
     @server(
@@ -428,17 +434,21 @@ class TestNetwork(FabricTest):
         ):
             sudo('oneliner')
             sudo('twoliner')
-        expected = """
-[%(prefix)s] sudo: oneliner
-[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: sudo password:
-[%(prefix)s] out: Sorry, try again.
-[%(prefix)s] out: sudo password: \n[%(prefix)s] out: result
-[%(prefix)s] sudo: twoliner
-[%(prefix)s] out: sudo password:
-[%(prefix)s] out: result1
-[%(prefix)s] out: result2
-""" % {'prefix': env.host_string, 'user': env.user}
-        eq_(sys.stdall.getvalue(), expected[1:])
+
+        expected = textwrap.dedent(r"""
+            \[%(prefix)s\] sudo: oneliner
+            Connect error: .*
+            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] out: sudo password:
+            \[%(prefix)s\] out: Sorry, try again.
+            \[%(prefix)s\] out: sudo password: 
+            \[%(prefix)s\] out: result
+            \[%(prefix)s\] sudo: twoliner
+            \[%(prefix)s\] out: sudo password:
+            \[%(prefix)s\] out: result1
+            \[%(prefix)s\] out: result2
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+        match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
     @server(pubkeys=True, responses={'silent': '', 'normal': 'foo'})
@@ -462,14 +472,16 @@ class TestNetwork(FabricTest):
             with hide('everything'):
                 run('normal')
                 run('silent')
-        expected = """
-[%(prefix)s] run: normal
-[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: foo
-[%(prefix)s] run: silent
-[%(prefix)s] run: normal
-[%(prefix)s] out: foo
-""" % {'prefix': env.host_string, 'user': env.user}
-        eq_(expected[1:], sys.stdall.getvalue())
+        expected = textwrap.dedent(r"""
+            \[%(prefix)s\] run: normal
+            Connect error: .*
+            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] out: foo
+            \[%(prefix)s\] run: silent
+            \[%(prefix)s\] run: normal
+            \[%(prefix)s\] out: foo
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+        match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
     @server(
@@ -489,14 +501,16 @@ class TestNetwork(FabricTest):
         ):
             run('oneliner')
             run('twoliner')
-        expected = """
-[%(prefix)s] run: oneliner
-[%(prefix)s] Login password for '%(user)s': \n[%(prefix)s] out: result
-[%(prefix)s] run: twoliner
-[%(prefix)s] out: result1
-[%(prefix)s] out: result2
-""" % {'prefix': env.host_string, 'user': env.user}
-        eq_(expected[1:], sys.stdall.getvalue())
+        expected = textwrap.dedent(r"""
+            \[%(prefix)s\] run: oneliner
+            Connect error: .*
+            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] out: result
+            \[%(prefix)s\] run: twoliner
+            \[%(prefix)s\] out: result1
+            \[%(prefix)s\] out: result2
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+        match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
     @server(
@@ -517,14 +531,16 @@ class TestNetwork(FabricTest):
             with settings(output_prefix=False):
                 run('oneliner')
                 run('twoliner')
-        expected = """
-[%(prefix)s] run: oneliner
-[%(prefix)s] Login password for '%(user)s': \nresult
-[%(prefix)s] run: twoliner
-result1
-result2
-""" % {'prefix': env.host_string, 'user': env.user}
-        eq_(expected[1:], sys.stdall.getvalue())
+        expected = textwrap.dedent(r"""
+            \[%(prefix)s\] run: oneliner
+            Connect error: .*
+            \[%(prefix)s\] Login password for '%(user)s': 
+            result
+            \[%(prefix)s\] run: twoliner
+            result1
+            result2
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+        match_(sys.stdall.getvalue(), expected)
 
     @server()
     def test_env_host_set_when_host_prompt_used(self):
@@ -670,8 +686,8 @@ class TestSSHConfig(FabricTest):
         eq_(normalize("localhost")[1], "localhost")
         eq_(normalize("myalias")[1], "otherhost")
 
-    @with_patched_object(utils, 'warn', Fake('warn', callable=True,
-        expect_call=True))
+    @with_patched_object('fabric.utils', 'warn',
+                         Fake('warn', callable=True, expect_call=True))
     def test_warns_with_bad_config_file_path(self):
         # use_ssh_config is already set in our env_setup()
         with settings(hide('everything'), ssh_config_path="nope_bad_lol"):
