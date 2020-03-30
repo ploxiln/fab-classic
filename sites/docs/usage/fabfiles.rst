@@ -36,7 +36,7 @@ When in this mode, tilde-expansion will be applied, so one may refer to e.g.
 
 .. note::
 
-    Fabric does a normal ``import`` (actually an ``__import__``) of your
+    Fabric does a normal ``import`` (actually ``importlib.import_module()``) of your
     fabfile in order to access its contents -- it does not do any ``eval``-ing
     or similar. In order for this to work, Fabric temporarily adds the found
     fabfile's containing folder to the Python load path (and removes it

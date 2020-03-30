@@ -394,7 +394,7 @@ class TestFindFabfile(FabricTest):
 def run_load_fabfile(path, sys_path):
     # Module-esque object
     fake_module = Fake().has_attr(__dict__={})
-    # Fake __import__
+    # Fake importlib.import_module
     importer = Fake(callable=True).returns(fake_module)
     # Snapshot sys.path for restore
     orig_path = copy.copy(sys.path)
