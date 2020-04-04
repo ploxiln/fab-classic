@@ -1,0 +1,58 @@
+name: Linux tests
+
+on:
+  push:         {branches: [master, '1.17']}
+  pull_request: {branches: [master, '1.17']}
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        imgtag:
+          - 2.7-buster
+          - 3.4-stretch
+          - 3.5-buster
+          - 3.6-buster
+          - 3.7-buster
+          - 3.8-buster
+        paramiko_ver:
+          - 2.5.0
+          - 2.7.6
+    container: "python:${{matrix.imgtag}}"
+    steps:
+      - uses: actions/checkout@v2
+      - name: System dependencies
+        run: |
+          apt-get -q -y update
+          apt-get -q -y install openssh-client openssh-server rsync sudo
+          if [ 3.4-stretch = "${{matrix.imgtag}}" ]; then
+            sed -i -e '/^mesg n/d' /root/.profile
+          fi
+      - name: Python dependencies
+        run: |
+          pip install -r dev-requirements.txt
+          pip install "paramiko-ng==${{matrix.paramiko_ver}}" "cryptography<3"
+          pip install -e .
+      - name: Lint
+        run: |
+          flake8 --version
+          flake8 --show-source
+      - name: Setup SSH
+        run: |
+          export USER=root HOME=/root
+          mkdir -v /run/sshd
+          /usr/sbin/sshd -D & sleep 1
+          mkdir -v ~/.ssh
+          ssh-keygen -N "" -f ~/.ssh/testkey
+          cp -v ~/.ssh/testkey.pub ~/.ssh/authorized_keys
+          ssh-keyscan -t ecdsa localhost > ~/.ssh/known_hosts
+      - name: Test
+        run: |
+          export USER=root HOME=/root
+          eval $(ssh-agent)
+          ssh-add ~/.ssh/testkey
+          script -e -q -c "fab test"                          /dev/null
+          script -e -q -c "fab -H localhost test:integration" /dev/null
