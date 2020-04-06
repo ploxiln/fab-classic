@@ -56,3 +56,21 @@ jobs:
           ssh-add ~/.ssh/testkey
           script -e -q -c "fab test"                          /dev/null
           script -e -q -c "fab -H localhost test:integration" /dev/null
+
+  docs:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Install dependencies
+        run: |
+          pip install -r doc-requirements.txt
+          pip install paramiko-ng==2.7.6
+          pip install -e .
+      - name: Build docs
+        run: |
+          sphinx-build -W sites/docs tmpbuild

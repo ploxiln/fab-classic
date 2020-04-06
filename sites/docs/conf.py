@@ -23,7 +23,6 @@ html_theme_options = {
     'github_user': 'ploxiln',
     'github_repo': 'fab-classic',
     'github_type': 'star',
-    'travis_button': True,
     'link': '#3782BE',
     'link_hover': '#3782BE',
 }
