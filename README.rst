@@ -15,9 +15,6 @@ changes, in order to fix some long-standing limitations.
 Install
 -------
 
-.. image:: https://travis-ci.org/ploxiln/fab-classic.svg?branch=master
-    :target: https://travis-ci.org/ploxiln/fab-classic
-
 fab-classic is `on PyPI <https://pypi.org/project/fab-classic/>`_,
 so you can ``pip install fab-classic``
 
