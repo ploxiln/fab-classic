@@ -901,7 +901,8 @@ class TestFileTransfers(FabricTest):
             fd.write("contents")
         with hide('everything'):
             retval = put(f, p)
-        eq_(retval, [p])
+        # '/' is homedir (see FakeFilesystem.normalize())
+        eq_(retval, ['/' + p])
 
     @server()
     def test_put_returns_list_of_remote_paths_with_stringio(self):
@@ -910,7 +911,8 @@ class TestFileTransfers(FabricTest):
         """
         f = 'uploaded.txt'
         with hide('everything'):
-            eq_(put(six.StringIO('contents'), f), [f])
+            # '/' is homedir (see FakeFilesystem.normalize())
+            eq_(put(six.StringIO('contents'), f), ['/' + f])
 
     @server()
     def test_put_return_value_failed_attribute(self):

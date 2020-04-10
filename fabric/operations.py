@@ -249,7 +249,7 @@ def prompt(text, key=None, default='', validate=None):
 
 @needs_host
 def put(local_path=None, remote_path=None, use_sudo=False,
-    mirror_local_mode=False, mode=None, use_glob=True, temp_dir=""):
+        mirror_local_mode=False, mode=None, use_glob=True, temp_dir=None):
     """
     Upload one or more files to a remote host.
 
@@ -345,9 +345,17 @@ def put(local_path=None, remote_path=None, use_sudo=False,
         if remote_path.startswith('~'):
             remote_path = remote_path.replace('~', home, 1)
 
+        # for use_sudo, explicit more robust
+        if temp_dir is None:
+            temp_dir = home
+
         # Honor cd() (assumes Unix style file paths on remote end)
-        if not os.path.isabs(remote_path) and env.get('cwd'):
-            remote_path = env.cwd.rstrip('/') + '/' + remote_path
+        if not os.path.isabs(remote_path):
+            if env.get('cwd'):
+                remote_path = env.cwd.rstrip('/') + '/' + remote_path
+            else:
+                # Otherwise, be relative to remote home directory (SFTP server's '.')
+                remote_path = posixpath.join(home, remote_path)
 
         if local_is_path:
             # Apply lcwd, expand tildes, etc
@@ -401,7 +409,7 @@ def put(local_path=None, remote_path=None, use_sudo=False,
 
 
 @needs_host
-def get(remote_path, local_path=None, use_sudo=False, temp_dir=""):
+def get(remote_path, local_path=None, use_sudo=False, temp_dir=None):
     """
     Download one or more files from a remote host.
 
@@ -516,16 +524,18 @@ def get(remote_path, local_path=None, use_sudo=False, temp_dir=""):
         if local_is_path:
             local_path = os.path.expanduser(local_path)
 
+        # for use_sudo, explicit more robust
+        if temp_dir is None:
+            temp_dir = home
+
         # Honor cd() (assumes Unix style file paths on remote end)
         if not os.path.isabs(remote_path):
-            # Honor cwd if it's set (usually by with cd():)
             if env.get('cwd'):
                 remote_path_escaped = env.cwd.rstrip('/')
                 remote_path_escaped = remote_path_escaped.replace('\\ ', ' ')
                 remote_path = remote_path_escaped + '/' + remote_path
-            # Otherwise, be relative to remote home directory (SFTP server's
-            # '.')
             else:
+                # Otherwise, be relative to remote home directory (SFTP server's '.')
                 remote_path = posixpath.join(home, remote_path)
 
         # Track final local destination files so we can return a list

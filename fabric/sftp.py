@@ -131,7 +131,7 @@ class SFTP(object):
             escaped_path = re.sub(format_re, r'%\1', local_path)
             local_path = os.path.abspath(escaped_path % path_vars)
 
-            # Ensure we give ssh.SFTPCLient a file by prepending and/or
+            # Ensure we give ssh.SFTPClient a file by prepending and/or
             # creating local directories as appropriate.
             dirpath, filepath = os.path.split(local_path)
             if dirpath and not os.path.exists(dirpath):
@@ -167,12 +167,11 @@ class SFTP(object):
 
         try:
             # File-like objects: reset to file seek 0 (to ensure full overwrite)
-            # and then use Paramiko's getfo() directly
-            getter = self.ftp.get
-            if not local_is_path:
+            if local_is_path:
+                self.ftp.get(remote_path, local_path)
+            else:
                 local_path.seek(0)
-                getter = self.ftp.getfo
-            getter(remote_path, local_path)
+                self.ftp.getfo(remote_path, local_path)
         finally:
             # try to remove the temporary file after the download
             if use_sudo:
@@ -222,20 +221,19 @@ class SFTP(object):
                 result.append(self.get(rpath, lpath, use_sudo, True, rremote, temp_dir))
         return result
 
-    def put(self, local_path, remote_path, use_sudo, mirror_local_mode, mode,
-        local_is_path, temp_dir):
-
+    def put(self, local_path, remote_path, use_sudo,
+            mirror_local_mode, mode, local_is_path, temp_dir=""):
         from fabric.api import sudo, hide
-        pre = self.ftp.getcwd()
-        pre = pre if pre else ''
         if local_is_path and self.isdir(remote_path):
             basename = os.path.basename(local_path)
             remote_path = posixpath.join(remote_path, basename)
+        if local_is_path:
+            local_path = os.path.abspath(local_path)
         if output.running:
             print("[%s] put: %s -> %s" % (
                 env.host_string,
                 _format_local(local_path, local_is_path),
-                posixpath.join(pre, remote_path)
+                remote_path,
             ))
         # When using sudo, "bounce" the file through a guaranteed-unique file
         # path in the default remote CWD (which, typically, the login user will
@@ -244,13 +242,12 @@ class SFTP(object):
             target_path = remote_path
             remote_path = posixpath.join(temp_dir, uuid.uuid4().hex)
         # Read, ensuring we handle file-like objects correct re: seek pointer
-        putter = self.ftp.put
-        if not local_is_path:
+        if local_is_path:
+            rattrs = self.ftp.put(local_path, remote_path)
+        else:
             old_pointer = local_path.tell()
             local_path.seek(0)
-            putter = self.ftp.putfo
-        rattrs = putter(local_path, remote_path)
-        if not local_is_path:
+            rattrs = self.ftp.putfo(local_path, remote_path)
             local_path.seek(old_pointer)
         # Handle modes if necessary
         if (local_is_path and mirror_local_mode) or (mode is not None):
@@ -285,8 +282,7 @@ class SFTP(object):
             remote_path = target_path
         return remote_path
 
-    def put_dir(self, local_path, remote_path, use_sudo, mirror_local_mode,
-        mode, temp_dir):
+    def put_dir(self, local_path, remote_path, use_sudo, mirror_local_mode, mode, temp_dir):
         if os.path.basename(local_path):
             strip = os.path.dirname(local_path)
         else:
