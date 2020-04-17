@@ -21,6 +21,7 @@ jobs:
         paramiko_ver:
           - 2.5.0
           - 2.7.6
+          - 2.8.0
     container: "python:${{matrix.imgtag}}"
     steps:
       - uses: actions/checkout@v2
