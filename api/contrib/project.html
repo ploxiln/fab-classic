@@ -41,7 +41,7 @@
 <dt id="fabric.contrib.project.rsync_project">
 <code class="descclassname">fabric.contrib.project.</code><code class="descname">rsync_project</code><span class="sig-paren">(</span><em>remote_dir</em>, <em>local_dir=None</em>, <em>exclude=()</em>, <em>delete=False</em>, <em>extra_opts=''</em>, <em>ssh_opts=''</em>, <em>capture=False</em>, <em>upload=True</em>, <em>default_opts='-pthrvz'</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.contrib.project.rsync_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synchronize a remote directory with the current project directory via rsync.</p>
-<p>Where <code class="docutils literal notranslate"><span class="pre">upload_project()</span></code> makes use of <code class="docutils literal notranslate"><span class="pre">scp</span></code> to copy one’s entire
+<p>Where <code class="docutils literal notranslate"><span class="pre">upload_project()</span></code> makes use of <code class="docutils literal notranslate"><span class="pre">sftp</span></code> to copy one’s entire
 project every time it is invoked, <code class="docutils literal notranslate"><span class="pre">rsync_project()</span></code> uses the <code class="docutils literal notranslate"><span class="pre">rsync</span></code>
 command-line utility, which only transfers files newer than those on the
 remote end.</p>
@@ -178,18 +178,6 @@ tarfiles when it finishes executing, even in the event of a failure.</p>
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
-    <img
-        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>

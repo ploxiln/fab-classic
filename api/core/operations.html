@@ -39,7 +39,7 @@
 <p>Functions to be used in fabfiles and other non-core code, such as run()/sudo().</p>
 <dl class="function">
 <dt id="fabric.operations.get">
-<code class="descclassname">fabric.operations.</code><code class="descname">get</code><span class="sig-paren">(</span><em>remote_path</em>, <em>local_path=None</em>, <em>use_sudo=False</em>, <em>temp_dir=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.get" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fabric.operations.</code><code class="descname">get</code><span class="sig-paren">(</span><em>remote_path</em>, <em>local_path=None</em>, <em>use_sudo=False</em>, <em>temp_dir=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download one or more files from a remote host.</p>
 <p><a class="reference internal" href="#fabric.operations.get" title="fabric.operations.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a> returns an iterable containing the absolute paths
 to all local files downloaded, which will be empty if <code class="docutils literal notranslate"><span class="pre">local_path</span></code> was a
@@ -256,7 +256,7 @@ input regardless, try wrapping with
 
 <dl class="function">
 <dt id="fabric.operations.put">
-<code class="descclassname">fabric.operations.</code><code class="descname">put</code><span class="sig-paren">(</span><em>local_path=None</em>, <em>remote_path=None</em>, <em>use_sudo=False</em>, <em>mirror_local_mode=False</em>, <em>mode=None</em>, <em>use_glob=True</em>, <em>temp_dir=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.put" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fabric.operations.</code><code class="descname">put</code><span class="sig-paren">(</span><em>local_path=None</em>, <em>remote_path=None</em>, <em>use_sudo=False</em>, <em>mirror_local_mode=False</em>, <em>mode=None</em>, <em>use_glob=True</em>, <em>temp_dir=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload one or more files to a remote host.</p>
 <p>As with the OpenSSH <code class="docutils literal notranslate"><span class="pre">sftp</span></code> program, <a class="reference internal" href="#fabric.operations.put" title="fabric.operations.put"><code class="xref py py-obj docutils literal notranslate"><span class="pre">put</span></code></a> will overwrite pre-existing
 remote files without requesting confirmation.</p>
@@ -549,18 +549,6 @@ course, override this global setting.</p>
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
-    <img
-        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>

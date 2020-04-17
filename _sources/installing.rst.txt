@@ -11,9 +11,17 @@ to have previously installed them (because *fab-classic* depends on *Paramiko-NG
 
 If you are upgrading *fab-classic* from version 1.15.x to version 1.16 or later,
 then you do have "paramiko" installed as a dependency for fab-classic 1.15.x,
-and you should uninstall it first:
+and you should uninstall it first::
 
     $ pip uninstall paramiko
+
+It is also possible to install *fab-classic* such that it requires "paramiko"
+instead of "paramiko-ng"::
+
+    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.18.0
+
+(*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
+see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
 
 Advanced users wanting to install a development version may use ``pip`` to grab
 the latest master branch (as well as the dev version of the Paramiko-NG dependency)::

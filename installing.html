@@ -44,8 +44,16 @@ to have previously installed them (because <em>fab-classic</em> depends on <em>P
 <p>If you are upgrading <em>fab-classic</em> from version 1.15.x to version 1.16 or later,
 then you do have “paramiko” installed as a dependency for fab-classic 1.15.x,
 and you should uninstall it first:</p>
-<blockquote>
-<div>$ pip uninstall paramiko</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip uninstall paramiko
+</pre></div>
+</div>
+<p>It is also possible to install <em>fab-classic</em> such that it requires “paramiko”
+instead of “paramiko-ng”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PARAMIKO_REPLACE</span><span class="o">=</span><span class="mi">1</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">binary</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span><span class="o">==</span><span class="mf">1.18</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>(<em>paramiko-ng</em> also supports <code class="docutils literal notranslate"><span class="pre">PARAMIKO_REPLACE</span></code>,
+see <a class="reference external" href="https://github.com/ploxiln/paramiko-ng/#installation">paramiko-ng#installation</a>)</p>
 <p>Advanced users wanting to install a development version may use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to grab
 the latest master branch (as well as the dev version of the Paramiko-NG dependency):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/ploxiln/paramiko-ng/#egg=paramiko-ng
@@ -143,18 +151,6 @@ tool will always refer to your checkout.</p>
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/ploxiln/fab-classic">
-    <img
-        alt="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-        src="https://secure.travis-ci.org/ploxiln/fab-classic.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
