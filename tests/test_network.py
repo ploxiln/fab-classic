@@ -351,7 +351,7 @@ class TestNetwork(FabricTest):
         env.no_agent = env.no_keys = True
         with show('everything'), password_response(PASSWORDS[env.user], silent=False):
             run("ls /simple")
-        regex = r'^\[%s\] Login password for \'%s\': ' % (env.host_string, env.user)
+        regex = r"^\[%s\] Login password for '%s': " % (env.host_string, env.user)
         assert_contains(regex, sys.stderr.getvalue())
 
     @mock_streams('stderr')
@@ -365,7 +365,9 @@ class TestNetwork(FabricTest):
         env.key_filename = CLIENT_PRIVKEY
         with hide('everything'), password_response(CLIENT_PRIVKEY_PASSPHRASE, silent=False):
             run("ls /simple")
-        regex = r'^\[%s\] Login password for \'%s\': ' % (env.host_string, env.user)
+        regex = r"^\[%s\] (Passphrase for private key: |Login password for '%s': )" % (
+            env.host_string, env.user
+        )
         assert_contains(regex, sys.stderr.getvalue())
 
     def test_sudo_prompt_display_passthrough(self):
@@ -395,9 +397,8 @@ class TestNetwork(FabricTest):
             sudo('oneliner')
         if display_output:
             expected = textwrap.dedent(r"""
-                \[%(prefix)s\] sudo: oneliner
-                Connect error: .*
-                \[%(prefix)s\] Login password for '%(user)s': 
+                \[%(prefix)s\] sudo: oneliner(\nConnect error: .*)?
+                \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
                 \[%(prefix)s\] out: sudo password:
                 \[%(prefix)s\] out: Sorry, try again.
                 \[%(prefix)s\] out: sudo password: 
@@ -407,9 +408,8 @@ class TestNetwork(FabricTest):
             # Note lack of first sudo prompt (as it's autoresponded to) and of
             # course the actual result output.
             expected = textwrap.dedent(r"""
-                \[%(prefix)s\] sudo: oneliner
-                Connect error: .*
-                \[%(prefix)s\] Login password for '%(user)s': 
+                \[%(prefix)s\] sudo: oneliner(\nConnect error: .*)?
+                \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
                 \[%(prefix)s\] out: Sorry, try again.
                 \[%(prefix)s\] out: sudo password: 
                 """[1:])[:-1] % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
@@ -436,9 +436,8 @@ class TestNetwork(FabricTest):
             sudo('twoliner')
 
         expected = textwrap.dedent(r"""
-            \[%(prefix)s\] sudo: oneliner
-            Connect error: .*
-            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] sudo: oneliner(\nConnect error: .*)?
+            \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
             \[%(prefix)s\] out: sudo password:
             \[%(prefix)s\] out: Sorry, try again.
             \[%(prefix)s\] out: sudo password: 
@@ -473,9 +472,8 @@ class TestNetwork(FabricTest):
                 run('normal')
                 run('silent')
         expected = textwrap.dedent(r"""
-            \[%(prefix)s\] run: normal
-            Connect error: .*
-            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] run: normal(\nConnect error: .*)?
+            \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
             \[%(prefix)s\] out: foo
             \[%(prefix)s\] run: silent
             \[%(prefix)s\] run: normal
@@ -502,9 +500,8 @@ class TestNetwork(FabricTest):
             run('oneliner')
             run('twoliner')
         expected = textwrap.dedent(r"""
-            \[%(prefix)s\] run: oneliner
-            Connect error: .*
-            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] run: oneliner(\nConnect error: .*)?
+            \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
             \[%(prefix)s\] out: result
             \[%(prefix)s\] run: twoliner
             \[%(prefix)s\] out: result1
@@ -532,9 +529,8 @@ class TestNetwork(FabricTest):
                 run('oneliner')
                 run('twoliner')
         expected = textwrap.dedent(r"""
-            \[%(prefix)s\] run: oneliner
-            Connect error: .*
-            \[%(prefix)s\] Login password for '%(user)s': 
+            \[%(prefix)s\] run: oneliner(\nConnect error: .*)?
+            \[%(prefix)s\] (Passphrase for private key: |Login password for '%(user)s': )
             result
             \[%(prefix)s\] run: twoliner
             result1
