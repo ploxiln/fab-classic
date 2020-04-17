@@ -33,7 +33,7 @@ Starting with version 1.18, you can switch back to depending on the package
 named *paramiko* by setting the environment variable ``PARAMIKO_REPLACE=1``
 while installing *fab-classic*::
 
-    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.17.9b2
+    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.18.0
 
 (*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
 see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
