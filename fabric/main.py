@@ -652,8 +652,15 @@ def main(fabfile_locations=None):
 
         # Handle version number option
         if options.show_version:
+            if hasattr(ssh, '__pkgname__'):
+                ssh_pkgname = ssh.__pkgname__
+            elif hasattr(ssh.kex_ecdh_nist, '_ecdh_public_bytes'):
+                ssh_pkgname = 'paramiko-ng'
+            else:
+                ssh_pkgname = 'Paramiko'
+
             print("fab-classic %s" % state.env.version)
-            print("Paramiko %s" % ssh.__version__)
+            print("%s %s" % (ssh_pkgname, ssh.__version__))
             print("Python %d.%d.%d" % sys.version_info[:3])
             sys.exit(0)
 
