@@ -242,7 +242,7 @@ class _AliasDict(_AttributeDict):
     state, reading aliases is not supported -- only writing to them is allowed.
     This also means they will not show up in e.g. ``dict.keys()``.
 
-    ..note::
+    .. note::
 
         Aliases are recursive, so you may refer to an alias within the key list
         of another alias. Naturally, this means that you can end up with
