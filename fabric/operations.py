@@ -465,7 +465,7 @@ def get(remote_path, local_path=None, use_sudo=False, temp_dir=None):
         file named ``access.log``, not ``var/log/apache2/access.log``.
 
         This behavior is intended to be consistent with the command-line
-        ``scp`` program.
+        ``scp`` program (but sftp is always used for the transfer).
 
     If left blank, ``local_path`` defaults to ``"%(host)s/%(path)s"`` in order
     to be safe for multi-host invocations.
