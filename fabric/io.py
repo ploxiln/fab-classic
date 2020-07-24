@@ -272,7 +272,7 @@ def input_loop(chan, f, using_pty):
         if byte:
             chan.sendall(byte)
             # Optionally echo locally, if needed.
-            if not using_pty and is_stdin and env.echo_stdin:
+            if (not using_pty) and is_stdin and env.echo_stdin:
                 # Not using fastprint() here -- it prints as 'user'
                 # output level, don't want it to be accidentally hidden
                 sys.stdout.write(byte)
