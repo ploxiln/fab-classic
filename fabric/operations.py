@@ -23,7 +23,7 @@ from fabric.sftp import SFTP
 from fabric.state import env, connections, output, win32, default_channel
 from fabric.thread_handling import ThreadHandler
 from fabric.utils import (
-    abort, error, handle_prompt_abort, indent, _pty_size, warn, apply_lcwd, isatty
+    abort, error, handle_prompt_abort, indent, _pty_size, warn, apply_lcwd,
 )
 
 
@@ -727,7 +727,7 @@ def _execute(channel, command, pty=True, combine_stderr=None,
 
     # Assume pty use, and allow overriding of this either via kwarg or env
     # var.  (invoke_shell always wants a pty no matter what.)
-    using_pty = invoke_shell or (pty and env.always_use_pty and isatty(stdin))
+    using_pty = invoke_shell or (pty and env.always_use_pty and (stdin is sys.stdin))
 
     # What to do with CTRl-C?
     remote_interrupt = env.remote_interrupt
