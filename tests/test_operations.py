@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
 import re
-import shutil
-import six
 import sys
+import shutil
 
+import six
 from nose.tools import ok_, raises
 from fudge import patched_context, with_fakes, Fake
 from fudge.inspector import arg as fudge_arg
@@ -1111,6 +1112,17 @@ def test_local_output_and_capture():
                         capture, stdout, stderr
                     )
                     yield case
+
+def test_local_encoding():
+    for octstr, encoding, expected in [
+        (r"t\303\251\303\274\303\242s", 'utf-8', u"téüâs"),
+        (r"t\351\374\342s", 'latin1', u"téüâs"),
+        (r"a\001\002\003", 'binary', b"a\x01\x02\x03"),
+    ]:
+        res = local("printf '%s'" % octstr, capture=True, encoding=encoding)
+        if six.PY2 and encoding != "binary":
+            res = res.decode(encoding)
+        assert res == expected, "%r != %r" % (res, expected)
 
 
 class TestRunSudoReturnValues(FabricTest):
