@@ -232,23 +232,24 @@ def test_sudo_prefix_with_user_and_group():
     )
 
 
-@with_settings(use_shell=True)
 def test_shell_wrap():
     prefix = "prefix"
     command = "command"
-    for description, shell, sudo_prefix, result in (
-        ("shell=True, sudo_prefix=None",
-            True, None, '%s "%s"' % (env.shell, command)),
-        ("shell=True, sudo_prefix=string",
-            True, prefix, prefix + ' %s "%s"' % (env.shell, command)),
-        ("shell=False, sudo_prefix=None",
-            False, None, command),
-        ("shell=False, sudo_prefix=string",
-            False, prefix, prefix + " " + command),
-    ):
-        eq_.description = "_shell_wrap: %s" % description
-        yield eq_, _shell_wrap(command, shell_escape=True, shell=shell, sudo_prefix=sudo_prefix), result
-        del eq_.description
+    for shell, sudo_prefix, result in [
+        (True, None, '%s "%s"' % (env.shell, command)),
+        (True, prefix, prefix + ' %s "%s"' % (env.shell, command)),
+        (False, None, command),
+        (False, prefix, prefix + " " + command),
+    ]:
+        with settings(use_shell=True):
+            def case():
+                eq_(
+                    _shell_wrap(command, shell_escape=True, shell=shell, sudo_prefix=sudo_prefix),
+                    result
+                )
+
+            case.description = "_shell_wrap: shell=%s sudo_prefix=%s" % (shell, sudo_prefix)
+            yield case
 
 
 @with_settings(use_shell=True)
@@ -1099,21 +1100,17 @@ def test_local_output_and_capture():
         for stdout in (True, False):
             for stderr in (True, False):
                 hides, shows = ['running'], []
-                if stdout:
-                    hides.append('stdout')
-                else:
-                    shows.append('stdout')
-                if stderr:
-                    hides.append('stderr')
-                else:
-                    shows.append('stderr')
+                (hides if stdout else shows).append('stdout')
+                (hides if stderr else shows).append('stderr')
+
                 with nested(hide(*hides), show(*shows)):
-                    d = "local(): capture: %r, stdout: %r, stderr: %r" % (
+                    def case():
+                        local("echo 'foo' >/dev/null", capture)
+
+                    case.description = "local(): capture=%r, stdout=%r, stderr=%r" % (
                         capture, stdout, stderr
                     )
-                    local.description = d
-                    yield local, "echo 'foo' >/dev/null", capture
-                    del local.description
+                    yield case
 
 
 class TestRunSudoReturnValues(FabricTest):
