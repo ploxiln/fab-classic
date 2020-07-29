@@ -43,13 +43,22 @@ def _shell_escape(string):
     return string
 
 
-class _AttributeString(str):
+class _stdoutString(str):
     """
     Simple string subclass to allow arbitrary attribute access.
     """
     @property
     def stdout(self):
         return str(self)
+
+
+class _stdoutBytes(bytes):
+    """
+    Simple bytes subclass to allow arbitrary attribute access.
+    """
+    @property
+    def stdout(self):
+        return bytes(self)
 
 
 class _AttributeList(list):
@@ -914,8 +923,8 @@ def _run_command(command, shell=True, pty=True, combine_stderr=True,
             timeout=timeout, capture_buffer_size=capture_buffer_size)
 
         # Assemble output string
-        out = _AttributeString(result_stdout)
-        err = _AttributeString(result_stderr)
+        out = _stdoutString(result_stdout)
+        err = result_stderr
 
         # Error handling
         out.failed = False
@@ -1122,7 +1131,7 @@ def sudo(command, shell=True, pty=True, combine_stderr=None, user=None,
     )
 
 
-def local(command, capture=False, shell=None, pty=True):
+def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
     """
     Run a command on the local system.
 
@@ -1154,6 +1163,10 @@ def local(command, capture=False, shell=None, pty=True):
     When ``capture=True``, you will not see any output from the subprocess in
     your terminal, but the return value will contain the captured
     stdout/stderr.
+
+    ``encoding`` is used when ``capture=True`` and running under Python-3,
+    to decode stdout and stderr. The default is "utf-8". The special value
+    "binary" avoids decoding, leaving stdout and stderr as ``bytes``.
 
     In either case, as with `~fabric.operations.run` and
     `~fabric.operations.sudo`, this return value exhibits the ``return_code``,
@@ -1207,13 +1220,19 @@ def local(command, capture=False, shell=None, pty=True):
     finally:
         if dev_null is not None:
             dev_null.close()
+
     # Handle error condition (deal with stdout being None, too)
     if six.PY3:
-        out = _AttributeString(stdout.decode('utf-8').strip() if stdout else "")
-        err = _AttributeString(stderr.decode('utf-8').strip() if stderr else "")
+        if encoding == "binary":
+            out = _stdoutBytes(stdout or b'')
+            err =              stderr or b''  # noqa: E222
+        else:
+            out = _stdoutString(stdout.decode(encoding).strip() if stdout else "")
+            err =               stderr.decode(encoding).strip() if stderr else ""  # noqa: E222
     else:
-        out = _AttributeString(stdout.strip() if stdout else "")
-        err = _AttributeString(stderr.strip() if stderr else "")
+        out = _stdoutString(stdout.strip() if stdout else "")
+        err =               stderr.strip() if stderr else ""  # noqa: E222
+
     out.command = given_command
     out.real_command = wrapped_command
     out.failed = False
