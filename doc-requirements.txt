@@ -1,7 +1,7 @@
 alabaster==0.7.12
 docutils==0.16
 MarkupSafe==1.1.1
-Pygments==2.5.2
+Pygments==2.7.4
 releases==1.6.3
 semantic_version==2.6.0
 Sphinx==1.8.5
