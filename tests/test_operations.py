@@ -5,7 +5,7 @@ import sys
 import shutil
 
 import six
-from nose.tools import ok_, raises
+from nose.tools import ok_, raises, assert_raises
 from fudge import patched_context, with_fakes, Fake
 from fudge.inspector import arg as fudge_arg
 from mock_streams import mock_streams
@@ -1112,6 +1112,15 @@ def test_local_output_and_capture():
                         capture, stdout, stderr
                     )
                     yield case
+
+def test_local_captured_error_includes_output():
+    with assert_raises(SystemExit) as cm:
+        # list something that will exist '/' along with something that won't
+        # so that we will have output in stdout as well as stderr
+        local('ls / thisfiledoesnotexist', capture=True)
+    ex = cm.exception
+    assert_contains('Standard output', ex.message)
+    assert_contains('Standard error', ex.message)
 
 def test_local_encoding():
     for octstr, encoding, expected in [
