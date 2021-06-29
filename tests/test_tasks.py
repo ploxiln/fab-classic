@@ -1,6 +1,7 @@
 from fudge import Fake, patched_context, with_fakes
 import unittest
 from nose.tools import raises, ok_
+import six
 import random
 import sys
 
@@ -195,7 +196,7 @@ def dict_contains(superset, subset):
     """
     Assert that all key/val pairs in dict 'subset' also exist in 'superset'
     """
-    for key, value in subset.iteritems():
+    for key, value in six.iteritems(subset):
         ok_(key in superset)
         eq_(superset[key], value)
 
