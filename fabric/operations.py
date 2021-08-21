@@ -1183,6 +1183,9 @@ def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
 
     .. versionadded:: 1.15
         The ``pty`` argument.
+
+    .. versionadded:: 1.19
+        The ``encoding`` argument.
     """
     given_command = command
     # Apply cd(), path() etc

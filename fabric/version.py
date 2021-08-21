@@ -7,7 +7,7 @@ which in turn needs access to this version information.)
 """
 
 
-VERSION = (1, 18, 9, 'alpha', 1)
+VERSION = (1, 19, 0, 'final', 0)
 
 
 def git_sha():
