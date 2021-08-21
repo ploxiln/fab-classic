@@ -89,7 +89,7 @@ to <code class="docutils literal notranslate"><span class="pre">%(basename)s</sp
 <code class="docutils literal notranslate"><span class="pre">get('/var/log/apache2/access.log',</span> <span class="pre">'%(path)s')</span></code> will save a local
 file named <code class="docutils literal notranslate"><span class="pre">access.log</span></code>, not <code class="docutils literal notranslate"><span class="pre">var/log/apache2/access.log</span></code>.</p>
 <p class="last">This behavior is intended to be consistent with the command-line
-<code class="docutils literal notranslate"><span class="pre">scp</span></code> program.</p>
+<code class="docutils literal notranslate"><span class="pre">scp</span></code> program (but sftp is always used for the transfer).</p>
 </div>
 <p>If left blank, <code class="docutils literal notranslate"><span class="pre">local_path</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">&quot;%(host)s/%(path)s&quot;</span></code> in order
 to be safe for multi-host invocations.</p>
@@ -133,7 +133,7 @@ will be used in Fabric’s printed output instead of the default
 
 <dl class="function">
 <dt id="fabric.operations.local">
-<code class="descclassname">fabric.operations.</code><code class="descname">local</code><span class="sig-paren">(</span><em>command</em>, <em>capture=False</em>, <em>shell=None</em>, <em>pty=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.local" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fabric.operations.</code><code class="descname">local</code><span class="sig-paren">(</span><em>command</em>, <em>capture=False</em>, <em>shell=None</em>, <em>pty=True</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.local" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run a command on the local system.</p>
 <p><a class="reference internal" href="#fabric.operations.local" title="fabric.operations.local"><code class="xref py py-obj docutils literal notranslate"><span class="pre">local</span></code></a> is simply a convenience wrapper around the use of the builtin
 Python <code class="docutils literal notranslate"><span class="pre">subprocess</span></code> module with <code class="docutils literal notranslate"><span class="pre">shell=True</span></code> activated. If you need to
@@ -157,6 +157,9 @@ value’s stdout/stderr values are always empty.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">capture=True</span></code>, you will not see any output from the subprocess in
 your terminal, but the return value will contain the captured
 stdout/stderr.</p>
+<p><code class="docutils literal notranslate"><span class="pre">encoding</span></code> is used when <code class="docutils literal notranslate"><span class="pre">capture=True</span></code> and running under Python-3,
+to decode stdout and stderr. The default is “utf-8”. The special value
+“binary” avoids decoding, leaving stdout and stderr as <code class="docutils literal notranslate"><span class="pre">bytes</span></code>.</p>
 <p>In either case, as with <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> and
 <a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>, this return value exhibits the <code class="docutils literal notranslate"><span class="pre">return_code</span></code>,
 <code class="docutils literal notranslate"><span class="pre">stderr</span></code>, <code class="docutils literal notranslate"><span class="pre">failed</span></code>, <code class="docutils literal notranslate"><span class="pre">succeeded</span></code>, <code class="docutils literal notranslate"><span class="pre">command</span></code> and <code class="docutils literal notranslate"><span class="pre">real_command</span></code>
@@ -170,6 +173,9 @@ independently of the remote end (which honors
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.15: </span>The <code class="docutils literal notranslate"><span class="pre">pty</span></code> argument.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.19: </span>The <code class="docutils literal notranslate"><span class="pre">encoding</span></code> argument.</p>
 </div>
 </dd></dl>
 
