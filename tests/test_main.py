@@ -1,7 +1,6 @@
 import copy
 from collections import Mapping
 from functools import partial
-import six
 import os.path
 import sys
 
@@ -619,7 +618,7 @@ def name_to_task(name):
 
 def strings_to_tasks(d):
     ret = {}
-    for key, value in six.iteritems(d):
+    for key, value in d.items():
         if isinstance(value, Mapping):
             val = strings_to_tasks(value)
         else:

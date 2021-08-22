@@ -1,5 +1,4 @@
 import inspect
-import six
 import sys
 import textwrap
 
@@ -402,7 +401,7 @@ def execute(task, *args, **kwargs):
             # This prevents Fabric from continuing on to any other tasks.
             # Otherwise, pull in results from the child run.
             ran_jobs = jobs.run()
-            for name, d in six.iteritems(ran_jobs):
+            for name, d in ran_jobs.items():
                 if d['exit_code'] != 0:
                     if isinstance(d['results'], NetworkError) and \
                             _is_network_error_ignored():
