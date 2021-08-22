@@ -12,8 +12,6 @@ jobs:
       fail-fast: false
       matrix:
         imgtag:
-          - 2.7-buster
-          - 3.4-stretch
           - 3.5-buster
           - 3.6-buster
           - 3.7-buster
@@ -31,9 +29,6 @@ jobs:
         run: |
           apt-get -q -y update
           apt-get -q -y install openssh-client openssh-server rsync sudo
-          if [ 3.4-stretch = "${{matrix.imgtag}}" ]; then
-            sed -i -e '/^mesg n/d' /root/.profile
-          fi
       - name: Python dependencies
         run: |
           # nose and Fudge need use_2to3 which setuptools-58 removed

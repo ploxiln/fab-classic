@@ -7,9 +7,9 @@ import getpass
 import os
 import re
 import time
-import six
 import socket
 import sys
+from io import StringIO
 
 import paramiko as ssh
 
@@ -204,7 +204,7 @@ def key_filenames():
     from fabric.state import env
     keys = env.key_filename
     # For ease of use, coerce stringish key filename into list
-    if isinstance(env.key_filename, six.string_types) or env.key_filename is None:
+    if isinstance(env.key_filename, str) or env.key_filename is None:
         keys = [keys]
     # Strip out any empty strings (such as the default value...meh)
     keys = list(filter(bool, keys))
@@ -232,7 +232,7 @@ def key_from_env(passphrase=None):
             if output.debug:
                 sys.stderr.write("Trying to load it as %s\n" % pkey_class)
             try:
-                return pkey_class.from_private_key(six.StringIO(env.key), passphrase)
+                return pkey_class.from_private_key(StringIO(env.key), passphrase)
             except Exception as e:
                 # File is valid key, but is encrypted: raise it, this will
                 # cause cxn loop to prompt for passphrase & retry
@@ -612,10 +612,6 @@ def connect(user, host, port, cache, seek_gateway=True):
 
 
 def _password_prompt(prompt, stream):
-    # NOTE: Using encode-to-ascii to prevent (Windows, at least) getpass from
-    # choking if given Unicode.
-    if six.PY3 is False:
-        prompt = prompt.encode('ascii', 'ignore')
     return getpass.getpass(prompt, stream)
 
 def prompt_for_password(prompt=None, no_colon=False, stream=None):
@@ -678,12 +674,7 @@ def needs_host(func):
             handle_prompt_abort("the target host connection string")
             prompt = "No hosts found. Please specify (single) " \
                 "host string for connection: "
-            # WARNING: do not use six.moves.input, because test cases to not
-            # overwrite that method with a faked method from Fudge
-            if six.PY3 is True:
-                host_string = input(prompt)
-            else:
-                host_string = raw_input(prompt)  # noqa: F821
+            host_string = input(prompt)
             env.update(to_dict(host_string))
         return func(*args, **kwargs)
     host_prompting_wrapper.undecorated = func

@@ -3,19 +3,10 @@ Internal subroutines for e.g. aborting execution with an error message,
 or performing indenting on multiline output.
 """
 import os
-import six
 import sys
 import struct
 import textwrap
 from traceback import format_exc
-
-
-def _encode(msg, stream):
-    if six.PY2 and isinstance(msg, six.text_type) \
-            and hasattr(stream, 'encoding') and stream.encoding is not None:
-        return msg.encode(stream.encoding)
-    else:
-        return str(msg)
 
 
 def isatty(stream):
@@ -50,7 +41,7 @@ def abort(msg):
         from fabric.colors import red
 
     if output.aborts:
-        sys.stderr.write(red("\nFatal error: %s\n" % _encode(msg, sys.stderr)))
+        sys.stderr.write(red("\nFatal error: %s\n" % msg))
         sys.stderr.write(red("\nAborting.\n"))
 
     if env.abort_exception:
@@ -82,7 +73,6 @@ def warn(msg):
         from fabric.colors import magenta
 
     if output.warnings:
-        msg = _encode(msg, sys.stderr)
         sys.stderr.write(magenta("\nWarning: %s\n\n" % msg))
 
 
@@ -141,7 +131,7 @@ def puts(text, show_prefix=None, end="\n", flush=False):
         prefix = ""
         if env.host_string and show_prefix:
             prefix = "[%s] " % env.host_string
-        sys.stdout.write(prefix + _encode(text, sys.stdout) + end)
+        sys.stdout.write(prefix + str(text) + end)
         if flush:
             sys.stdout.flush()
 
