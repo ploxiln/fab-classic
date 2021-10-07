@@ -36,7 +36,9 @@ jobs:
           fi
       - name: Python dependencies
         run: |
-          pip install -r dev-requirements.txt
+          # nose binary wheel is not compatible with python-3.10
+          # see https://github.com/nose-devs/nose/issues/1099#issuecomment-577412313
+          pip install --no-binary nose -r dev-requirements.txt
           pip install paramiko-ng==${{matrix.paramiko_ver}}
           pip install -e .
       - name: Lint
