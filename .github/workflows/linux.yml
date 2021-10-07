@@ -1,8 +1,8 @@
 name: Linux tests
 
 on:
-  push:         {branches: [master]}
-  pull_request: {branches: [master]}
+  push:         {branches: [master, '1.18']}
+  pull_request: {branches: [master, '1.18']}
 
 jobs:
   test:
