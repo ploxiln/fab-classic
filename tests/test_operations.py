@@ -1113,6 +1113,12 @@ def test_local_output_and_capture():
                     )
                     yield case
 
+def test_non_captured_error():
+    with assert_raises(SystemExit) as cm:
+        local('ls / thisfiledoesnotexist')
+    ex = cm.exception
+    assert_contains("encountered an error", ex.message)
+
 def test_local_captured_error_includes_output():
     with assert_raises(SystemExit) as cm:
         # list something that will exist '/' along with something that won't
