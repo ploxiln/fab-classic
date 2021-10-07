@@ -19,6 +19,7 @@ jobs:
           - 3.7-buster
           - 3.8-bullseye
           - 3.9-bullseye
+          - 3.10-bullseye
         paramiko_ver:
           - 2.5.0
           - 2.7.8
