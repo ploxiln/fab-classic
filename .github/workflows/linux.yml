@@ -1,12 +1,12 @@
 name: Linux tests
 
 on:
-  push:         {branches: [master]}
-  pull_request: {branches: [master]}
+  push:         {branches: [master, '1.18']}
+  pull_request: {branches: [master, '1.18']}
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -17,11 +17,13 @@ jobs:
           - 3.5-buster
           - 3.6-buster
           - 3.7-buster
-          - 3.8-buster
+          - 3.8-bullseye
+          - 3.9-bullseye
+          - 3.10-bullseye
         paramiko_ver:
           - 2.5.0
-          - 2.7.6
-          - 2.8.2
+          - 2.7.8
+          - 2.8.4
     container: "python:${{matrix.imgtag}}"
     steps:
       - uses: actions/checkout@v2
@@ -34,7 +36,9 @@ jobs:
           fi
       - name: Python dependencies
         run: |
-          pip install -r dev-requirements.txt
+          # nose binary wheel is not compatible with python-3.10
+          # see https://github.com/nose-devs/nose/issues/1099#issuecomment-577412313
+          pip install --no-binary nose -r dev-requirements.txt
           pip install paramiko-ng==${{matrix.paramiko_ver}}
           pip install -e .
       - name: Lint
@@ -59,18 +63,18 @@ jobs:
           script -e -q -c "fab -H localhost test:integration" /dev/null
 
   docs:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: 3.8
 
       - name: Install dependencies
         run: |
           pip install -r doc-requirements.txt
-          pip install paramiko-ng==2.7.6
+          pip install paramiko-ng==2.8.4
           pip install -e .
       - name: Build docs
         run: |
