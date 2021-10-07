@@ -15,7 +15,10 @@ import getpass
 import inspect
 from optparse import OptionParser
 from importlib import import_module
-from collections import Mapping
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
 
 import six
 
