@@ -18,9 +18,14 @@ if win32:
 
 
 def _endswith(char_list, substring):
-    tail = list(char_list)[-1 * len(substring):]
-    substring = list(substring)
-    return tail == substring
+    if len(substring) > len(char_list):
+        return False
+
+    for i in range(len(substring)):
+        if char_list[-1 - i] != substring[-1 - i]:
+            return False
+
+    return True
 
 
 def _has_newline(bytelist):
