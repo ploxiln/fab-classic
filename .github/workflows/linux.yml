@@ -21,9 +21,9 @@ jobs:
           - 3.9-bullseye
           - 3.10-bullseye
         paramiko_ver:
-          - 2.5.0
-          - 2.7.8
-          - 2.8.4
+          - 2.6.4
+          - 2.7.10
+          - 2.8.8
     container: "python:${{matrix.imgtag}}"
     steps:
       - uses: actions/checkout@v2
