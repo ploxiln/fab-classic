@@ -11,23 +11,11 @@ import six
 import socket
 import sys
 
+import paramiko as ssh
+
 from fabric.auth import get_password, set_password
 from fabric.utils import handle_prompt_abort, warn
 from fabric.exceptions import NetworkError
-
-try:
-    import warnings
-    warnings.simplefilter('ignore', DeprecationWarning)
-    import paramiko as ssh
-except ImportError:
-    import traceback
-    traceback.print_exc()
-    msg = """
-There was a problem importing our SSH library (see traceback above).
-Please make sure all dependencies are installed and importable.
-""".rstrip()
-    sys.stderr.write(msg + '\n')
-    sys.exit(1)
 
 
 ipv6_regex = re.compile(

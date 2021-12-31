@@ -6,7 +6,9 @@ import os
 import sys
 from optparse import make_option
 
-from fabric.network import HostConnectionCache, ssh
+import paramiko as ssh
+
+from fabric.network import HostConnectionCache
 from fabric.version import get_version
 from fabric.utils import _AliasDict, _AttributeDict
 
