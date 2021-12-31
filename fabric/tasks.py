@@ -11,26 +11,6 @@ from fabric.job_queue import JobQueue
 from fabric.task_utils import crawl, merge, parse_kwargs
 from fabric.exceptions import NetworkError
 
-if sys.version_info[:2] == (2, 5):
-    # Python 2.5 inspect.getargspec returns a tuple
-    # instead of ArgSpec namedtuple.
-    class ArgSpec(object):
-        def __init__(self, args, varargs, keywords, defaults):
-            self.args = args
-            self.varargs = varargs
-            self.keywords = keywords
-            self.defaults = defaults
-            self._tuple = (args, varargs, keywords, defaults)
-
-        def __getitem__(self, idx):
-            return self._tuple[idx]
-
-    def patched_get_argspec(func):
-        return ArgSpec(*inspect._getargspec(func))
-
-    inspect._getargspec = inspect.getargspec
-    inspect.getargspec = patched_get_argspec
-
 
 def get_task_details(task):
     details = [
@@ -39,7 +19,7 @@ def get_task_details(task):
         else 'No docstring provided']
     argspec = inspect.getargspec(task)
 
-    default_args = [] if not argspec.defaults else argspec.defaults
+    default_args = argspec.defaults or ()
     num_default_args = len(default_args)
     args_without_defaults = argspec.args[:len(argspec.args) - num_default_args]
     args_with_defaults = argspec.args[-1 * num_default_args:]
@@ -78,8 +58,7 @@ class Task(object):
     is_default = False
 
     # TODO: make it so that this wraps other decorators as expected
-    def __init__(self, alias=None, aliases=None, default=False, name=None,
-        *args, **kwargs):
+    def __init__(self, alias=None, aliases=None, default=False, name=None, *args, **kwargs):
         if alias is not None:
             self.aliases = [alias, ]
         if aliases is not None:
