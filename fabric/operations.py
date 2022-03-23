@@ -1214,9 +1214,11 @@ def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
         # Non-captured, hidden streams are discarded.
         out_stream = None if output.stdout else dev_null
         err_stream = None if output.stderr else dev_null
+    if shell is None:
+        shell = True
     try:
         cmd_arg = wrapped_command if win32 else [wrapped_command]
-        p = subprocess.Popen(cmd_arg, shell=True,
+        p = subprocess.Popen(cmd_arg, shell=shell,
                              stdin=in_stream, stdout=out_stream, stderr=err_stream,
                              preexec_fn=preexec, executable=shell, close_fds=(not win32))
         (stdout, stderr) = p.communicate()
