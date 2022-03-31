@@ -117,6 +117,22 @@ class TestRsync(Integration):
         for x in rsync_sources:
             assert not re.search(r'^%s$' % x, r.stdout, re.M), "'%s' was found in '%s'" % (x, r.stdout)
 
+    def test_exclude(self):
+        x = 'integration/utils.py'
+        r = self.rsync(3, exclude=x)
+        lines = r.stdout.splitlines()
+        assert x not in lines, "'%s' was found in '%s'" % (x, r.stdout)
+        x = 'integration/test_contrib.py'
+        assert x in lines, "'%s' was not found in '%s'" % (x, r.stdout)
+
+        arr = ('integration/utils.py', 'integration/test_contrib.py')
+        r = self.rsync(4, exclude=arr)
+        lines = r.stdout.splitlines()
+        x = 'integration/utils.py'
+        assert x not in lines, "'%s' was found in '%s'" % (x, r.stdout)
+        x = 'integration/test_contrib.py'
+        assert x not in lines, "'%s' was found in '%s'" % (x, r.stdout)
+
 
 class TestUploadTemplate(FileCleaner):
     def test_allows_pty_disable(self):
