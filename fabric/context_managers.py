@@ -458,26 +458,27 @@ def _forwarder(chan, sock):
     """
     Bidirectionally forward data between a socket and a Paramiko channel.
     """
+    mapping = {
+        sock.fileno(): (sock, chan),
+        chan.fileno(): (chan, sock),
+    }
     poller = select.poll()
-    poller.register(sock, select.POLLIN)
-    poller.register(chan, select.POLLIN)
+    for fd in mapping:
+        poller.register(fd, select.POLLIN)
     active = True
     while active:
         events = poller.poll()
         for fd, flag in events:
             if flag & select.POLLIN:
-                if fd is sock.fileno():
-                    data = sock.recv(1024)
-                    if len(data) == 0:
-                        active = False
-                        break
-                    chan.send(data)
-                if fd is chan.fileno():
-                    data = chan.recv(1024)
-                    if len(data) == 0:
-                        active = False
-                        break
-                    sock.send(data)
+                sender, receiver = mapping[fd]
+                data = sender.recv(1024)
+                if data:
+                    receiver.send(data)
+                else:
+                    active = False
+            # Handle unexpected hangups
+            if flag & select.POLLHUP:
+                active = False
     chan.close()
     sock.close()
 
