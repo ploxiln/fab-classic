@@ -148,7 +148,12 @@ class JobQueue(object):
                         if self._debug:
                             print("Job queue found finished proc: %s." % job.name)
                         done = self._running.pop(id)
-                        self._completed.append(done)
+                        self._completed.append((done.name, done.exitcode))
+                        if hasattr(done, 'close') and callable(done.close):
+                            done.close()
+                        # multiprocessing.Process.close() added in Python-3.7
+                        # for older versions of python, GC will have to do
+                        del done
 
                 if self._debug:
                     print("Job queue has %d running." % len(self._running))
@@ -156,9 +161,6 @@ class JobQueue(object):
             if not (self._queued or self._running):
                 if self._debug:
                     print("Job queue finished.")
-
-                for job in self._completed:
-                    job.join()
 
                 self._finished = True
 
@@ -175,9 +177,9 @@ class JobQueue(object):
         self._fill_results(results)
 
         # Attach exit codes now that we're all done & have joined all jobs
-        for job in self._completed:
+        for job_name, exit_code in self._completed:
             if isinstance(job, Process):
-                results[job.name]['exit_code'] = job.exitcode
+                results[job_name]['exit_code'] = exit_code
 
         return results
 
