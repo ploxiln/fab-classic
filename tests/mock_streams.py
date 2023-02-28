@@ -2,11 +2,11 @@
 Stand-alone stream mocking decorator for easier imports.
 """
 from functools import wraps
-import six
+from io import StringIO
 import sys
 
 
-class CarbonCopy(six.StringIO):
+class CarbonCopy(StringIO):
     """
     A StringIO capable of multiplexing its writes to other buffer objects.
     """
@@ -17,7 +17,7 @@ class CarbonCopy(six.StringIO):
         it/they will be written to whenever this StringIO instance is written
         to.
         """
-        six.StringIO.__init__(self, buffer)
+        StringIO.__init__(self, buffer)
         if cc is None:
             cc = []
         elif hasattr(cc, 'write'):
@@ -25,7 +25,7 @@ class CarbonCopy(six.StringIO):
         self.cc = cc
 
     def write(self, s):
-        six.StringIO.write(self, s)
+        StringIO.write(self, s)
         for writer in self.cc:
             writer.write(s)
 
@@ -61,11 +61,11 @@ def mock_streams(which):
         @wraps(func)
         def inner_wrapper(*args, **kwargs):
             if both:
-                sys.stdall = six.StringIO()
+                sys.stdall = StringIO()
                 fake_stdout = CarbonCopy(cc=sys.stdall)
                 fake_stderr = CarbonCopy(cc=sys.stdall)
             else:
-                fake_stdout, fake_stderr = six.StringIO(), six.StringIO()
+                fake_stdout, fake_stderr = StringIO(), StringIO()
             if stdout:
                 my_stdout, sys.stdout = sys.stdout, fake_stdout
             if stderr:

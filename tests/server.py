@@ -1,16 +1,16 @@
 import os
 import re
-import six
 import socket
 import threading
 import time
 from functools import wraps
+
 from Python26SocketServer import BaseRequestHandler, ThreadingMixIn, TCPServer
 
 from fabric.operations import _sudo_prefix
 from fabric.context_managers import hide
 from fabric.state import env
-from fabric.thread_handling import ThreadHandler
+from fabric.thread_handling import ThreadHandler, reraise
 from fabric.network import disconnect_all, ssh
 
 from fake_filesystem import FakeFilesystem, FakeFile
@@ -396,7 +396,7 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
         def split_sudo_prompt(self):
             prefix = re.escape(_sudo_prefix(None, None).rstrip()) + ' +'
             command = self.command
-            if six.PY3 and isinstance(command, bytes):
+            if isinstance(command, bytes):
                 command = command.decode('utf-8')
 
             result = re.findall(r'^(%s)?(.*)$' % prefix, command)[0]
@@ -407,7 +407,7 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
             stderr = ""
             status = 0
             sleep = 0
-            if isinstance(result, six.string_types):
+            if isinstance(result, str):
                 stdout = result
             else:
                 size = len(result)
@@ -433,8 +433,7 @@ def serve_responses(responses, files, passwords, home, pubkeys, port):
                 # newline
                 self.channel.send('\n')
                 # Test password
-                if six.PY3 is True:
-                    password = password.decode('utf-8')
+                password = password.decode('utf-8')
                 if password == passwords[self.ssh_server.username]:
                     passed = True
                     break
@@ -484,6 +483,6 @@ def server(responses=RESPONSES, files=FILES,
                 # Handle subthread exceptions
                 e = worker.exception
                 if e:
-                    six.reraise(e[0], e[1], e[2])
+                    reraise(e[0], e[1], e[2])
         return inner
     return run_server

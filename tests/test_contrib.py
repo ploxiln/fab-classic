@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
 import os
-import six
 
 from fabric.contrib.files import upload_template, contains
 from fabric.context_managers import hide, lcd
@@ -113,8 +111,6 @@ class TestContrib(FabricTest):
             upload_template(template_name, remote, {'first_name': first_name},
                 use_jinja=True, template_dir=template_dir)
             get(remote, local)
-        if six.PY2 is True:
-            first_name = first_name.encode('utf-8')
         eq_contents(local, first_name)
 
     @server()

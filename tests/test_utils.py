@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import sys
 
 from fudge import Fake, patched_context, with_fakes

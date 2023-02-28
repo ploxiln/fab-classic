@@ -1,9 +1,8 @@
 import os
 import posixpath
 import shutil
-from io import StringIO
+from io import StringIO, BytesIO
 
-from six import BytesIO
 from nose.tools import eq_
 
 from fabric.api import (

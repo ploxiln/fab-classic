@@ -1,6 +1,17 @@
 import threading
-import six
 import sys
+
+
+def reraise(tp, value, tb=None):
+    try:
+        if value is None:
+            value = tp()
+        if value.__traceback__ is not tb:
+            raise value.with_traceback(tb)
+        raise value
+    finally:
+        value = None
+        tb = None
 
 
 class ThreadHandler(object):
@@ -23,4 +34,4 @@ class ThreadHandler(object):
     def raise_if_needed(self):
         if self.exception:
             e = self.exception
-            six.reraise(e[0], e[1], e[2])
+            reraise(e[0], e[1], e[2])

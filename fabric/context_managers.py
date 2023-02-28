@@ -18,8 +18,7 @@ Context managers for use with the ``with`` statement.
 
 """
 
-from contextlib import contextmanager
-import six
+from contextlib import contextmanager, ExitStack
 import socket
 import select
 
@@ -28,16 +27,12 @@ from fabric.state import output, win32, connections, env
 from fabric import state
 from fabric.utils import isatty
 
-if six.PY2 is True:
-    from contextlib import nested
-else:
-    from contextlib import ExitStack
 
-    class nested(ExitStack):
-        def __init__(self, *managers):
-            super(nested, self).__init__()
-            for manager in managers:
-                self.enter_context(manager)
+class nested(ExitStack):
+    def __init__(self, *managers):
+        super(nested, self).__init__()
+        for manager in managers:
+            self.enter_context(manager)
 
 
 if not win32:
@@ -130,7 +125,7 @@ def _setenv(variables):
     clean_revert = variables.pop('clean_revert', False)
     previous = {}
     new = []
-    for key, value in six.iteritems(variables):
+    for key, value in variables.items():
         if key in state.env:
             previous[key] = state.env[key]
         else:
@@ -140,7 +135,7 @@ def _setenv(variables):
         yield
     finally:
         if clean_revert:
-            for key, value in six.iteritems(variables):
+            for key, value in variables.items():
                 # If the current env value for this key still matches the
                 # value we set it to beforehand, we are OK to revert it to the
                 # pre-block value.

@@ -1,7 +1,6 @@
 """
 Convenience decorators for use in fabfiles.
 """
-import six
 import types
 from functools import wraps
 
@@ -55,7 +54,7 @@ def _list_annotating_decorator(attribute, *values):
             return func(*args, **kwargs)
         _values = values
         # Allow for single iterable argument as well as *args
-        if len(_values) == 1 and not isinstance(_values[0], six.string_types):
+        if len(_values) == 1 and not isinstance(_values[0], str):
             _values = _values[0]
         setattr(inner_decorator, attribute, list(_values))
         # Don't replace @task new-style task objects with inner_decorator by
