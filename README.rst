@@ -22,22 +22,6 @@ Be sure to ``pip uninstall fabric`` first if you happen to have it installed,
 because *fab-classic* uses the same import name "fabric" and entrypoint (tool)
 name "fab".
 
-Starting with version 1.16, *fab-classic* depends on
-`paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
-`paramiko <https://github.com/paramiko/paramiko/>`_. Both of those packages
-are imported with the name ``paramiko``, and unfortunately that means that you
-should make sure you uninstall *paramiko* before *paramiko-ng* is installed,
-or you will get strange issues (even if things seem to work at first).
-
-Starting with version 1.18, you can switch back to depending on the package
-named *paramiko* by setting the environment variable ``PARAMIKO_REPLACE=1``
-while installing *fab-classic*::
-
-    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.18.0
-
-(*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
-see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
-
 
 Documentation
 -------------
