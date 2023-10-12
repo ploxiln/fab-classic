@@ -295,16 +295,15 @@ def _pty_size():
         import fcntl
         import termios
         # We want two short unsigned integers (rows, cols)
-        fmt = 'HH'
+        # unsigned short (row, col, xpixel, ypixel) (pixel values unused)
+        fmt = 'HHHH'
         # Create an empty (zeroed) buffer for ioctl to map onto. Yay for C!
-        buffer = struct.pack(fmt, 0, 0)
-        # Call TIOCGWINSZ to get window size of stdout, returns our filled
-        # buffer
+        buffer = struct.pack(fmt, 0, 0, 0, 0)
+        # Call TIOCGWINSZ to get window size of stdout, returns our filled buffer
         try:
-            result = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ,
-                buffer)
+            result = fcntl.ioctl(sys.stdout.fileno(), termios.TIOCGWINSZ, buffer)
             # Unpack buffer back into Python data types
-            rows, cols = struct.unpack(fmt, result)
+            rows, cols, _, _ = struct.unpack(fmt, result)
             # Fall back to defaults if TIOCGWINSZ returns unreasonable values
             if rows == 0:
                 rows = default_rows
