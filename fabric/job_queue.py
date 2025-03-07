@@ -11,6 +11,7 @@ try:
 except ImportError:
     import queue as Queue
 from multiprocessing import Process
+from multiprocessing.context import ForkProcess
 
 from fabric.network import ssh
 from fabric.context_managers import settings
@@ -178,7 +179,7 @@ class JobQueue(object):
 
         # Attach exit codes now that we're all done & have joined all jobs
         for job_name, exit_code in self._completed:
-            if isinstance(job, Process):
+            if isinstance(job, ForkProcess):
                 results[job_name]['exit_code'] = exit_code
 
         return results
