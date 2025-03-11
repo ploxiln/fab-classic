@@ -329,6 +329,9 @@ def execute(task, *args, **kwargs):
         # if it can't.
         try:
             import multiprocessing
+            ctx = multiprocessing.get_context('fork')
+            # Set up job queue for parallel cases
+            queue = ctx.Queue()
         except ImportError:
             import traceback
             tb = traceback.format_exc()
@@ -338,12 +341,11 @@ def execute(task, *args, **kwargs):
     traceback.) Please make sure the module is installed
     or that the above ImportError is fixed.""")
     else:
-        multiprocessing = None
+        ctx = None
+        queue = None
 
     # Get pool size for this task
     pool_size = task.get_pool_size(my_env['all_hosts'], state.env.pool_size)
-    # Set up job queue in case parallel is needed
-    queue = multiprocessing.Queue() if parallel else None
     jobs = JobQueue(pool_size, queue)
     if state.output.debug:
         jobs._debug = True
@@ -355,7 +357,7 @@ def execute(task, *args, **kwargs):
             try:
                 results[host] = _execute(
                     task, host, my_env, args, new_kwargs, jobs, queue,
-                    multiprocessing
+                    ctx
                 )
             except NetworkError as e:
                 results[host] = e
