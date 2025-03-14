@@ -1158,9 +1158,9 @@ def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
     your terminal, but the return value will contain the captured
     stdout/stderr.
 
-    ``encoding`` is used when ``capture=True`` and running under Python-3,
-    to decode stdout and stderr. The default is "utf-8". The special value
-    "binary" avoids decoding, leaving stdout and stderr as ``bytes``.
+    ``encoding`` is used when ``capture=True``, to decode stdout and stderr.
+    The default is "utf-8". The special value "binary" avoids decoding,
+    leaving stdout and stderr as ``bytes``.
 
     In either case, as with `~fabric.operations.run` and
     `~fabric.operations.sudo`, this return value exhibits the ``return_code``,
