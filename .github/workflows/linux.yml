@@ -43,9 +43,9 @@ jobs:
       - name: Setup SSH
         run: |
           export USER=root HOME=/root
-          mkdir -v /run/sshd
+          mkdir -v -p /run/sshd
           /usr/sbin/sshd -D & sleep 1
-          mkdir -v ~/.ssh
+          mkdir -v -p ~/.ssh
           ssh-keygen -N "" -f ~/.ssh/testkey
           cp -v ~/.ssh/testkey.pub ~/.ssh/authorized_keys
           ssh-keyscan -t ecdsa localhost > ~/.ssh/known_hosts
