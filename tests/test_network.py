@@ -8,7 +8,7 @@ from fudge import (Fake, patch_object, with_patched_object, patched_context,
 from fabric.context_managers import settings, hide, show
 from fabric.network import (HostConnectionCache, join_host_strings, normalize,
                             denormalize, key_filenames, ssh, NetworkError, connect)
-import fabric.network  # noqa: F401  # So I can call patch_object correctly
+import fabric.network  # noqa: F401  # for patch_object()
 import fabric.utils  # noqa: F401  # for patch_object()
 from fabric.state import env, output, _get_system_username
 from fabric.operations import run, sudo, prompt
@@ -240,12 +240,12 @@ class TestNetwork(FabricTest):
         raise_channel_exception_once.should_raise_channel_exception = True
 
         def generate_fake_client():
-            fake_client = Fake('SSHClient', allows_any_call=True, expect_call=True)
-            fake_client.provides('connect').calls(raise_channel_exception_once)
+            fake_client = Fake('SSHClient', allows_any_call=True)
+            fake_client.expects('connect').calls(raise_channel_exception_once)
             return fake_client
 
         fake_ssh = Fake('ssh', allows_any_call=True)
-        fake_ssh.provides('SSHClient').calls(generate_fake_client)
+        fake_ssh.expects('SSHClient').calls(generate_fake_client)
 
         # We need the real exceptions here to preserve the inheritence structure
         # and for except clauses because python3 is picky about that
@@ -478,7 +478,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: silent
             \[%(prefix)s\] run: normal
             \[%(prefix)s\] out: foo
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
@@ -506,7 +506,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: twoliner
             \[%(prefix)s\] out: result1
             \[%(prefix)s\] out: result2
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
@@ -535,7 +535,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: twoliner
             result1
             result2
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @server()
@@ -544,7 +544,7 @@ class TestNetwork(FabricTest):
         Ensure env.host is set during host prompting
         """
         copied_host_string = str(env.host_string)
-        fake = Fake('raw_input', callable=True).returns(copied_host_string)
+        fake = Fake('input', callable=True).returns(copied_host_string)
         env.host_string = None
         env.host = None
         with settings(hide('everything'), patched_input(fake)):

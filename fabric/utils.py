@@ -3,19 +3,10 @@ Internal subroutines for e.g. aborting execution with an error message,
 or performing indenting on multiline output.
 """
 import os
-import six
 import sys
 import struct
 import textwrap
 from traceback import format_exc
-
-
-def _encode(msg, stream):
-    if six.PY2 and isinstance(msg, six.text_type) \
-            and hasattr(stream, 'encoding') and stream.encoding is not None:
-        return msg.encode(stream.encoding)
-    else:
-        return str(msg)
 
 
 def isatty(stream):
@@ -50,7 +41,7 @@ def abort(msg):
         from fabric.colors import red
 
     if output.aborts:
-        sys.stderr.write(red("\nFatal error: %s\n" % _encode(msg, sys.stderr)))
+        sys.stderr.write(red("\nFatal error: %s\n" % msg))
         sys.stderr.write(red("\nAborting.\n"))
 
     if env.abort_exception:
@@ -82,7 +73,6 @@ def warn(msg):
         from fabric.colors import magenta
 
     if output.warnings:
-        msg = _encode(msg, sys.stderr)
         sys.stderr.write(magenta("\nWarning: %s\n\n" % msg))
 
 
@@ -141,7 +131,7 @@ def puts(text, show_prefix=None, end="\n", flush=False):
         prefix = ""
         if env.host_string and show_prefix:
             prefix = "[%s] " % env.host_string
-        sys.stdout.write(prefix + _encode(text, sys.stdout) + end)
+        sys.stdout.write(prefix + str(text) + end)
         if flush:
             sys.stdout.flush()
 
@@ -335,9 +325,8 @@ def error(message, func=None, exception=None, stdout=None, stderr=None):
         func = fabric.state.env.warn_only and warn or abort
     # If exception printing is on, append a traceback to the message
     if fabric.state.output.exceptions or fabric.state.output.debug:
-        exception_message = format_exc()
-        if exception_message:
-            message += "\n\n" + exception_message
+        if sys.exc_info()[1] is not None:
+            message += "\n\n" + format_exc()
     # Otherwise, if we were given an exception, append its contents.
     elif exception is not None:
         # Figure out how to get a string out of the exception; EnvironmentError

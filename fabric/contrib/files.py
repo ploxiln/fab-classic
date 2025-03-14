@@ -4,8 +4,7 @@ Module providing easy API for working with remote files and folders.
 
 import hashlib
 import os
-import six
-
+from io import StringIO
 from functools import partial
 
 from fabric.api import run, sudo, hide, settings, env, put, abort
@@ -163,12 +162,12 @@ def upload_template(filename, destination, context=None, use_jinja=False,
         target = destination.replace(' ', r'\ ')
         func("cp %s %s.bak" % (target, target))
 
-    if six.PY3 is True and isinstance(text, bytes):
+    if isinstance(text, bytes):
         text = text.decode('utf-8')
 
     # Upload the file.
     return put(
-        local_path=six.StringIO(text),
+        local_path=StringIO(text),
         remote_path=destination,
         use_sudo=use_sudo,
         mirror_local_mode=mirror_local_mode,
@@ -413,7 +412,7 @@ def append(filename, text, use_sudo=False, partial=False, escape=True,
     """
     func = use_sudo and sudo or run
     # Normalize non-list input to be a list
-    if isinstance(text, six.string_types):
+    if isinstance(text, str):
         text = [text]
     for line in text:
         regex = '^' + _escape_for_regex(line) + ('' if partial else '$')

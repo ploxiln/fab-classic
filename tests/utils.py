@@ -8,7 +8,6 @@ import shutil
 import sys
 import tempfile
 
-import six
 from fudge import Fake, patched_context, clear_expectations
 from fudge.patcher import with_patched_object
 from nose.tools import raises
@@ -95,7 +94,7 @@ def password_response(password, times_called=None, silent=True):
     """
     fake = Fake('getpass', callable=True)
     # Assume stringtype or iterable, turn into mutable iterable
-    if isinstance(password, six.string_types):
+    if isinstance(password, str):
         passwords = [password]
     else:
         passwords = list(password)
@@ -213,10 +212,7 @@ def aborts(func):
 
 
 def _patched_input(func, fake):
-    if six.PY3 is True:
-        return func(sys.modules['builtins'], 'input', fake)
-    else:
-        return func(sys.modules['__builtin__'], 'raw_input', fake)
+    return func(sys.modules['builtins'], 'input', fake)
 
 
 patched_input = partial(_patched_input, patched_context)

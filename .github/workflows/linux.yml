@@ -1,46 +1,39 @@
 name: Linux tests
 
-on:
+"on":
   push:         {branches: [master]}
   pull_request: {branches: [master]}
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         imgtag:
-          - 2.7-buster
-          - 3.4-stretch
-          - 3.5-buster
-          - 3.6-buster
-          - 3.7-buster
-          - 3.8-bullseye
-          - 3.9-bullseye
-          - 3.10-bullseye
+          - 3.6-bullseye
+          - 3.7-bullseye
+          - 3.8-bookworm
+          - 3.9-bookworm
+          - 3.10-bookworm
+          - 3.11-bookworm
+          - 3.12-bookworm
+          - 3.13-bookworm
         paramiko_ver:
-          - 2.6.4
-          - 2.7.10
-          - 2.8.8
+          - 2.6.6
+          - 2.7.12
+          - 2.8.10
     container: "python:${{matrix.imgtag}}"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: System dependencies
         run: |
           apt-get -q -y update
           apt-get -q -y install openssh-client openssh-server rsync sudo
-          if [ 3.4-stretch = "${{matrix.imgtag}}" ]; then
-            sed -i -e '/^mesg n/d' /root/.profile
-          fi
       - name: Python dependencies
         run: |
-          # nose and Fudge need use_2to3 which setuptools-58 removed
-          pip install 'setuptools<58'
-          # nose binary wheel is not compatible with python-3.10
-          # see https://github.com/nose-devs/nose/issues/1099#issuecomment-577412313
-          pip install --no-binary nose -r dev-requirements.txt
+          pip install -r dev-requirements.txt
           pip install paramiko-ng==${{matrix.paramiko_ver}}
           pip install -e .
       - name: Lint
@@ -50,10 +43,10 @@ jobs:
       - name: Setup SSH
         run: |
           export USER=root HOME=/root
-          mkdir -v /run/sshd
+          mkdir -v -p /run/sshd
           /usr/sbin/sshd -D & sleep 1
-          mkdir -v ~/.ssh
-          ssh-keygen -N "" -f ~/.ssh/testkey
+          mkdir -v -p ~/.ssh
+          ssh-keygen -t ecdsa -N "" -f ~/.ssh/testkey
           cp -v ~/.ssh/testkey.pub ~/.ssh/authorized_keys
           ssh-keyscan -t ecdsa localhost > ~/.ssh/known_hosts
       - name: Test
@@ -65,19 +58,19 @@ jobs:
           script -e -q -c "fab -H localhost test:integration" /dev/null
 
   docs:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
+    container: "python:3.9-bookworm"
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
+      - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           pip install -r doc-requirements.txt
-          pip install paramiko-ng==2.8.4
+          pip install paramiko-ng==2.8.10
           pip install -e .
+
       - name: Build docs
         run: |
           sphinx-build -W sites/docs tmpbuild

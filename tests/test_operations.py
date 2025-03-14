@@ -3,8 +3,8 @@ import os
 import re
 import sys
 import shutil
+from io import StringIO, BytesIO
 
-import six
 from nose.tools import ok_, raises, assert_raises
 from fudge import patched_context, with_fakes, Fake
 from fudge.inspector import arg as fudge_arg
@@ -545,7 +545,7 @@ class TestFileTransfers(FabricTest):
     @mock_streams('stderr')
     def _invalid_file_obj_situations(self, remote_path):
         with settings(hide('running'), warn_only=True):
-            get(remote_path, six.StringIO())
+            get(remote_path, StringIO())
         assert_contains('is a glob or directory', sys.stderr.getvalue())
 
     def test_glob_and_file_object_invalid(self):
@@ -695,7 +695,7 @@ class TestFileTransfers(FabricTest):
         """
         get()'s local_path arg should take file-like objects too
         """
-        fake_file = six.BytesIO()
+        fake_file = BytesIO()
         target = '/file.txt'
         with hide('everything'):
             get(target, fake_file)
@@ -735,7 +735,7 @@ class TestFileTransfers(FabricTest):
         get() should return None if local_path is a StringIO
         """
         with hide('everything'):
-            eq_([], get('/file.txt', six.BytesIO()))
+            eq_([], get('/file.txt', BytesIO()))
 
     @server()
     def test_get_return_value_failed_attribute(self):
@@ -873,7 +873,7 @@ class TestFileTransfers(FabricTest):
         put()'s local_path arg should take file-like objects too
         """
         local = self.path('whatever')
-        fake_file = six.StringIO()
+        fake_file = StringIO()
         fake_file.write("testing file-like objects in put()")
         pointer = fake_file.tell()
         target = '/new_file.txt'
@@ -914,7 +914,7 @@ class TestFileTransfers(FabricTest):
         f = 'uploaded.txt'
         with hide('everything'):
             # '/' is homedir (see FakeFilesystem.normalize())
-            eq_(put(six.StringIO('contents'), f), ['/' + f])
+            eq_(put(StringIO('contents'), f), ['/' + f])
 
     @server()
     def test_put_return_value_failed_attribute(self):
@@ -922,7 +922,7 @@ class TestFileTransfers(FabricTest):
         put()'s return value should indicate any paths which failed to upload.
         """
         with settings(hide('everything'), warn_only=True):
-            f = six.StringIO('contents')
+            f = StringIO('contents')
             retval = put(f, '/nonexistent/directory/structure')
         eq_(["<StringIO>"], retval.failed)
         assert not retval.succeeded
@@ -1074,7 +1074,7 @@ class TestFileTransfers(FabricTest):
     @server()
     @mock_streams('stdout')
     def test_stringio_without_name(self):
-        file_obj = six.StringIO(u'test data')
+        file_obj = StringIO(u'test data')
         put(file_obj, '/')
         assert re.search('<file obj>', sys.stdout.getvalue())
 
@@ -1082,7 +1082,7 @@ class TestFileTransfers(FabricTest):
     @mock_streams('stdout')
     def test_stringio_with_name(self):
         """If a file object (StringIO) has a name attribute, use that in output"""
-        file_obj = six.StringIO(u'test data')
+        file_obj = StringIO(u'test data')
         file_obj.name = 'Test StringIO Object'
         put(file_obj, '/')
         assert re.search(file_obj.name, sys.stdout.getvalue())
@@ -1135,8 +1135,6 @@ def test_local_encoding():
         (r"a\001\002\003", 'binary', b"a\x01\x02\x03"),
     ]:
         res = local("printf '%s'" % octstr, capture=True, encoding=encoding)
-        if six.PY2 and encoding != "binary":
-            res = res.decode(encoding)
         assert res == expected, "%r != %r" % (res, expected)
 
 

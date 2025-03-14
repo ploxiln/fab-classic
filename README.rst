@@ -1,4 +1,4 @@
-*fab-classic* is a Python (2.7 or 3.4+) library and command-line tool
+*fab-classic* is a Python (3.6+) library and command-line tool
 for streamlining the use of SSH for application deployment or systems
 administration tasks.
 

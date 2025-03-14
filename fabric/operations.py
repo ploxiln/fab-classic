@@ -7,7 +7,6 @@ import os
 import os.path
 import posixpath
 import re
-import six
 import subprocess
 import sys
 import time
@@ -139,7 +138,7 @@ def require(*keys, **kwargs):
 
 def prompt(text, key=None, default='', validate=None):
     r"""
-    Prompt user with ``text`` and return the input (like ``raw_input``).
+    Prompt user with ``text`` and return the input (like ``input``).
 
     A single space character will be appended for convenience, but nothing
     else. Thus, you may want to end your prompt text with a question mark or a
@@ -213,12 +212,7 @@ def prompt(text, key=None, default='', validate=None):
     value = None
     while value is None:
         # Get input
-        # WARNING: do not use six.moves.input, because test cases to not
-        # overwrite that method with a faked method from Fudge
-        if six.PY3 is True:
-            value = input(prompt_str) or default  # noqa: F821
-        else:
-            value = raw_input(prompt_str) or default  # noqa: F821
+        value = input(prompt_str) or default
         # Handle validation
         if validate:
             # Callable
@@ -702,7 +696,7 @@ def _prefix_env_vars(command, local=False):
 
         exports = ' '.join(
             '%s%s="%s"' % (set_cmd, k, v if k == 'PATH' else _shell_escape(v))
-            for k, v in six.iteritems(env_vars)
+            for k, v in env_vars.items()
         )
         shell_env_str = '%s%s && ' % (exp_cmd, exports)
     else:
@@ -1164,9 +1158,9 @@ def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
     your terminal, but the return value will contain the captured
     stdout/stderr.
 
-    ``encoding`` is used when ``capture=True`` and running under Python-3,
-    to decode stdout and stderr. The default is "utf-8". The special value
-    "binary" avoids decoding, leaving stdout and stderr as ``bytes``.
+    ``encoding`` is used when ``capture=True``, to decode stdout and stderr.
+    The default is "utf-8". The special value "binary" avoids decoding,
+    leaving stdout and stderr as ``bytes``.
 
     In either case, as with `~fabric.operations.run` and
     `~fabric.operations.sudo`, this return value exhibits the ``return_code``,
@@ -1225,16 +1219,12 @@ def local(command, capture=False, shell=None, pty=True, encoding='utf-8'):
             dev_null.close()
 
     # Handle error condition (deal with stdout being None, too)
-    if six.PY3:
-        if encoding == "binary":
-            out = _stdoutBytes(stdout or b'')
-            err =              stderr or b''  # noqa: E222
-        else:
-            out = _stdoutString(stdout.decode(encoding).strip() if stdout else "")
-            err =               stderr.decode(encoding).strip() if stderr else ""  # noqa: E222
+    if encoding == "binary":
+        out = _stdoutBytes(stdout or b'')
+        err =              stderr or b''  # noqa: E222
     else:
-        out = _stdoutString(stdout.strip() if stdout else "")
-        err =               stderr.strip() if stderr else ""  # noqa: E222
+        out = _stdoutString(stdout.decode(encoding).strip() if stdout else "")
+        err =               stderr.decode(encoding).strip() if stderr else ""  # noqa: E222
 
     out.command = given_command
     out.real_command = wrapped_command

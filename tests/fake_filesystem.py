@@ -1,14 +1,14 @@
 import os
-import six
 import stat
+from io import StringIO
 
 from fabric.network import ssh
 
 
-class FakeFile(six.StringIO):
+class FakeFile(StringIO):
     def __init__(self, value=None, path=None):
         def init(x):
-            six.StringIO.__init__(self, x)
+            StringIO.__init__(self, x)
 
         if value is None:
             init("")
@@ -28,9 +28,9 @@ class FakeFile(six.StringIO):
         return self.getvalue()
 
     def write(self, value):
-        if six.PY3 is True and isinstance(value, bytes):
+        if isinstance(value, bytes):
             value = value.decode('utf-8')
-        six.StringIO.write(self, value)
+        StringIO.write(self, value)
         self.attributes.st_size = len(self.getvalue())
 
     def close(self):
@@ -39,20 +39,16 @@ class FakeFile(six.StringIO):
         """
         pass
 
-    def __cmp__(self, other):
-        me = str(self) if isinstance(other, six.string_types) else self
-        return cmp(me, other)  # noqa: F821
-
 
 class FakeFilesystem(dict):
     def __init__(self, d=None):
         # Replicate input dictionary using our custom __setitem__
         d = d or {}
-        for key, value in six.iteritems(d):
+        for key, value in d.items():
             self[key] = value
 
     def __setitem__(self, key, value):
-        if isinstance(value, six.string_types) or value is None:
+        if isinstance(value, str) or value is None:
             value = FakeFile(value, key)
         super(FakeFilesystem, self).__setitem__(key, value)
 

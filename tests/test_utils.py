@@ -1,5 +1,3 @@
-from __future__ import with_statement
-
 import sys
 
 from fudge import Fake, patched_context, with_fakes
@@ -10,19 +8,19 @@ from fabric.state import output
 from fabric.utils import warn, indent, abort, puts, fastprint, error
 from fabric import utils  # For patching
 from fabric.api import local, quiet
-from fabric.context_managers import settings, hide
+from fabric.context_managers import settings, hide, show
 from fabric.colors import magenta, red
 from mock_streams import mock_streams
 from utils import aborts, FabricTest, assert_contains, assert_not_contains
 
 
 @mock_streams('stderr')
-@with_patched_object(output, 'warnings', True)
 def test_warn():
     """
     warn() should print 'Warning' plus given text
     """
-    warn("Test")
+    with settings(show('warnings')):
+        warn("Test")
     eq_("\nWarning: Test\n\n", sys.stderr.getvalue())
 
 
@@ -72,13 +70,13 @@ def test_abort_with_exception():
         abort("Test")
 
 @mock_streams('stderr')
-@with_patched_object(output, 'aborts', True)
 def test_abort_message():
     """
     abort() should print 'Fatal error' plus exception value
     """
     try:
-        abort("Test")
+        with settings(show("aborts")):
+            abort("Test")
     except SystemExit:
         pass
     result = sys.stderr.getvalue()
@@ -98,14 +96,14 @@ def test_abort_message_only_printed_once():
     eq_(result.stderr, "Fatal error: It burns!\n\nAborting.")
 
 @mock_streams('stderr')
-@with_patched_object(output, 'aborts', True)
 def test_abort_exception_contains_separate_message_and_code():
     """
     abort()'s SystemExit contains distinct .code/.message attributes.
     """
     # Re #1318 / #1213
     try:
-        abort("Test")
+        with settings(show("aborts")):
+            abort("Test")
     except SystemExit as e:
         eq_(e.message, "Test")
         eq_(e.code, 1)
@@ -227,42 +225,44 @@ class TestErrorHandling(FabricTest):
         assert_contains(stdout, sys.stdout.getvalue())
 
     @mock_streams('stdout')
+    @with_patched_object(sys, 'exc_info', lambda: (1, 1, 1))
     @with_patched_object(utils, 'abort', Fake('abort', callable=True,
         expect_call=True).calls(lambda x: sys.stdout.write(x + "\n")))
-    @with_patched_object(output, 'exceptions', True)
     @with_patched_object(utils, 'format_exc', Fake('format_exc', callable=True,
         expect_call=True).returns(dummy_string))
     def test_includes_traceback_if_exceptions_logging_is_on(self):
         """
         error() includes traceback in message if exceptions logging is on
         """
-        error("error message", func=utils.abort, stdout=error)
+        with settings(show("exceptions")):
+            error("error message", func=utils.abort, stdout=error)
         assert_contains(self.dummy_string, sys.stdout.getvalue())
 
     @mock_streams('stdout')
+    @with_patched_object(sys, 'exc_info', lambda: (1, 1, 1))
     @with_patched_object(utils, 'abort', Fake('abort', callable=True,
         expect_call=True).calls(lambda x: sys.stdout.write(x + "\n")))
-    @with_patched_object(output, 'debug', True)
     @with_patched_object(utils, 'format_exc', Fake('format_exc', callable=True,
         expect_call=True).returns(dummy_string))
     def test_includes_traceback_if_debug_logging_is_on(self):
         """
         error() includes traceback in message if debug logging is on (backwardis compatibility)
         """
-        error("error message", func=utils.abort, stdout=error)
+        with settings(show("debug")):
+            error("error message", func=utils.abort, stdout=error)
         assert_contains(self.dummy_string, sys.stdout.getvalue())
 
     @mock_streams('stdout')
     @with_patched_object(utils, 'abort', Fake('abort', callable=True,
         expect_call=True).calls(lambda x: sys.stdout.write(x + "\n")))
-    @with_patched_object(output, 'exceptions', True)
     @with_patched_object(utils, 'format_exc', Fake('format_exc', callable=True,
         expect_call=True).returns(None))
     def test_doesnt_print_None_when_no_traceback_present(self):
         """
         error() doesn't include None in message if there is no traceback
         """
-        error("error message", func=utils.abort, stdout=error)
+        with settings(show("exceptions")):
+            error("error message", func=utils.abort, stdout=error)
         assert_not_contains('None', sys.stdout.getvalue())
 
     @mock_streams('stderr')
