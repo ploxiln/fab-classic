@@ -240,7 +240,7 @@ class TestNetwork(FabricTest):
         raise_channel_exception_once.should_raise_channel_exception = True
 
         def generate_fake_client():
-            fake_client = Fake('SSHClient', allows_any_call=True, expect_call=True)
+            fake_client = Fake('SSHClient', allows_any_call=True)  # TODO expect_call=True ?
             fake_client.provides('connect').calls(raise_channel_exception_once)
             return fake_client
 

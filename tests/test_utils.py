@@ -225,6 +225,7 @@ class TestErrorHandling(FabricTest):
         assert_contains(stdout, sys.stdout.getvalue())
 
     @mock_streams('stdout')
+    @with_patched_object(sys, 'exc_info', lambda: (1, 1, 1))
     @with_patched_object(utils, 'abort', Fake('abort', callable=True,
         expect_call=True).calls(lambda x: sys.stdout.write(x + "\n")))
     @with_patched_object(utils, 'format_exc', Fake('format_exc', callable=True,
@@ -238,6 +239,7 @@ class TestErrorHandling(FabricTest):
         assert_contains(self.dummy_string, sys.stdout.getvalue())
 
     @mock_streams('stdout')
+    @with_patched_object(sys, 'exc_info', lambda: (1, 1, 1))
     @with_patched_object(utils, 'abort', Fake('abort', callable=True,
         expect_call=True).calls(lambda x: sys.stdout.write(x + "\n")))
     @with_patched_object(utils, 'format_exc', Fake('format_exc', callable=True,
