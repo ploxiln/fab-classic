@@ -240,12 +240,12 @@ class TestNetwork(FabricTest):
         raise_channel_exception_once.should_raise_channel_exception = True
 
         def generate_fake_client():
-            fake_client = Fake('SSHClient', allows_any_call=True)  # TODO expect_call=True ?
-            fake_client.provides('connect').calls(raise_channel_exception_once)
+            fake_client = Fake('SSHClient', allows_any_call=True)
+            fake_client.expects('connect').calls(raise_channel_exception_once)
             return fake_client
 
         fake_ssh = Fake('ssh', allows_any_call=True)
-        fake_ssh.provides('SSHClient').calls(generate_fake_client)
+        fake_ssh.expects('SSHClient').calls(generate_fake_client)
 
         # We need the real exceptions here to preserve the inheritence structure
         # and for except clauses because python3 is picky about that
