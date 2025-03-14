@@ -33,11 +33,7 @@ jobs:
           apt-get -q -y install openssh-client openssh-server rsync sudo
       - name: Python dependencies
         run: |
-          # nose and Fudge need use_2to3 which setuptools-58 removed
-          pip install 'setuptools<58'
-          # nose binary wheel is not compatible with python-3.10
-          # see https://github.com/nose-devs/nose/issues/1099#issuecomment-577412313
-          pip install --no-binary nose -r dev-requirements.txt
+          pip install -r dev-requirements.txt
           pip install paramiko-ng==${{matrix.paramiko_ver}}
           pip install -e .
       - name: Lint
