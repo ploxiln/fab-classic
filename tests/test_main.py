@@ -7,7 +7,6 @@ try:
 except ImportError:
     from collections import Mapping
 
-import six
 from fudge import Fake, patched_context
 from nose.tools import ok_, eq_
 
