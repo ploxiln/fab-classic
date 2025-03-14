@@ -212,7 +212,7 @@ def prompt(text, key=None, default='', validate=None):
     value = None
     while value is None:
         # Get input
-        value = input(prompt_str) or default  # noqa: F821
+        value = input(prompt_str) or default
         # Handle validation
         if validate:
             # Callable

@@ -8,7 +8,7 @@ from fudge import (Fake, patch_object, with_patched_object, patched_context,
 from fabric.context_managers import settings, hide, show
 from fabric.network import (HostConnectionCache, join_host_strings, normalize,
                             denormalize, key_filenames, ssh, NetworkError, connect)
-import fabric.network  # noqa: F401  # So I can call patch_object correctly
+import fabric.network  # noqa: F401  # for patch_object()
 import fabric.utils  # noqa: F401  # for patch_object()
 from fabric.state import env, output, _get_system_username
 from fabric.operations import run, sudo, prompt
@@ -478,7 +478,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: silent
             \[%(prefix)s\] run: normal
             \[%(prefix)s\] out: foo
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
@@ -506,7 +506,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: twoliner
             \[%(prefix)s\] out: result1
             \[%(prefix)s\] out: result2
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @mock_streams('both')
@@ -535,7 +535,7 @@ class TestNetwork(FabricTest):
             \[%(prefix)s\] run: twoliner
             result1
             result2
-            """[1:]) % {'prefix': env.host_string, 'user': env.user}  # noqa: W291
+            """[1:]) % {'prefix': env.host_string, 'user': env.user}
         match_(sys.stdall.getvalue(), expected)
 
     @server()

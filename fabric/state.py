@@ -48,8 +48,8 @@ def _get_system_username():
     except ImportError:
         if win32:
             import win32api
-            import win32security # noqa
-            import win32profile # noqa
+            import win32security  # noqa: F401
+            import win32profile  # noqa: F401
             username = win32api.GetUserName()
     return username
 
