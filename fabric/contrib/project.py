@@ -5,8 +5,6 @@ from os import getcwd, sep
 import os.path
 from tempfile import mkdtemp
 
-import six
-
 from fabric.network import needs_host, key_filenames, normalize
 from fabric.operations import local, run, sudo, put
 from fabric.state import env, output
@@ -106,7 +104,7 @@ def rsync_project(
         The ``default_opts`` keyword argument.
     """
     # Turn single-string exclude into a one-item list for consistency
-    if isinstance(exclude, six.string_types):
+    if isinstance(exclude, str):
         exclude = (exclude,)
     # Create --exclude options from exclude list
     exclude_opts = ' --exclude "%s"' * len(exclude)
