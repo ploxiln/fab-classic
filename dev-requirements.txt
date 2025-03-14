@@ -2,7 +2,7 @@
 # Test runner/testing utils
 nose-py3
 # Fudge mocking library, small fork with use_2to3 removed from setup
-https://github.com/skio-music/fudge/archive/a252954d6e34.tar.gz#egg=fudge
+https://github.com/ploxiln/fudge/archive/a252954d6e34.tar.gz#egg=fudge
 # used in some tests
 jinja2 <4.0
 # flake8
