@@ -16,7 +16,7 @@ def get_task_details(task):
         textwrap.dedent(task.__doc__)
         if task.__doc__
         else 'No docstring provided']
-    argspec = inspect.getargspec(task)
+    argspec = inspect.getfullargspec(task)
 
     default_args = argspec.defaults or ()
     num_default_args = len(default_args)
