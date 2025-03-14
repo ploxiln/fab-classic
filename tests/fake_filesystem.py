@@ -39,10 +39,6 @@ class FakeFile(StringIO):
         """
         pass
 
-    def __cmp__(self, other):
-        me = str(self) if isinstance(other, str) else self
-        return cmp(me, other)  # noqa: F821
-
 
 class FakeFilesystem(dict):
     def __init__(self, d=None):
