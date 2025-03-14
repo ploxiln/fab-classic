@@ -46,7 +46,7 @@ jobs:
           mkdir -v -p /run/sshd
           /usr/sbin/sshd -D & sleep 1
           mkdir -v -p ~/.ssh
-          ssh-keygen -N "" -f ~/.ssh/testkey
+          ssh-keygen -t ecdsa -N "" -f ~/.ssh/testkey
           cp -v ~/.ssh/testkey.pub ~/.ssh/authorized_keys
           ssh-keyscan -t ecdsa localhost > ~/.ssh/known_hosts
       - name: Test
