@@ -1,9 +1,8 @@
 # You should already have Paramiko and your local Fabric checkout installed
 # Test runner/testing utils
 nose-py3
-# Fudge mocking library, needs use_2to3 which setuptools-58 removed,
-# latest commit on master branch has build-dep on setuptools<58
-https://github.com/fudge-py/fudge/archive/dd1a99bb0bc3.tar.gz#egg=fudge
+# Fudge mocking library, small fork with use_2to3 removed from setup
+https://github.com/skio-music/fudge/archive/a252954d6e34.tar.gz#egg=fudge
 # used in some tests
 jinja2<4.0
 # flake8
