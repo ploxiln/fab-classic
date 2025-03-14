@@ -1,9 +1,6 @@
 # You should already have Paramiko and your local Fabric checkout installed
 # Test runner/testing utils
 nose-py3
-# Rudolf adds color to the output of 'fab test'. This is a custom fork
-# addressing Python 2.7 and Nose's 'skip' plugin compatibility issues.
-https://github.com/iknite/rudolf/archive/4a33a26a3aff.tar.gz#egg=rudolf
 # Fudge mocking library, needs use_2to3 which setuptools-58 removed,
 # latest commit on master branch has build-dep on setuptools<58
 https://github.com/fudge-py/fudge/archive/dd1a99bb0bc3.tar.gz#egg=fudge
