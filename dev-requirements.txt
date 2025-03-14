@@ -6,7 +6,7 @@ nose-py3
 https://github.com/iknite/rudolf/archive/4a33a26a3aff.tar.gz#egg=rudolf
 # Fudge mocking library, needs use_2to3 which setuptools-58 removed,
 # latest commit on master branch has build-dep on setuptools<58
-https://github.com/fudge-py/archive/fudge@dd1a99bb0bc3.tar.gz#egg=fudge
+https://github.com/fudge-py/fudge/archive/dd1a99bb0bc3.tar.gz#egg=fudge
 # used in some tests
 jinja2<4.0
 # flake8
