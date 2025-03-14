@@ -60,17 +60,17 @@ jobs:
   docs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    container: "python:3.9-bookworm"
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
 
       - name: Install dependencies
         run: |
           pip install -r doc-requirements.txt
           pip install paramiko-ng==2.8.10
           pip install -e .
+
       - name: Build docs
         run: |
           sphinx-build -W sites/docs tmpbuild
