@@ -138,7 +138,7 @@ def require(*keys, **kwargs):
 
 def prompt(text, key=None, default='', validate=None):
     r"""
-    Prompt user with ``text`` and return the input (like ``raw_input``).
+    Prompt user with ``text`` and return the input (like ``input``).
 
     A single space character will be appended for convenience, but nothing
     else. Thus, you may want to end your prompt text with a question mark or a

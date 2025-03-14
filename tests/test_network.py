@@ -544,7 +544,7 @@ class TestNetwork(FabricTest):
         Ensure env.host is set during host prompting
         """
         copied_host_string = str(env.host_string)
-        fake = Fake('raw_input', callable=True).returns(copied_host_string)
+        fake = Fake('input', callable=True).returns(copied_host_string)
         env.host_string = None
         env.host = None
         with settings(hide('everything'), patched_input(fake)):
