@@ -15,10 +15,8 @@ import getpass
 import inspect
 from optparse import OptionParser
 from importlib import import_module
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping
+from collections.abc import Mapping
+from functools import reduce
 
 # For checking callables against the API, & easy mocking
 from fabric import api, state, colors
@@ -29,11 +27,6 @@ from fabric.state import env_options
 from fabric.tasks import Task, execute, get_task_details
 from fabric.task_utils import _Dict, crawl
 from fabric.utils import abort, indent, warn, _pty_size
-
-try:
-    reduce
-except NameError:
-    from functools import reduce
 
 # One-time calculation of "all internal callables" to avoid doing this on every
 # check of a given fabfile callable (in is_classic_task()).

@@ -2,10 +2,7 @@ import copy
 from functools import partial
 import os.path
 import sys
-try:
-    from collections.abc import Mapping
-except ImportError:
-    from collections import Mapping
+from collections.abc import Mapping
 
 from fudge import Fake, patched_context
 from nose.tools import ok_, eq_
