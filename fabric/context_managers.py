@@ -30,11 +30,11 @@ from fabric.utils import isatty
 
 @contextmanager
 def nested(*contexts):
-    """Reimplementation of nested in Python 3."""
+    """Re-implementation of nested for Python 3."""
     with ExitStack() as stack:
         for ctx in contexts:
             stack.enter_context(ctx)
-        yield contexts
+        yield stack
 
 
 if not win32:
