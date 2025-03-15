@@ -1,6 +1,6 @@
 from fudge import Fake, patched_context, with_fakes
 import unittest
-from nose.tools import raises, ok_
+from nose.tools import raises
 import random
 import sys
 
