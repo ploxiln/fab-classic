@@ -1,6 +1,6 @@
 from fudge import Fake, patched_context, with_fakes
 import unittest
-from nose.tools import raises, ok_
+from nose.tools import raises
 import random
 import sys
 
@@ -190,15 +190,6 @@ def test_decorator_closure_hiding():
 #
 # execute()
 #
-
-def dict_contains(superset, subset):
-    """
-    Assert that all key/val pairs in dict 'subset' also exist in 'superset'
-    """
-    for key, value in subset.iteritems():
-        ok_(key in superset)
-        eq_(superset[key], value)
-
 
 class TestExecute(FabricTest):
     @with_fakes
