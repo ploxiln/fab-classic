@@ -6,10 +6,7 @@ items, though within Fabric itself only ``Process`` objects are used/supported.
 """
 
 import time
-try:
-    import Queue
-except ImportError:
-    import queue as Queue
+import queue as Queue
 from multiprocessing import Process
 
 from fabric.network import ssh

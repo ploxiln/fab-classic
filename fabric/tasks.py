@@ -324,18 +324,7 @@ def execute(task, *args, **kwargs):
 
     parallel = requires_parallel(task)
     if parallel:
-        # Import multiprocessing if needed, erroring out usefully
-        # if it can't.
-        try:
-            import multiprocessing
-        except ImportError:
-            import traceback
-            tb = traceback.format_exc()
-            abort(tb + """
-    At least one task needs to be run in parallel, but the
-    multiprocessing module cannot be imported (see above
-    traceback.) Please make sure the module is installed
-    or that the above ImportError is fixed.""")
+        import multiprocessing
     else:
         multiprocessing = None
 
