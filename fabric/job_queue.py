@@ -7,11 +7,13 @@ items, though within Fabric itself only ``Process`` objects are used/supported.
 
 import time
 import queue as Queue
-from multiprocessing import Process
+from collections import namedtuple
 
 from fabric.network import ssh
 from fabric.context_managers import settings
 
+
+DoneProc = namedtuple('DoneProc', ['name', 'exitcode'])
 
 class JobQueue(object):
     """
@@ -73,7 +75,7 @@ class JobQueue(object):
 
     def append(self, process):
         """
-        Add the Process() to the queue, so that later it can be checked up on.
+        Add the Process to the queue, so that later it can be checked up on.
         That is if the JobQueue is still open.
 
         If the queue is closed, this will just silently do nothing.
@@ -145,12 +147,15 @@ class JobQueue(object):
                         if self._debug:
                             print("Job queue found finished proc: %s." % job.name)
                         done = self._running.pop(id)
-                        self._completed.append((done.name, done.exitcode))
-                        if hasattr(done, 'close') and callable(done.close):
-                            done.close()
-                        # multiprocessing.Process.close() added in Python-3.7
-                        # for older versions of python, GC will have to do
-                        del done
+                        # might be a Process or a Thread
+                        if hasattr(done, 'exitcode'):
+                            proc = done
+                            done = DoneProc(proc.name, proc.exitcode)
+                            # multiprocessing.Process.close() added in Python-3.7
+                            if hasattr(proc, 'close'):
+                                proc.close()
+                            del proc
+                        self._completed.append(done)
 
                 if self._debug:
                     print("Job queue has %d running." % len(self._running))
@@ -174,9 +179,9 @@ class JobQueue(object):
         self._fill_results(results)
 
         # Attach exit codes now that we're all done & have joined all jobs
-        for job_name, exit_code in self._completed:
-            if isinstance(job, Process):
-                results[job_name]['exit_code'] = exit_code
+        for job in self._completed:
+            if hasattr(job, 'exitcode'):
+                results[job.name]['exit_code'] = job.exitcode
 
         return results
 
