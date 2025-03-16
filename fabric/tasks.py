@@ -325,13 +325,15 @@ def execute(task, *args, **kwargs):
     parallel = requires_parallel(task)
     if parallel:
         import multiprocessing
+        ctx = multiprocessing.get_context('fork')
+        # Set up job queue for parallel cases
+        queue = ctx.Queue()
     else:
-        multiprocessing = None
+        ctx = None
+        queue = None
 
     # Get pool size for this task
     pool_size = task.get_pool_size(my_env['all_hosts'], state.env.pool_size)
-    # Set up job queue in case parallel is needed
-    queue = multiprocessing.Queue() if parallel else None
     jobs = JobQueue(pool_size, queue)
     if state.output.debug:
         jobs._debug = True
@@ -342,8 +344,7 @@ def execute(task, *args, **kwargs):
         for host in my_env['all_hosts']:
             try:
                 results[host] = _execute(
-                    task, host, my_env, args, new_kwargs, jobs, queue,
-                    multiprocessing
+                    task, host, my_env, args, new_kwargs, jobs, queue, ctx,
                 )
             except NetworkError as e:
                 results[host] = e
