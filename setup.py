@@ -21,7 +21,7 @@ setup(
     maintainer_email='pierce.lopez@gmail.com',
     url='https://github.com/ploxiln/fab-classic',
     packages=['fabric', 'fabric.contrib'],
-    python_requires=">=3.6",
+    python_requires=">=3.5",
     install_requires=[paramiko + '>=2.0'],
     entry_points={
         'console_scripts': [
