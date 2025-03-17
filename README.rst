@@ -1,6 +1,5 @@
-*fab-classic* is a Python (3.6+) library and command-line tool
-for streamlining the use of SSH for application deployment or systems
-administration tasks.
+*fab-classic* is a Python library and command-line tool for streamlining
+the use of SSH for application deployment or systems administration tasks.
 
 fab-classic is forked from `Fabric 1.14 <https://github.com/fabric/fabric/tree/1.14>`_
 and is intended to add only bug fixes and compatibility patches, for projects
@@ -26,14 +25,14 @@ Starting with version 1.16, *fab-classic* depends on
 `paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
 `paramiko <https://github.com/paramiko/paramiko/>`_. Both of those packages
 are imported with the name ``paramiko``, and unfortunately that means that you
-should make sure you uninstall *paramiko* before *paramiko-ng* is installed,
-or you will get strange issues (even if things seem to work at first).
+need to make sure you uninstall *paramiko* before *paramiko-ng* is installed
+(and vice-versa) or you will get strange issues.
 
 Starting with version 1.18, you can switch back to depending on the package
 named *paramiko* by setting the environment variable ``PARAMIKO_REPLACE=1``
 while installing *fab-classic*::
 
-    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.18.0
+    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.19.2
 
 (*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
 see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
