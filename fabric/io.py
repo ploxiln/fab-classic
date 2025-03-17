@@ -2,7 +2,7 @@ import re
 import sys
 import socket
 import time
-from select import select
+import select
 from collections import deque
 
 from fabric.state import env, output, win32
@@ -266,8 +266,9 @@ def input_loop(chan, f, using_pty):
             if msvcrt.kbhit():
                 byte = msvcrt.getch()
         elif waitable:
-            r, w, x = select([f], [], [], 0.0)
-            if f in r:
+            poller = select.poll()
+            poller.register(f, select.POLLIN)
+            if poller.poll(0):
                 byte = f.read(1)
         else:
             byte = f.read(1)
