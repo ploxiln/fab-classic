@@ -22,20 +22,10 @@ because *fab-classic* uses the same import name "fabric" and entrypoint (tool)
 name "fab".
 
 Starting with version 1.16, *fab-classic* depends on
-`paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ instead of
-`paramiko <https://github.com/paramiko/paramiko/>`_. Both of those packages
-are imported with the name ``paramiko``, and unfortunately that means that you
-need to make sure you uninstall *paramiko* before *paramiko-ng* is installed
-(and vice-versa) or you will get strange issues.
-
-Starting with version 1.18, you can switch back to depending on the package
-named *paramiko* by setting the environment variable ``PARAMIKO_REPLACE=1``
-while installing *fab-classic*::
-
-    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.19.2
-
-(*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
-see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
+`paramiko <https://github.com/paramiko/paramiko/>`_ instead of the
+`paramiko-ng <https://github.com/ploxiln/paramiko-ng/>`_ fork. To avoid
+conflicts, make sure you uninstall *paramiko-ng* before installing
+*fab-classic*, and ensure *paramiko* is available.
 
 
 Documentation
@@ -83,5 +73,5 @@ servers, like so::
 
 In addition to use via the ``fab`` tool, Fabric's components may be imported
 into other Python code, providing a Pythonic interface to the SSH protocol
-suite at a higher level than that provided by the ``paramiko-ng`` library
+suite at a higher level than that provided by the ``paramiko`` library
 (which Fabric itself uses).

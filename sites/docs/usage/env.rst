@@ -373,8 +373,8 @@ traffic through the remote SSH daemon to the final destination.
 These three options (``gss_auth``, ``gss_deleg``, and ``gss_kex``) are passed
 verbatim into Paramiko's ``Client.connect`` method, and control
 Kerberos/GSS-API behavior. For details, see Paramiko's docs:
-`GSS-API authentication <https://ploxiln.github.io/paramiko-ng/api/ssh_gss.html>`_,
-`GSS-API key exchange <https://ploxiln.github.io/paramiko-ng/api/kex_gss.html>`_.
+`GSS-API authentication <https://docs.paramiko.org/en/stable/api/ssh_gss.html>`_,
+`GSS-API key exchange <https://docs.paramiko.org/en/stable/api/kex_gss.html>`_.
 
 .. note::
     This functionality requires Paramiko ``1.15`` or above! You will get

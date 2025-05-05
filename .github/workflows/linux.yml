@@ -34,7 +34,7 @@ jobs:
       - name: Python dependencies
         run: |
           pip install -r dev-requirements.txt
-          pip install paramiko-ng==${{matrix.paramiko_ver}}
+          pip install paramiko==${{matrix.paramiko_ver}}
           pip install -e .
       - name: Lint
         run: |
@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r doc-requirements.txt
-          pip install paramiko-ng==2.8.10
+          pip install paramiko==2.8.10
           pip install -e .
 
       - name: Build docs

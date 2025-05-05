@@ -648,8 +648,6 @@ def main(fabfile_locations=None):
         if options.show_version:
             if hasattr(ssh, '__pkgname__'):
                 ssh_pkgname = ssh.__pkgname__
-            elif hasattr(ssh.kex_ecdh_nist, '_ecdh_public_bytes'):
-                ssh_pkgname = 'paramiko-ng'
             else:
                 ssh_pkgname = 'Paramiko'
 
