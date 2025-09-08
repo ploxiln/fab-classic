@@ -224,11 +224,12 @@ def key_from_env(passphrase=None):
 
     if 'key' in env:
         if output.debug:
-            # NOTE: this may not be the most secure thing; OTOH anybody running
-            # the process must by definition have access to the key value,
-            # so only serious problem is if they're logging the output.
-            sys.stderr.write("Trying to honor in-memory key %r\n" % env.key)
-        for pkey_class in (ssh.rsakey.RSAKey, ssh.dsskey.DSSKey):
+            sys.stderr.write("Trying to honor in-memory env.key %.66r...\n" % env.key)
+
+        for pkey_type in ['Ed25519Key', 'ECDSAKey', 'RSAKey', 'DSSKey']:
+            pkey_class = getattr(ssh, pkey_type, None)
+            if pkey_class is None:
+                continue
             if output.debug:
                 sys.stderr.write("Trying to load it as %s\n" % pkey_class)
             try:
@@ -242,6 +243,9 @@ def key_from_env(passphrase=None):
                 # type, so try the next one.
                 else:
                     pass
+
+        if output.debug:
+            sys.stderr.write("Failed to load env.key\n")
 
 
 def parse_host_string(host_string):
