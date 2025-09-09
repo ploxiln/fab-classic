@@ -450,19 +450,30 @@ def shell_env(**kw):
 
 
 def _forwarder(chan, sock):
-    # Bidirectionally forward data between a socket and a Paramiko channel.
-    while True:
-        r, w, x = select.select([sock, chan], [], [])
-        if sock in r:
-            data = sock.recv(1024)
-            if len(data) == 0:
-                break
-            chan.send(data)
-        if chan in r:
-            data = chan.recv(1024)
-            if len(data) == 0:
-                break
-            sock.send(data)
+    """
+    Bidirectionally forward data between a socket and a Paramiko channel.
+    """
+    mapping = {
+        sock.fileno(): (sock, chan),
+        chan.fileno(): (chan, sock),
+    }
+    poller = select.poll()
+    for fd in mapping:
+        poller.register(fd, select.POLLIN)
+    active = True
+    while active:
+        events = poller.poll()
+        for fd, flag in events:
+            if flag & select.POLLIN:
+                sender, receiver = mapping[fd]
+                data = sender.recv(1024)
+                if data:
+                    receiver.send(data)
+                else:
+                    active = False
+            # Handle unexpected hangups
+            if flag & select.POLLHUP:
+                active = False
     chan.close()
     sock.close()
 
