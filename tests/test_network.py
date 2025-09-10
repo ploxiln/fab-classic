@@ -554,6 +554,14 @@ class TestNetwork(FabricTest):
         # Ensure env.host is correct
         eq_(env.host, normalize(copied_host_string)[1])
 
+    @server(pubkeys=True, responses={"command": "result"})
+    def test_key_from_env(self):
+        env.no_agent = True
+        env.abort_on_prompts = True
+        env.key = open(CLIENT_PRIVKEY, "rt").read()
+        env.password = CLIENT_PRIVKEY_PASSPHRASE
+
+        eq_(run("command"), "result")
 
 def subtask():
     run("This should never execute")
