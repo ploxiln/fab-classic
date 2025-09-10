@@ -11,19 +11,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        imgtag:
-          - 3.6-bullseye
-          - 3.7-bullseye
-          - 3.8-bookworm
-          - 3.9-bookworm
-          - 3.10-bookworm
-          - 3.11-bookworm
-          - 3.12-bookworm
-          - 3.13-bookworm
-        paramiko_ver:
-          - 2.6.6
-          - 2.7.12
-          - 2.8.10
+        include:
+          - {imgtag: "3.6-bullseye", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.7-bullseye", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.8-bookworm", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.9-bookworm", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.10-bookworm", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.11-bookworm", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko-ng==2.7.12"}
+          - {imgtag: "3.8-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.9-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.10-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.11-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.13-bookworm", paramiko: "paramiko-ng==2.8.10"}
+          - {imgtag: "3.10-bookworm", paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.11-bookworm", paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.13-bookworm", paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko==3.3.2"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko==3.5.1"}
+          - {imgtag: "3.12-bookworm", paramiko: "paramiko==4.0.0"}
+
     container: "python:${{matrix.imgtag}}"
     steps:
       - uses: actions/checkout@v4
@@ -32,9 +41,14 @@ jobs:
           apt-get -q -y update
           apt-get -q -y install openssh-client openssh-server rsync sudo
       - name: Python dependencies
+        env:
+          PARAMIKO: ${{matrix.paramiko}}
         run: |
           pip install -r dev-requirements.txt
-          pip install paramiko-ng==${{matrix.paramiko_ver}}
+          pip install "$PARAMIKO"
+          if [ "$(echo $PARAMIKO | cut -d= -f1)" != paramiko-ng ]; then
+            export PARAMIKO_REPLACE=1
+          fi
           pip install -e .
       - name: Lint
         run: |
