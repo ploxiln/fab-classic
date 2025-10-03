@@ -8,6 +8,7 @@ import os.path
 import posixpath
 import re
 import subprocess
+import signal
 import sys
 import time
 from glob import glob
@@ -758,8 +759,16 @@ def _execute(channel, command, pty=True, combine_stderr=None,
         # Request pty with size params (default to 80x24, obtain real
         # parameters if on POSIX platform)
         if using_pty:
+            sigwinch_orig = None
             rows, cols = _pty_size()
             channel.get_pty(width=cols, height=rows)
+
+            def handle_window_change(signum, frame):
+                rows, cols = _pty_size()
+                channel.resize_pty(width=cols, height=rows)
+
+            if hasattr(signal, "SIGWINCH"):
+                sigwinch_orig = signal.signal(signal.SIGWINCH, handle_window_change)
 
         # Use SSH agent forwarding from 'ssh' if enabled by user
         config_agent = ssh_config().get('forwardagent', 'no').lower() == 'yes'
@@ -790,21 +799,26 @@ def _execute(channel, command, pty=True, combine_stderr=None,
             ThreadHandler('in', input_loop, channel, stdin, using_pty)
         )
 
-        while True:
-            if channel.exit_status_ready():
-                break
-            else:
-                # Check for thread exceptions here so we can raise ASAP
-                # (without chance of getting blocked by, or hidden by an
-                # exception within, recv_exit_status())
-                for worker in workers:
-                    worker.raise_if_needed()
-            try:
-                time.sleep(ssh.io_sleep)
-            except KeyboardInterrupt:
-                if not remote_interrupt:
-                    raise
-                channel.send('\x03')
+        try:
+            while True:
+                if channel.exit_status_ready():
+                    break
+                else:
+                    # Check for thread exceptions here so we can raise ASAP
+                    # (without chance of getting blocked by, or hidden by an
+                    # exception within, recv_exit_status())
+                    for worker in workers:
+                        worker.raise_if_needed()
+                try:
+                    time.sleep(ssh.io_sleep)
+                except KeyboardInterrupt:
+                    if not remote_interrupt:
+                        raise
+                    channel.send('\x03')
+        finally:
+            if using_pty:
+                if sigwinch_orig is not None:
+                    signal.signal(signal.SIGWINCH, sigwinch_orig)
 
         # Obtain exit code of remote program now that we're done.
         status = channel.recv_exit_status()
