@@ -28,10 +28,11 @@ jobs:
           - {imgtag: "3.10-bookworm", paramiko: "paramiko-ng==2.9.0"}
           - {imgtag: "3.11-bookworm", paramiko: "paramiko-ng==2.9.0"}
           - {imgtag: "3.12-bookworm", paramiko: "paramiko-ng==2.9.0"}
-          - {imgtag: "3.13-bookworm", paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.13-trixie",   paramiko: "paramiko-ng==2.9.0"}
+          - {imgtag: "3.14-trixie",   paramiko: "paramiko-ng==2.9.0"}
           - {imgtag: "3.12-bookworm", paramiko: "paramiko==3.3.2"}
           - {imgtag: "3.12-bookworm", paramiko: "paramiko==3.5.1"}
-          - {imgtag: "3.12-bookworm", paramiko: "paramiko==4.0.0"}
+          - {imgtag: "3.13-trixie", paramiko: "paramiko==4.0.0"}
 
     container: "python:${{matrix.imgtag}}"
     steps:
