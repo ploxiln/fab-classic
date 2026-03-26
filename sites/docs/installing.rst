@@ -2,32 +2,27 @@
 Installing
 ==========
 
-**fab-classic** is best installed via `pip <http://pip-installer.org>`_
+**fab-classic** can be installed with `pip <http://pip-installer.org>`_
 
-    $ pip install fab-classic
+    pip install fab-classic
 
-Make sure that "Fabric" and "paramiko" packages are removed first, if you happen
-to have previously installed them (because *fab-classic* depends on *Paramiko-NG*).
+Make sure that the original "Fabric" package is removed first.
 
-If you are upgrading *fab-classic* from version 1.15.x to version 1.16 or later,
-then you do have "paramiko" installed as a dependency for fab-classic 1.15.x,
-and you should uninstall it first::
+As of *fab-classic* 1.21 it depends on the original *paramiko* package,
+previous versions depended on *paramiko-ng* instead. If you are switching
+between *paramiko* and *paramiko-ng* in an existing "python environment"
+(perhaps due to upgrading *fab-classic*) be sure to uninstall any existing
+paramiko variant before a different one is installed.
 
-    $ pip uninstall paramiko
+It is also possible to install *fab-classic* such that it requires "paramiko-ng"
+instead of the original "paramiko"::
 
-It is also possible to install *fab-classic* such that it requires "paramiko"
-instead of "paramiko-ng"::
+    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.21.0
 
-    PARAMIKO_REPLACE=1 pip install --no-binary fab-classic fab-classic==1.18.0
+(This is opposite of how ``PARAMIKO_REPLACE`` worked for older versions of *fab-classic*.)
 
-(*paramiko-ng* also supports ``PARAMIKO_REPLACE``,
-see `paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_)
-
-Advanced users wanting to install a development version may use ``pip`` to grab
-the latest master branch (as well as the dev version of the Paramiko-NG dependency)::
-
-    $ pip install -e git+https://github.com/ploxiln/paramiko-ng/#egg=paramiko-ng
-    $ pip install -e git+https://github.com/ploxiln/fab-classic/#egg=fab-classic
+*paramiko-ng* also supports ``PARAMIKO_REPLACE``, see
+`paramiko-ng#installation <https://github.com/ploxiln/paramiko-ng/#installation>`_
 
 
 Dependencies
@@ -35,10 +30,11 @@ Dependencies
 
 In order for Fabric's installation to succeed, you will need three primary pieces of software:
 
-* the Python programming language version 2.7, or version 3.4, or a later 3.x release;
+* Python version 3.5 or later;
 * the ``setuptools`` packaging/installation library;
-* and the Python `Paramiko-NG <https://github.com/ploxiln/paramiko-ng>`_ SSH library.
-  See the `Paramiko installation docs <https://github.com/ploxiln/paramiko-ng#installation>`_ for more info.
+* and the Python `Paramiko <https://www.paramiko.org/>`_ or
+  `Paramiko-NG <https://github.com/ploxiln/paramiko-ng>`_ SSH library.
+  (Paramiko has its own dependencies, see its own documentation for details.)
 
 setuptools
 ----------
@@ -53,18 +49,15 @@ Development dependencies
 ------------------------
 
 If you are interested in doing development work on Fabric (or even just running
-the test suite), you may also need to install some or all of the following
-packages:
+the test suite), you may also need to install some additional packages, listed
+in ``dev-requirements.txt`` (including primarily "Nose" and "Fudge"):
 
-* `git <http://git-scm.com>`_ in order to obtain some of the other dependencies below;
-* `Nose <https://github.com/nose-devs/nose>`_
-* `Fudge <http://farmdev.com/projects/fudge/index.html>`_
-* `Sphinx <http://sphinx.pocoo.org/>`_
+    pip install -r dev-requirements.txt
 
-For an up-to-date list of exact testing/development requirements, including
-version numbers, please see the ``dev-requirements.txt`` file included with the
-source distribution. This file is intended to be used with ``pip``, e.g.
-``pip install -r dev-requirements.txt``.
+To build the documentation with "Sphinx", you'll need the dependencies in
+``doc-requirements.txt``:
+
+    pip install -r doc-requirements.txt
 
 
 .. _downloads:
@@ -86,9 +79,8 @@ The Fabric developers manage the project's source code with the `Git
 <http://git-scm.com>`_ DVCS. To follow Fabric's development via Git instead of
 downloading official releases, you have the following options:
 
-* Clone the canonical repository straight from `the Fabric organization's
-  repository on Github <https://github.com/ploxiln/fab-classic>`_,
-  ``git://github.com/ploxiln/fab-classic.git``
+* Clone the canonical repository straight from the `repository on Github
+  <https://github.com/ploxiln/fab-classic>`_, ``git://github.com/ploxiln/fab-classic.git``
 * Make your own fork of the Github repository by making a Github account,
   visiting `ploxiln/fab-classic <http://github.com/ploxiln/fab-classic>`_ and clicking the
   "fork" button.
