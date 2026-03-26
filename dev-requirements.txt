@@ -1,6 +1,6 @@
 # You should already have Paramiko and your local Fabric checkout installed
 # Test runner/testing utils
-nose-py3
+nose-py3 ==1.8.0
 # Fudge mocking library, small fork with use_2to3 removed from setup
 https://github.com/ploxiln/fudge/archive/refs/heads/py3.tar.gz#egg=fudge
 # used in some tests
