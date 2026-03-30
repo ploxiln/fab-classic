@@ -28,11 +28,13 @@ from fabric import state
 from fabric.utils import isatty
 
 
-class nested(ExitStack):
-    def __init__(self, *managers):
-        super(nested, self).__init__()
-        for manager in managers:
-            self.enter_context(manager)
+@contextmanager
+def nested(*contexts):
+    """Re-implementation of nested for Python 3."""
+    with ExitStack() as stack:
+        for ctx in contexts:
+            stack.enter_context(ctx)
+        yield stack
 
 
 if not win32:
