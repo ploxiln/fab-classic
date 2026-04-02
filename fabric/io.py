@@ -281,7 +281,7 @@ def input_loop(chan, f, using_pty):
                 sys.stdout.write(byte)
                 sys.stdout.flush()
 
-        elif byte == '':  # EOF
+        elif byte == '' and chan.eof_received:  # EOF
             chan.shutdown_write()
             break
         else:
