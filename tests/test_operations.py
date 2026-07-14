@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import re
 import sys
@@ -15,7 +16,7 @@ from fabric.state import env
 from fabric.context_managers import nested, settings
 from fabric.operations import require, prompt, _sudo_prefix, _shell_wrap, \
     _shell_escape
-from fabric.api import get, put, hide, show, cd, lcd, local, run, sudo, quiet
+from fabric.api import get, put, hide, show, cd, lcd, local, run, sudo, quiet, reboot
 from fabric.exceptions import CommandTimeout
 from fabric.sftp import SFTP
 
@@ -1160,3 +1161,62 @@ class TestRunSudoReturnValues(FabricTest):
             # Slightly flexible test, we're not testing the actual construction
             # here, just that this attribute exists.
             ok_(env.shell in run("ls /").real_command)
+
+
+#
+# reboot()
+#
+
+class TestReboot(FabricTest):
+    def test_reboot_issues_command_and_reconnects(self):
+        """
+        reboot() should issue the command, drop the stale cached connection,
+        then force a reconnect with retry settings derived from ``wait``
+        """
+        state = {}
+
+        class FakeClient(object):
+            # Stands in for the SSHClient whose transport died when the
+            # host went down; close() raising is the expected case there.
+            def close(self):
+                state['old_client_closed'] = True
+                raise EOFError
+
+        class FakeConnections(dict):
+            # Stands in for state.connections (HostConnectionCache)
+            def connect(self, key):
+                state['reconnected_to'] = key
+                # Capture the temporary settings reboot() reconnects under
+                state['retry_settings'] = (
+                    env.timeout, env.connection_attempts
+                )
+                # paramiko's transport thread logs expected banner errors at
+                # ERROR level; reboot() must silence that during reconnect
+                state['paramiko_errors_silenced'] = not logging.getLogger(
+                    'paramiko.transport').isEnabledFor(logging.ERROR)
+
+        fake_connections = FakeConnections()
+        fake_connections[env.host_string] = FakeClient()
+
+        fake_sudo = Fake('sudo', callable=True).calls(
+            lambda command: state.__setitem__('command', command))
+        # Fake out time so the test doesn't spend 5s in reboot()'s sleep
+        fake_time = Fake('time', allows_any_call=True)
+
+        patched_sudo = patched_context('fabric.operations', 'sudo', fake_sudo)
+        patched_time = patched_context('fabric.operations', 'time', fake_time)
+        patched_connections = patched_context(
+            'fabric.operations', 'connections', fake_connections)
+        with patched_sudo, patched_time, patched_connections:
+            reboot(wait=60)
+
+        eq_(state['command'], 'reboot')
+        eq_(state['old_client_closed'], True)
+        # Stale cache entry must be removed before reconnecting
+        eq_(fake_connections, {})
+        eq_(state['reconnected_to'], env.host_string)
+        # wait=60 with the internal 5s timeout means 12 attempts
+        eq_(state['retry_settings'], (5, 12))
+        eq_(state['paramiko_errors_silenced'], True)
+        # The logger must be re-enabled once reboot() is done
+        ok_(logging.getLogger('paramiko.transport').isEnabledFor(logging.ERROR))

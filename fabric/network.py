@@ -507,6 +507,13 @@ def connect(user, host, port, cache, seek_gateway=True):
                or e.__class__ is ssh.ChannelException:
                 if _tried_enough(tries):
                     raise NetworkError(msg, e)
+                # Banner read failures can occur near-instantly (e.g. when a
+                # systemd socket-activated sshd accepts the TCP connection
+                # during shutdown/boot but never starts sshd to send the
+                # banner). Sleep before retrying so we don't burn through
+                # env.connection_attempts in a few seconds -- this keeps
+                # reboot()'s wait=N semantics intact.
+                time.sleep(env.timeout)
                 continue
 
             # For whatever reason, empty password + no ssh key or agent

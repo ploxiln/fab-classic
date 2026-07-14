@@ -247,8 +247,10 @@ class TestNetwork(FabricTest):
         fake_ssh = Fake('ssh', allows_any_call=True)
         fake_ssh.expects('SSHClient').calls(generate_fake_client)
 
-        # We need the real exceptions here to preserve the inheritence structure
-        # and for except clauses because python3 is picky about that
+        # The fake replaces the whole paramiko module as seen by
+        # fabric.network, so the real exception classes must be reattached:
+        # connect() references them in except clauses (which require genuine
+        # exception types) and compares caught exceptions by class.
         fake_ssh.SSHException = ssh.SSHException
         fake_ssh.ChannelException = ssh.ChannelException
         fake_ssh.BadHostKeyException = ssh.BadHostKeyException
@@ -264,6 +266,98 @@ class TestNetwork(FabricTest):
             # Restore ssh
             patched_connect.restore()
             patched_password.restore()
+
+    @with_fakes
+    def test_connect_sleeps_between_banner_error_retries(self):
+        """
+        Banner read errors should sleep env.timeout between retries
+
+        A systemd socket-activated sshd (Ubuntu 24.04+) accepts the TCP
+        connection during shutdown/boot but never sends a banner, so the
+        failure is near-instant. Without a sleep between retries,
+        env.connection_attempts is exhausted in a few seconds, breaking
+        reboot()'s wait=N semantics.
+        """
+        def raise_banner_error_twice(*args, **kwargs):
+            if raise_banner_error_twice.failures_left > 0:
+                raise_banner_error_twice.failures_left -= 1
+                raise ssh.SSHException('Error reading SSH protocol banner')
+        raise_banner_error_twice.failures_left = 2
+
+        def generate_fake_client():
+            fake_client = Fake('SSHClient', allows_any_call=True)
+            fake_client.expects('connect').calls(raise_banner_error_twice)
+            return fake_client
+
+        fake_ssh = Fake('ssh', allows_any_call=True)
+        fake_ssh.expects('SSHClient').calls(generate_fake_client)
+
+        # The fake replaces the whole paramiko module as seen by
+        # fabric.network, so the real exception classes must be reattached:
+        # connect() references them in except clauses (which require genuine
+        # exception types) and compares caught exceptions by class.
+        fake_ssh.SSHException = ssh.SSHException
+        fake_ssh.ChannelException = ssh.ChannelException
+        fake_ssh.BadHostKeyException = ssh.BadHostKeyException
+        fake_ssh.AuthenticationException = ssh.AuthenticationException
+        fake_ssh.PasswordRequiredException = ssh.PasswordRequiredException
+
+        # Expect one sleep of env.timeout per failed attempt that is retried
+        fake_time = Fake('time', allows_any_call=True)
+        fake_time.expects('sleep').with_args(7).times_called(2)
+
+        patched_ssh = patch_object('fabric.network', 'ssh', fake_ssh)
+        patched_time = patch_object('fabric.network', 'time', fake_time)
+        try:
+            with settings(connection_attempts=3, timeout=7):
+                connect('user', 'localhost', 22, HostConnectionCache())
+        finally:
+            # Restore ssh and time
+            patched_ssh.restore()
+            patched_time.restore()
+
+    @with_fakes
+    @raises(NetworkError)
+    def test_connect_gives_up_on_banner_error_after_connection_attempts(self):
+        """
+        Persistent banner read errors should raise NetworkError after
+        env.connection_attempts tries, without sleeping after the final try
+        """
+        def raise_banner_error(*args, **kwargs):
+            raise ssh.SSHException('Error reading SSH protocol banner')
+
+        def generate_fake_client():
+            fake_client = Fake('SSHClient', allows_any_call=True)
+            fake_client.expects('connect').calls(raise_banner_error)
+            return fake_client
+
+        fake_ssh = Fake('ssh', allows_any_call=True)
+        fake_ssh.expects('SSHClient').calls(generate_fake_client)
+
+        # The fake replaces the whole paramiko module as seen by
+        # fabric.network, so the real exception classes must be reattached:
+        # connect() references them in except clauses (which require genuine
+        # exception types) and compares caught exceptions by class.
+        fake_ssh.SSHException = ssh.SSHException
+        fake_ssh.ChannelException = ssh.ChannelException
+        fake_ssh.BadHostKeyException = ssh.BadHostKeyException
+        fake_ssh.AuthenticationException = ssh.AuthenticationException
+        fake_ssh.PasswordRequiredException = ssh.PasswordRequiredException
+
+        # Expect sleeps between the three attempts, but none after the final
+        # attempt, which raises NetworkError instead of retrying
+        fake_time = Fake('time', allows_any_call=True)
+        fake_time.expects('sleep').with_args(7).times_called(2)
+
+        patched_ssh = patch_object('fabric.network', 'ssh', fake_ssh)
+        patched_time = patch_object('fabric.network', 'time', fake_time)
+        try:
+            with settings(connection_attempts=3, timeout=7):
+                connect('user', 'localhost', 22, HostConnectionCache())
+        finally:
+            # Restore ssh and time
+            patched_ssh.restore()
+            patched_time.restore()
 
     @mock_streams('stdout')
     @server()

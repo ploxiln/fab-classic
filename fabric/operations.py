@@ -3,6 +3,7 @@ Functions to be used in fabfiles and other non-core code, such as run()/sudo().
 """
 
 import errno
+import logging
 import os
 import os.path
 import posixpath
@@ -1281,12 +1282,37 @@ def reboot(wait=120, command='reboot', use_sudo=True):
         connection_attempts=attempts
     ):
         (sudo if use_sudo else run)(command)
-        # Try to make sure we don't slip in before pre-reboot lockdown
-        time.sleep(5)
-        # This is actually an internal-ish API call, but users can simply drop
-        # it in real fabfile use -- the next run/sudo/put/get/etc call will
-        # automatically trigger a reconnect.
-        # We use it here to force the reconnect while this function is still in
-        # control and has the above timeout settings enabled.
-        connections.connect(env.host_string)
+        # When a connection attempt fails to read the SSH banner (which is
+        # expected while the host is shutting down or booting, especially
+        # with socket-activated sshd), paramiko's transport thread logs the
+        # error with a full traceback to the 'paramiko.transport' logger,
+        # which surfaces on stderr via logging's last-resort handler. Those
+        # failures are anticipated and handled by the reconnect loop, so
+        # silence that logger while we wait for the host to come back.
+        paramiko_logger = logging.getLogger('paramiko.transport')
+        previous_level = paramiko_logger.level
+        paramiko_logger.setLevel(logging.CRITICAL)
+        try:
+            # Try to make sure we don't slip in before pre-reboot lockdown
+            time.sleep(5)
+            # Drop the dead connection to the now-rebooting host so the
+            # reconnect below starts from a clean slate instead of leaking
+            # the old client.
+            if env.host_string in connections:
+                try:
+                    connections[env.host_string].close()
+                except (OSError, EOFError, ssh.SSHException):
+                    # The transport is already dead because the host is
+                    # shutting down; errors while closing it are expected
+                    # and irrelevant.
+                    pass
+                del connections[env.host_string]
+            # This is actually an internal-ish API call, but users can simply
+            # drop it in real fabfile use -- the next run/sudo/put/get/etc
+            # call will automatically trigger a reconnect.
+            # We use it here to force the reconnect while this function is
+            # still in control and has the above timeout settings enabled.
+            connections.connect(env.host_string)
+        finally:
+            paramiko_logger.setLevel(previous_level)
     # At this point we should be reconnected to the newly rebooted server.
