@@ -36,38 +36,32 @@
             
   <div class="section" id="installing">
 <h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
-<p><strong>fab-classic</strong> is best installed via <a class="reference external" href="http://pip-installer.org">pip</a></p>
+<p><strong>fab-classic</strong> can be installed with <a class="reference external" href="http://pip-installer.org">pip</a></p>
 <blockquote>
-<div>$ pip install fab-classic</div></blockquote>
-<p>Make sure that “Fabric” and “paramiko” packages are removed first, if you happen
-to have previously installed them (because <em>fab-classic</em> depends on <em>Paramiko-NG</em>).</p>
-<p>If you are upgrading <em>fab-classic</em> from version 1.15.x to version 1.16 or later,
-then you do have “paramiko” installed as a dependency for fab-classic 1.15.x,
-and you should uninstall it first:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip uninstall paramiko
+<div>pip install fab-classic</div></blockquote>
+<p>Make sure that the original “Fabric” package is removed first.</p>
+<p>As of <em>fab-classic</em> 1.21 it depends on the original <em>paramiko</em> package,
+previous versions depended on <em>paramiko-ng</em> instead. If you are switching
+between <em>paramiko</em> and <em>paramiko-ng</em> in an existing “python environment”
+(perhaps due to upgrading <em>fab-classic</em>) be sure to uninstall any existing
+paramiko variant before a different one is installed.</p>
+<p>It is also possible to install <em>fab-classic</em> such that it requires “paramiko-ng”
+instead of the original “paramiko”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PARAMIKO_REPLACE</span><span class="o">=</span><span class="mi">1</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">binary</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span><span class="o">==</span><span class="mf">1.21</span><span class="o">.</span><span class="mi">0</span>
 </pre></div>
 </div>
-<p>It is also possible to install <em>fab-classic</em> such that it requires “paramiko”
-instead of “paramiko-ng”:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PARAMIKO_REPLACE</span><span class="o">=</span><span class="mi">1</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">binary</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span> <span class="n">fab</span><span class="o">-</span><span class="n">classic</span><span class="o">==</span><span class="mf">1.18</span><span class="o">.</span><span class="mi">0</span>
-</pre></div>
-</div>
-<p>(<em>paramiko-ng</em> also supports <code class="docutils literal notranslate"><span class="pre">PARAMIKO_REPLACE</span></code>,
-see <a class="reference external" href="https://github.com/ploxiln/paramiko-ng/#installation">paramiko-ng#installation</a>)</p>
-<p>Advanced users wanting to install a development version may use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to grab
-the latest master branch (as well as the dev version of the Paramiko-NG dependency):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/ploxiln/paramiko-ng/#egg=paramiko-ng
-$ pip install -e git+https://github.com/ploxiln/fab-classic/#egg=fab-classic
-</pre></div>
-</div>
+<p>(This is opposite of how <code class="docutils literal notranslate"><span class="pre">PARAMIKO_REPLACE</span></code> worked for older versions of <em>fab-classic</em>.)</p>
+<p><em>paramiko-ng</em> also supports <code class="docutils literal notranslate"><span class="pre">PARAMIKO_REPLACE</span></code>, see
+<a class="reference external" href="https://github.com/ploxiln/paramiko-ng/#installation">paramiko-ng#installation</a></p>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>In order for Fabric’s installation to succeed, you will need three primary pieces of software:</p>
 <ul class="simple">
-<li>the Python programming language version 2.7, or version 3.4, or a later 3.x release;</li>
+<li>Python version 3.5 or later;</li>
 <li>the <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> packaging/installation library;</li>
-<li>and the Python <a class="reference external" href="https://github.com/ploxiln/paramiko-ng">Paramiko-NG</a> SSH library.
-See the <a class="reference external" href="https://github.com/ploxiln/paramiko-ng#installation">Paramiko installation docs</a> for more info.</li>
+<li>and the Python <a class="reference external" href="https://www.paramiko.org/">Paramiko</a> or
+<a class="reference external" href="https://github.com/ploxiln/paramiko-ng">Paramiko-NG</a> SSH library.
+(Paramiko has its own dependencies, see its own documentation for details.)</li>
 </ul>
 <div class="section" id="setuptools">
 <h3>setuptools<a class="headerlink" href="#setuptools" title="Permalink to this headline">¶</a></h3>
@@ -78,18 +72,14 @@ you’ll need to grab it. In such situations it’s typically packaged as
 <div class="section" id="development-dependencies">
 <h3>Development dependencies<a class="headerlink" href="#development-dependencies" title="Permalink to this headline">¶</a></h3>
 <p>If you are interested in doing development work on Fabric (or even just running
-the test suite), you may also need to install some or all of the following
-packages:</p>
-<ul class="simple">
-<li><a class="reference external" href="http://git-scm.com">git</a> in order to obtain some of the other dependencies below;</li>
-<li><a class="reference external" href="https://github.com/nose-devs/nose">Nose</a></li>
-<li><a class="reference external" href="http://farmdev.com/projects/fudge/index.html">Fudge</a></li>
-<li><a class="reference external" href="http://sphinx.pocoo.org/">Sphinx</a></li>
-</ul>
-<p>For an up-to-date list of exact testing/development requirements, including
-version numbers, please see the <code class="docutils literal notranslate"><span class="pre">dev-requirements.txt</span></code> file included with the
-source distribution. This file is intended to be used with <code class="docutils literal notranslate"><span class="pre">pip</span></code>, e.g.
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">dev-requirements.txt</span></code>.</p>
+the test suite), you may also need to install some additional packages, listed
+in <code class="docutils literal notranslate"><span class="pre">dev-requirements.txt</span></code> (including primarily “Nose” and “Fudge”):</p>
+<blockquote>
+<div>pip install -r dev-requirements.txt</div></blockquote>
+<p>To build the documentation with “Sphinx”, you’ll need the dependencies in
+<code class="docutils literal notranslate"><span class="pre">doc-requirements.txt</span></code>:</p>
+<blockquote>
+<div>pip install -r doc-requirements.txt</div></blockquote>
 </div>
 </div>
 <div class="section" id="downloads">
@@ -103,9 +93,7 @@ downloads in addition to being the entry point for <code class="docutils literal
 <p>The Fabric developers manage the project’s source code with the <a class="reference external" href="http://git-scm.com">Git</a> DVCS. To follow Fabric’s development via Git instead of
 downloading official releases, you have the following options:</p>
 <ul class="simple">
-<li>Clone the canonical repository straight from <a class="reference external" href="https://github.com/ploxiln/fab-classic">the Fabric organization’s
-repository on Github</a>,
-<code class="docutils literal notranslate"><span class="pre">git://github.com/ploxiln/fab-classic.git</span></code></li>
+<li>Clone the canonical repository straight from the <a class="reference external" href="https://github.com/ploxiln/fab-classic">repository on Github</a>, <code class="docutils literal notranslate"><span class="pre">git://github.com/ploxiln/fab-classic.git</span></code></li>
 <li>Make your own fork of the Github repository by making a Github account,
 visiting <a class="reference external" href="http://github.com/ploxiln/fab-classic">ploxiln/fab-classic</a> and clicking the
 “fork” button.</li>

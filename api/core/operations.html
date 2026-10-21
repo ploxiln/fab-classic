@@ -157,9 +157,9 @@ value’s stdout/stderr values are always empty.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">capture=True</span></code>, you will not see any output from the subprocess in
 your terminal, but the return value will contain the captured
 stdout/stderr.</p>
-<p><code class="docutils literal notranslate"><span class="pre">encoding</span></code> is used when <code class="docutils literal notranslate"><span class="pre">capture=True</span></code> and running under Python-3,
-to decode stdout and stderr. The default is “utf-8”. The special value
-“binary” avoids decoding, leaving stdout and stderr as <code class="docutils literal notranslate"><span class="pre">bytes</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">encoding</span></code> is used when <code class="docutils literal notranslate"><span class="pre">capture=True</span></code>, to decode stdout and stderr.
+The default is “utf-8”. The special value “binary” avoids decoding,
+leaving stdout and stderr as <code class="docutils literal notranslate"><span class="pre">bytes</span></code>.</p>
 <p>In either case, as with <a class="reference internal" href="#fabric.operations.run" title="fabric.operations.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a> and
 <a class="reference internal" href="#fabric.operations.sudo" title="fabric.operations.sudo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sudo</span></code></a>, this return value exhibits the <code class="docutils literal notranslate"><span class="pre">return_code</span></code>,
 <code class="docutils literal notranslate"><span class="pre">stderr</span></code>, <code class="docutils literal notranslate"><span class="pre">failed</span></code>, <code class="docutils literal notranslate"><span class="pre">succeeded</span></code>, <code class="docutils literal notranslate"><span class="pre">command</span></code> and <code class="docutils literal notranslate"><span class="pre">real_command</span></code>
@@ -206,7 +206,7 @@ Fabric’s failure handling if any remote programs result in errors.</p>
 <dl class="function">
 <dt id="fabric.operations.prompt">
 <code class="descclassname">fabric.operations.</code><code class="descname">prompt</code><span class="sig-paren">(</span><em>text</em>, <em>key=None</em>, <em>default=''</em>, <em>validate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fabric.operations.prompt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prompt user with <code class="docutils literal notranslate"><span class="pre">text</span></code> and return the input (like <code class="docutils literal notranslate"><span class="pre">raw_input</span></code>).</p>
+<dd><p>Prompt user with <code class="docutils literal notranslate"><span class="pre">text</span></code> and return the input (like <code class="docutils literal notranslate"><span class="pre">input</span></code>).</p>
 <p>A single space character will be appended for convenience, but nothing
 else. Thus, you may want to end your prompt text with a question mark or a
 colon, e.g. <code class="docutils literal notranslate"><span class="pre">prompt(&quot;What</span> <span class="pre">hostname?&quot;)</span></code>.</p>
